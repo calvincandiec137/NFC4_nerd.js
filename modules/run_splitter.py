@@ -1,12 +1,8 @@
-# File: modules/document_processor.py
 import json
 import re
-import fitz, requests, os
+import fitz, requests, os #type:ignore
 from concurrent.futures import ThreadPoolExecutor
-from tqdm import tqdm # For the progress bar
-
-# The helper functions below remain the same.
-# The only change is the model name in summarize_chunk_with_ollama.
+from tqdm import tqdm #type:ignore
 
 def extract_text_from_pdf(pdf_path: str) -> str:
     try:
@@ -27,10 +23,7 @@ def contextually_split_text(text: str) -> list:
     return valid_chunks
 
 def summarize_chunk_with_ollama(chunk: str, model_name: str = "phi3") -> tuple[str, str]:
-    """
-    Summarizes a single chunk and returns the summary along with its title.
-    We make it return a tuple to easily match results with titles after parallel processing.
-    """
+
     first_line = chunk.split('\n', 1)[0].strip()
     section_title = first_line if len(first_line) < 100 else "Untitled Section"
 
@@ -55,9 +48,6 @@ def summarize_chunk_with_ollama(chunk: str, model_name: str = "phi3") -> tuple[s
     except Exception as e:
         return section_title, f"ERROR processing this chunk: {e}"
 
-# ==============================================================================
-#  <<< THE NEW, FASTER, PARALLEL PROCESSING FUNCTION >>>
-# ==============================================================================
 def process_document(pdf_path: str) -> list:
     """
     Orchestrates the document processing pipeline using parallel summarization.
@@ -73,17 +63,12 @@ def process_document(pdf_path: str) -> list:
         return []
 
     all_summaries = []
-    
-    # Use ThreadPoolExecutor to process chunks in parallel.
-    # We can set max_workers to control how many summaries to generate at once.
-    # A good starting point is 2-4 for a single GPU.
+
     with ThreadPoolExecutor(max_workers=4) as executor:
         print(f"\n--- Contacting Ollama to Summarize {len(text_chunks)} Sections in Parallel ---")
         
-        # Use a list to store future objects
         futures = [executor.submit(summarize_chunk_with_ollama, chunk) for chunk in text_chunks]
-        
-        # Process results as they complete, with a progress bar
+
         for future in tqdm(futures, total=len(text_chunks), desc="Summarizing Chunks"):
             try:
                 section_title, summary = future.result()
@@ -91,9 +76,7 @@ def process_document(pdf_path: str) -> list:
             except Exception as e:
                 print(f"A task generated an exception: {e}")
 
-    # The executor automatically shuts down here.
     return all_summaries
-
 
 
 if __name__ == "__main__":
