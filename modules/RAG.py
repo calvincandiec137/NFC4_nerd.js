@@ -28,7 +28,7 @@ def fetch_embedding(text: str):
         "prompt": text
     }
     try:
-        response = requests.post("http://localhost:11434/api/embeddings", 
+        response = requests.post("https://a4d642916d4d.ngrok-free.app/api/generate", 
                                json=payload,
                                timeout=60)
         response.raise_for_status()

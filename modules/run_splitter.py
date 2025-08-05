@@ -17,6 +17,8 @@ import math
 from collections import defaultdict
 import multidocs
 
+output_path = "./database/sample_json.json"
+
 class EnhancedIntelligentDocumentProcessor:
     def __init__(self, model_name: str = "llama3"):
         """
@@ -702,7 +704,7 @@ def main():
     # --- START of new condition block ---
     
     # Define the directory to check and the target extensions
-    target_dir = "./database/"  # Checks the current directory where the script is run
+    target_dir = "./database"  # Checks the current directory where the script is run
     target_extensions = ('.pdf', '.docx', '.txt')
     
     # Find all files with the target extensions
@@ -720,7 +722,7 @@ def main():
     # --- END of new condition block ---
 
     # Configuration is now set based on the single file found
-    FILE_PATH = processable_files[0] 
+    FILE_PATH = f"./database/{processable_files[0]}"
     MODEL_NAME = "llama3"
     TARGET_SECTIONS = 25
     GENERATE_PDF_SUMMARY = True  # Optional feature
@@ -734,7 +736,7 @@ def main():
     # Test Ollama with llama3
     try:
         test_response = requests.post(
-            "http://localhost:11434/api/generate",
+            "https://a4d642916d4d.ngrok-free.app/api/generate",
             json={"model": MODEL_NAME, "prompt": "Test", "stream": False},
             timeout=10
         )

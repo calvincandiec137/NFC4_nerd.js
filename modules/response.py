@@ -30,7 +30,7 @@ def get_embedding(text):
         "prompt": text
     }
     try:
-        response = requests.post("http://localhost:11434/api/embeddings", json=payload)
+        response = requests.post("https://a4d642916d4d.ngrok-free.app/api/generate", json=payload)
         response.raise_for_status()
         embedding = response.json()["embedding"]
         return np.array(embedding, dtype=np.float32)
@@ -85,7 +85,7 @@ Only answer based on the context. If it is not answerable, say you don't know fo
 """
     try:
         response = requests.post(
-            "http://localhost:11434/api/generate",
+            "https://a4d642916d4d.ngrok-free.app/api/generate",
             json={
                 "model": GEN_MODEL,
                 "prompt": prompt,
