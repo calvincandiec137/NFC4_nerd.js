@@ -6,7 +6,7 @@ import requests
 from tqdm import tqdm  # type: ignore
 
 # Configs
-DOCS_JSON_PATH = "./database/sample_document_enhanced_analysis_20250806_001238.json"
+DOCS_JSON_PATH = "./database/summaries.json"
 OUTPUT_DIR = "./embeddings"
 EMBED_FILE = os.path.join(OUTPUT_DIR, "vectors.npy")
 INDEX_FILE = os.path.join(OUTPUT_DIR, "index.faiss")
