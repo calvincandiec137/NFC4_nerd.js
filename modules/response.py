@@ -3,6 +3,11 @@ import faiss  # type: ignore
 import json
 import os
 import requests
+from collections import deque
+
+count=0
+past_story=" "
+context_window = deque(maxlen=5)
 
 # File paths
 VEC_PATH = "./embeddings/vectors.npy"
@@ -52,9 +57,23 @@ def retrieve_top_chunks(query, top_k=3):
 
     return results
 
+def context_add(message: str):
+    """Add a message to the context window"""
+    context_window.append(message)
+
+def context_extract() -> str:
+    """Extract all messages as a single string context"""
+    return "\n".join(context_window)
+
+
 # Generate streamed answer from LLaMA 3 using Ollama
 def generate_answer(query, context):
+    response_buffer=[]
+    context_history=context_extract()
     prompt = f"""You are an chatbot for the given data only and nothing else in the world. Use the given context to answer the user query in 2 lines max.
+
+current_convo_history:
+{context_history}    
 
 Context:
 {context}
@@ -78,34 +97,39 @@ Only answer based on the context. If it is not answerable, say you don't know fo
         for chunk in response.iter_lines():
             if chunk:
                 content = json.loads(chunk.decode("utf-8"))["response"]
+                response_buffer.append(content)
                 print(content, end="", flush=True)
         print("\n")
+        full_response = "".join(response_buffer)
+        context_add(f"Assistant: {full_response}")
     except Exception as e:
         print(f"\n[❌] Error generating response: {e}")
 
+def main(query):
+    try:
+        if not query.strip():
+            print("⚠️ Please enter a valid question.")
+            return
+
+        top_chunks = retrieve_top_chunks(query, top_k=3)
+
+        if not top_chunks:
+            print("[⚠️] No relevant chunks found.\n")
+            return
+
+        context = "\n\n---\n\n".join([chunk["text"] for chunk in top_chunks])
+
+        print(f"\n📄 Top {len(top_chunks)} Sections Retrieved:")
+        for i, chunk in enumerate(top_chunks, start=1):
+            print(f"[{i}] Section: {chunk['doc_id']} | Similarity: {chunk['similarity']:.2f}%")
+
+        generate_answer(query, context)
+
+    except KeyboardInterrupt:
+        print("\n👋 Exiting assistant.")
+
 # CLI Interaction Loop
 if __name__ == "__main__":
-    print("\n🤖 AI Document Assistant (powered by Ollama)\n")
-    while True:
-        try:
-            query = input("🔎 Ask something:\n> ").strip()
-            if not query:
-                print("⚠️ Please enter a valid question.")
-                continue
-
-            top_chunks = retrieve_top_chunks(query, top_k=3)
-            if not top_chunks:
-                print("[⚠️] No relevant chunks found.\n")
-                continue
-
-            context = "\n\n---\n\n".join([chunk["text"] for chunk in top_chunks])
-
-            print(f"\n📄 Top {len(top_chunks)} Sections Retrieved:")
-            for i, chunk in enumerate(top_chunks, start=1):
-                print(f"[{i}] Section: {chunk['doc_id']} | Similarity: {chunk['similarity']:.2f}%")
-
-            generate_answer(query, context)
-
-        except KeyboardInterrupt:
-            print("\n👋 Exiting assistant.")
-            break
+    while(True):
+        query=input("Enter your query: ")
+        main(query)
