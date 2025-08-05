@@ -720,7 +720,7 @@ def main():
     # --- END of new condition block ---
 
     # Configuration is now set based on the single file found
-    FILE_PATH = processable_files[0] 
+    FILE_PATH = f"./database/{processable_files[0]}"
     MODEL_NAME = "llama3"
     TARGET_SECTIONS = 25
     GENERATE_PDF_SUMMARY = True  # Optional feature
