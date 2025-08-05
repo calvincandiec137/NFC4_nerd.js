@@ -54,7 +54,7 @@ def retrieve_top_chunks(query, top_k=3):
 
 # Generate streamed answer from LLaMA 3 using Ollama
 def generate_answer(query, context):
-    prompt = f"""You are an intelligent assistant. Use the given context to answer the user query in 2 lines max.
+    prompt = f"""You are an chatbot for the given data only and nothing else in the world. Use the given context to answer the user query in 2 lines max.
 
 Context:
 {context}
@@ -62,7 +62,7 @@ Context:
 Query:
 {query}
 
-Only answer based on the context. If it is not answerable, say you don't know.
+Only answer based on the context. If it is not answerable, say you don't know for all non context questions asked dont give any notes act like two humans are chatting the given data.
 """
     try:
         response = requests.post(
