@@ -1,8 +1,8 @@
 # File: enhanced_intelligent_document_processor.py
 import json
 import re
-import fitz # For PDF
-from docx import Document # For DOCX
+import fitz #type:ignore
+from docx import Document #type:ignore
 import requests
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,6 +15,7 @@ from reportlab.lib.units import inch
 import time
 import math
 from collections import defaultdict
+import multidocs
 
 class EnhancedIntelligentDocumentProcessor:
     def __init__(self, model_name: str = "llama3"):
@@ -701,8 +702,8 @@ def main():
     # --- START of new condition block ---
     
     # Define the directory to check and the target extensions
-    target_dir = "."  # Checks the current directory where the script is run
-    target_extensions = ('.pdf', '.docx')
+    target_dir = "./database/"  # Checks the current directory where the script is run
+    target_extensions = ('.pdf', '.docx', '.txt')
     
     # Find all files with the target extensions
     processable_files = []
@@ -712,13 +713,8 @@ def main():
             
     # Check if the number of processable files is exactly one
     if len(processable_files) != 1:
-        print("="*60)
-        print("‼️ SCRIPT HALTED ‼️")
-        print(f"Error: Expected exactly 1 processable file (.pdf or .docx), but found {len(processable_files)}.")
-        if processable_files:
-            print("Found files:", ", ".join(processable_files))
-        print("Please ensure the folder contains only one PDF or DOCX file to proceed.")
-        print("="*60)
+        #idhar a
+        multidocs.multi(f"./database/{processable_files[0]}", f"./database/{processable_files[1]}")
         return # Exit the function
 
     # --- END of new condition block ---
