@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI File Processor - Beige Theme</title>
+    <title>AI File Processor - Enhanced</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Add Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
@@ -84,6 +86,17 @@
             gap: 10px;
         }
 
+        .sidebar-brand .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8b7355, #a0845c);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
         .sidebar-brand h2 {
             font-size: 1.3rem;
             font-weight: 700;
@@ -99,9 +112,12 @@
             font-size: 1.2rem;
             cursor: pointer;
             color: #8b7355;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 8px;
+            border-radius: 8px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .sidebar-toggle:hover {
@@ -124,11 +140,30 @@
             transition: all 0.3s ease;
             color: #8b7355;
             font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(135deg, #8b7355, #a0845c);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover::before {
+            transform: scaleY(1);
         }
 
         .menu-item:hover {
             background: rgba(139, 115, 85, 0.15);
             transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.2);
         }
 
         .menu-item.active {
@@ -137,10 +172,16 @@
             font-weight: 600;
         }
 
+        .menu-item.active::before {
+            transform: scaleY(1);
+        }
+
         .menu-icon {
-            font-size: 1.1rem;
             width: 20px;
-            text-align: center;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .sidebar-footer {
@@ -153,6 +194,9 @@
             color: #a0845c;
             text-align: center;
             line-height: 1.4;
+            padding: 12px;
+            background: rgba(139, 115, 85, 0.05);
+            border-radius: 8px;
         }
 
         /* Main Content */
@@ -205,22 +249,38 @@
         .header-content {
             position: relative;
             z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
-        .header h1 {
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #8b7355, #a0845c);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .header-text h1 {
             font-size: 2.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #8b7355 0%, #a0845c 50%, #b8956d 100%);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            /* -webkit-text-fill-color: transparent; */
             background-clip: text;
             margin-bottom: 10px;
             text-shadow: 0 0 30px rgba(139, 115, 85, 0.3);
         }
 
-        .header p {
+        .header-text p {
             font-size: 1.1rem;
-            color: #8b7355;
+            color: #4B352A;
             font-weight: 400;
         }
 
@@ -232,15 +292,20 @@
             z-index: 101;
             background: rgba(139, 115, 85, 0.2);
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
-            color: #5d4e37;
-            font-size: 1.2rem;
+            color: #4B352A;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
-        /* Chat Section - Now appears above upload */
+        .mobile-toggle:hover {
+            background: rgba(139, 115, 85, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Chat Section */
         .chat-section {
             background: rgba(139, 115, 85, 0.1);
             border-radius: 20px;
@@ -280,9 +345,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
             margin-right: 15px;
             position: relative;
+            color: white;
         }
 
         .chat-avatar::before {
@@ -361,8 +426,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
             flex-shrink: 0;
+            color: white;
         }
 
         .message.user .message-avatar {
@@ -441,7 +506,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
             transition: all 0.3s ease;
             flex-shrink: 0;
         }
@@ -457,7 +521,7 @@
             transform: none;
         }
 
-        /* Audio input buttons */
+        /* Audio controls */
         .audio-controls {
             display: flex;
             gap: 5px;
@@ -475,7 +539,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
             transition: all 0.3s ease;
         }
 
@@ -518,6 +581,49 @@
             color: #8b7355;
             font-style: italic;
             padding: 40px 20px;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: rgba(139, 115, 85, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            box-shadow: 0 10px 30px rgba(139, 115, 85, 0.2);
+            display: none;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .download-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .download-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8b7355, #a0845c);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .download-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #5d4e37;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .upload-section {
@@ -572,13 +678,16 @@
         }
 
         .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 15px;
             background: linear-gradient(135deg, #8b7355, #a0845c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 20px rgba(139, 115, 85, 0.3));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
         }
 
         .upload-text {
@@ -613,6 +722,9 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn::before {
@@ -650,6 +762,15 @@
         .btn-secondary:hover {
             background: rgba(139, 115, 85, 0.3);
             box-shadow: 0 10px 20px rgba(139, 115, 85, 0.2);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #6b8e23, #8fbc8f);
+            color: white;
+        }
+
+        .btn-download:hover {
+            box-shadow: 0 10px 20px rgba(107, 142, 35, 0.4);
         }
 
         .action-buttons {
@@ -805,6 +926,15 @@
             border: 1px solid rgba(212, 132, 10, 0.3);
         }
 
+        /* Content sections for sidebar navigation */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .mobile-toggle {
                 display: block;
@@ -831,11 +961,16 @@
                 margin-top: 60px;
             }
 
-            .header h1 {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-text h1 {
                 font-size: 2rem;
             }
 
-            .upload-section, .chat-section {
+            .upload-section, .chat-section, .download-section {
                 margin: 15px 0;
                 padding: 20px;
             }
@@ -855,7 +990,7 @@
                 justify-content: flex-end;
             }
 
-            .action-buttons {
+            .action-buttons, .download-buttons {
                 flex-direction: column;
                 align-items: center;
             }
@@ -878,51 +1013,69 @@
 <body>
     <!-- Animated Background -->
     <div class="bg-animation" id="bgAnimation"></div>
-
+    
     <div class="app-container">
         <!-- Mobile Toggle -->
-        <button class="mobile-toggle" id="mobileToggle">☰</button>
+        <button class="mobile-toggle" id="mobileToggle">
+            <i data-lucide="menu"></i>
+        </button>
 
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-brand">
-                    <span>🤖</span>
+                    <div class="brand-icon">
+                        <i data-lucide="bot"></i>
+                    </div>
                     <h2>AI Assistant</h2>
                 </div>
-                <button class="sidebar-toggle" id="sidebarToggle">⚡</button>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i data-lucide="zap"></i>
+                </button>
             </div>
-
+            
             <div class="sidebar-menu">
-                <div class="menu-item active">
-                    <span class="menu-icon">📁</span>
+                <div class="menu-item active" data-section="file-manager">
+                    <div class="menu-icon">
+                        <i data-lucide="folder"></i>
+                    </div>
                     <span>File Manager</span>
                 </div>
-                <div class="menu-item">
-                    <span class="menu-icon">💬</span>
+                <div class="menu-item" data-section="chat-history">
+                    <div class="menu-icon">
+                        <i data-lucide="message-circle"></i>
+                    </div>
                     <span>Chat History</span>
                 </div>
-                <div class="menu-item">
-                    <span class="menu-icon">📊</span>
+                <div class="menu-item" data-section="analytics">
+                    <div class="menu-icon">
+                        <i data-lucide="bar-chart-3"></i>
+                    </div>
                     <span>Analytics</span>
                 </div>
-                <div class="menu-item">
-                    <span class="menu-icon">⚙️</span>
+                <div class="menu-item" data-section="settings">
+                    <div class="menu-icon">
+                        <i data-lucide="settings"></i>
+                    </div>
                     <span>Settings</span>
                 </div>
-                <div class="menu-item">
-                    <span class="menu-icon">📖</span>
+                <div class="menu-item" data-section="documentation">
+                    <div class="menu-icon">
+                        <i data-lucide="book-open"></i>
+                    </div>
                     <span>Documentation</span>
                 </div>
-                <div class="menu-item">
-                    <span class="menu-icon">🎨</span>
+                <div class="menu-item" data-section="themes">
+                    <div class="menu-icon">
+                        <i data-lucide="palette"></i>
+                    </div>
                     <span>Themes</span>
                 </div>
             </div>
-
+            
             <div class="sidebar-footer">
                 <div class="footer-info">
-                    <p>AI File Assistant v2.0</p>
+                    <p><strong>AI File Assistant v2.0</strong></p>
                     <p>Process • Analyze • Chat</p>
                 </div>
             </div>
@@ -934,82 +1087,180 @@
                 <!-- Header -->
                 <div class="header">
                     <div class="header-content">
-                        <h1>🤖 AI File Assistant</h1>
-                        <p>Upload files and chat with AI about your content</p>
+                        <div class="header-icon">
+                            <i data-lucide="bot"></i>
+                        </div>
+                        <div class="header-text">
+                            <h1>AI File Assistant</h1>
+                            <p>Upload files and chat with AI about your content</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Chat Section (Now appears first after processing) -->
-                <div class="chat-section" id="chatSection">
-                    <div class="chat-header">
-                        <div class="chat-avatar">🤖</div>
-                        <div class="chat-info">
-                            <h3>AI Assistant</h3>
-                            <p>Ready to help with your files</p>
-                        </div>
-                    </div>
-
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="welcome-message">
-                            Start a conversation about your uploaded files...
-                        </div>
-                    </div>
-
-                    <div class="chat-input-container">
-                        <div class="audio-controls">
-                            <button class="audio-btn" id="micBtn" title="Start/Stop Recording">
-                                🎤
-                            </button>
-                            <button class="audio-btn" id="speakerBtn" title="Toggle Speaker">
-                                🔊
-                            </button>
-                            <div class="volume-control">
-                                <span>🔊</span>
-                                <input type="range" min="0" max="1" step="0.1" value="0.7" class="volume-slider" id="volumeSlider">
+                <!-- File Manager Section -->
+                <div class="content-section active" id="file-manager">
+                    <!-- Chat Section -->
+                    <div class="chat-section" id="chatSection">
+                        <div class="chat-header">
+                            <div class="chat-avatar">
+                                <i data-lucide="bot"></i>
+                            </div>
+                            <div class="chat-info">
+                                <h3>AI Assistant</h3>
+                                <p>Ready to help with your files</p>
                             </div>
                         </div>
-                        <div class="chat-input-wrapper">
-                            <textarea 
-                                class="chat-input" 
-                                id="chatInput" 
-                                placeholder="Ask me anything about your files..."
-                                rows="1"
-                            ></textarea>
-                            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                                ➤
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="welcome-message">
+                                Start a conversation about your uploaded files...
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <div class="audio-controls">
+                                <button class="audio-btn" id="micBtn" title="Start/Stop Recording">
+                                    <i data-lucide="mic"></i>
+                                </button>
+                                <button class="audio-btn" id="speakerBtn" title="Toggle Speaker">
+                                    <i data-lucide="volume-2"></i>
+                                </button>
+                                <div class="volume-control">
+                                    <i data-lucide="volume-2"></i>
+                                    <input type="range" min="0" max="1" step="0.1" value="0.7" class="volume-slider" id="volumeSlider">
+                                </div>
+                            </div>
+                            <div class="chat-input-wrapper">
+                                <textarea 
+                                    class="chat-input"
+                                    id="chatInput"
+                                    placeholder="Ask me anything about your files..."
+                                    rows="1"
+                                ></textarea>
+                                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                                    <i data-lucide="send"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Section -->
+                    <div class="download-section" id="downloadSection">
+                        <div class="download-header">
+                            <div class="download-icon">
+                                <i data-lucide="download"></i>
+                            </div>
+                            <div class="download-title">Download Options</div>
+                        </div>
+                        <div class="download-buttons">
+                            <button class="btn btn-download" onclick="downloadChat()">
+                                <i data-lucide="message-square"></i>
+                                Download Chat
                             </button>
+                            <button class="btn btn-download" onclick="downloadFiles()">
+                                <i data-lucide="file-archive"></i>
+                                Download Files
+                            </button>
+                            <button class="btn btn-download" onclick="downloadReport()">
+                                <i data-lucide="file-text"></i>
+                                Download Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Section -->
+                    <div class="upload-section">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">
+                                <i data-lucide="folder-plus"></i>
+                            </div>
+                            <div class="upload-text">Drop your files here</div>
+                            <div class="upload-subtext">Support for all file formats • Max 10MB per file</div>
+                            <input type="file" id="fileInput" class="file-input" multiple accept="*/*">
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn" onclick="document.getElementById('fileInput').click()">
+                                <i data-lucide="upload"></i>
+                                Upload Files
+                            </button>
+                            <button class="btn btn-secondary" id="processBtn" onclick="processFiles()" disabled>
+                                <i data-lucide="zap"></i>
+                                Process Files
+                            </button>
+                            <button class="btn btn-secondary" id="clearAllBtn" onclick="clearAll()">
+                                <i data-lucide="trash-2"></i>
+                                Clear All
+                            </button>
+                        </div>
+                        <div class="file-list" id="fileList"></div>
+                        <div class="progress-bar" id="progressBar" style="display: none;">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div id="statusMessage"></div>
+                    </div>
+                </div>
+
+                <!-- Chat History Section -->
+                <div class="content-section" id="chat-history">
+                    <div class="upload-section">
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="upload-icon">
+                                <i data-lucide="message-circle"></i>
+                            </div>
+                            <h2 style="color: #5d4e37; margin: 20px 0;">Chat History</h2>
+                            <p style="color: #8b7355;">Your conversation history will appear here</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Upload Section -->
-                <div class="upload-section">
-                    <div class="upload-area" id="uploadArea">
-                        <div class="upload-icon">📁</div>
-                        <div class="upload-text">Drop your files here</div>
-                        <div class="upload-subtext">Support for all file formats • Max 10MB per file</div>
-                        <input type="file" id="fileInput" class="file-input" multiple accept="*/*">
+                <!-- Analytics Section -->
+                <div class="content-section" id="analytics">
+                    <div class="upload-section">
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="upload-icon">
+                                <i data-lucide="bar-chart-3"></i>
+                            </div>
+                            <h2 style="color: #5d4e37; margin: 20px 0;">Analytics Dashboard</h2>
+                            <p style="color: #8b7355;">File processing analytics and insights</p>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="action-buttons">
-                        <button class="btn" onclick="document.getElementById('fileInput').click()">
-                            📤 Upload Files
-                        </button>
-                        <button class="btn btn-secondary" id="processBtn" onclick="processFiles()" disabled>
-                            ⚡ Process Files
-                        </button>
-                        <button class="btn btn-secondary" id="clearAllBtn" onclick="clearAll()">
-                            🗑️ Clear All
-                        </button>
+                <!-- Settings Section -->
+                <div class="content-section" id="settings">
+                    <div class="upload-section">
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="upload-icon">
+                                <i data-lucide="settings"></i>
+                            </div>
+                            <h2 style="color: #5d4e37; margin: 20px 0;">Settings</h2>
+                            <p style="color: #8b7355;">Configure your AI assistant preferences</p>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="file-list" id="fileList"></div>
-
-                    <div class="progress-bar" id="progressBar" style="display: none;">
-                        <div class="progress-fill" id="progressFill"></div>
+                <!-- Documentation Section -->
+                <div class="content-section" id="documentation">
+                    <div class="upload-section">
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="upload-icon">
+                                <i data-lucide="book-open"></i>
+                            </div>
+                            <h2 style="color: #5d4e37; margin: 20px 0;">Documentation</h2>
+                            <p style="color: #8b7355;">Learn how to use the AI File Assistant</p>
+                        </div>
                     </div>
+                </div>
 
-                    <div id="statusMessage"></div>
+                <!-- Themes Section -->
+                <div class="content-section" id="themes">
+                    <div class="upload-section">
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="upload-icon">
+                                <i data-lucide="palette"></i>
+                            </div>
+                            <h2 style="color: #5d4e37; margin: 20px 0;">Themes</h2>
+                            <p style="color: #8b7355;">Customize the appearance of your assistant</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1037,6 +1288,7 @@
         const progressFill = document.getElementById('progressFill');
         const statusMessage = document.getElementById('statusMessage');
         const chatSection = document.getElementById('chatSection');
+        const downloadSection = document.getElementById('downloadSection');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -1047,6 +1299,9 @@
         const micBtn = document.getElementById('micBtn');
         const speakerBtn = document.getElementById('speakerBtn');
         const volumeSlider = document.getElementById('volumeSlider');
+
+        // Initialize Lucide icons
+        lucide.createIcons();
 
         // Initialize animated background
         function createParticles() {
@@ -1062,6 +1317,36 @@
                 particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
                 bgAnimation.appendChild(particle);
             }
+        }
+
+        // Sidebar navigation functionality
+        function initSidebarNavigation() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remove active class from all menu items
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    // Add active class to clicked item
+                    item.classList.add('active');
+
+                    // Hide all content sections
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    
+                    // Show selected content section
+                    const sectionId = item.getAttribute('data-section');
+                    const targetSection = document.getElementById(sectionId);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('open');
+                    }
+                });
+            });
         }
 
         // Initialize audio context
@@ -1115,12 +1400,11 @@
 
                 recognition.onend = () => {
                     if (isRecording) {
-                        recognition.start(); // Restart if we're still supposed to be recording
+                        recognition.start();
                     } else {
                         micBtn.classList.remove('active');
                     }
                 };
-
             } catch (e) {
                 console.error('Speech recognition initialization failed:', e);
                 micBtn.style.display = 'none';
@@ -1274,11 +1558,13 @@
                 </div>
                 <div class="file-actions">
                     <button class="btn btn-small btn-danger" onclick="removeFile(${index})">
-                        🗑️ Remove
+                        <i data-lucide="trash-2"></i> Remove
                     </button>
                 </div>
             `;
             
+            // Re-initialize icons for the new content
+            lucide.createIcons();
             return div;
         }
 
@@ -1304,6 +1590,7 @@
             
             if (uploadedFiles.length === 0) {
                 chatSection.style.display = 'none';
+                downloadSection.style.display = 'none';
             }
         }
 
@@ -1319,6 +1606,7 @@
             updateButtons();
             hideStatus();
             chatSection.style.display = 'none';
+            downloadSection.style.display = 'none';
             chatMessages.innerHTML = '<div class="welcome-message">Start a conversation about your uploaded files...</div>';
             fileInput.value = '';
         }
@@ -1344,9 +1632,10 @@
                 updateProgress(100);
                 showStatus(`Successfully processed ${uploadedFiles.length} files!`, 'success');
                 
-                // Show chat section ABOVE upload section after processing
+                // Show chat and download sections after processing
                 setTimeout(() => {
                     chatSection.style.display = 'flex';
+                    downloadSection.style.display = 'block';
                     hideProgress();
                     
                     // Add welcome message from AI
@@ -1399,17 +1688,35 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
             
-            const avatar = sender === 'user' ? '👤' : '🤖';
+            const avatar = sender === 'user' ? 'user' : 'bot';
             
             messageDiv.innerHTML = `
-                <div class="message-avatar">${avatar}</div>
+                <div class="message-avatar">
+                    <i data-lucide="${avatar}"></i>
+                </div>
                 <div class="message-content">${content}</div>
             `;
             
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
+            // Re-initialize icons for the new content
+            lucide.createIcons();
+            
             chatHistory.push({ sender, content });
+        }
+
+        // Download functions (placeholder - no actual functionality as requested)
+        function downloadChat() {
+            console.log('Download chat functionality would be implemented here');
+        }
+
+        function downloadFiles() {
+            console.log('Download files functionality would be implemented here');
+        }
+
+        function downloadReport() {
+            console.log('Download report functionality would be implemented here');
         }
 
         function showProgress() {
@@ -1449,11 +1756,12 @@
             }
         });
 
-        // Initialize
+        // Initialize everything
         createParticles();
         updateButtons();
         initAudioContext();
         initSpeechRecognition();
+        initSidebarNavigation();
     </script>
 </body>
 </html>
