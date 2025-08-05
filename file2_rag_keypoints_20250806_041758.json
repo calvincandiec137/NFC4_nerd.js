@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "source_pdf": "./database/file2.txt",
+    "model_used": "llama3",
+    "processing_date": "2025-08-06T04:17:58.406433",
+    "total_sections": 1,
+    "processing_version": "Keypoint Extraction v1.0",
+    "data_type": "keypoints_and_takeaways"
+  },
+  "document_analysis": {
+    "total_chars": 44,
+    "total_words": 8,
+    "paragraphs": 1,
+    "avg_paragraph_length": 44.0,
+    "complexity_score": 0.0,
+    "academic_score": 0,
+    "technical_score": 0,
+    "json_target_compression": 0.6,
+    "pdf_target_compression": 0.15,
+    "estimated_json_length": 26,
+    "estimated_pdf_summary_length": 6,
+    "sections_created": 1,
+    "extraction_strategy": "Keypoint and numerical value extraction"
+  },
+  "processing_statistics": {
+    "original_length": 44,
+    "keypoints_length": 422,
+    "keypoint_extraction_ratio": 9.590909090909092,
+    "total_time": 2.440159797668457,
+    "successful_chunks": 1,
+    "total_chunks": 1,
+    "pdf_summary_generated": true,
+    "pdf_summary_length": 6,
+    "sections_successfully_processed": 1,
+    "total_keypoints_length": 422,
+    "average_keypoint_section_length": 422
+  },
+  "contextual_keypoints": [
+    {
+      "section_number": 1,
+      "title": "Line 1",
+      "location": "Line 1",
+      "theme": "General Content",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* Nitesh sells his car at ten thousand rupees\n\n**NUMERICAL VALUES**\n\n* Ten thousand rupees (price of the car)\n\n**KEY TAKEAWAYS**\n\n* None (no critical insights or conclusions drawn from this single statement)\n\n**TECHNICAL DETAILS**\n\n* None (no specific technical information provided)\n\n**IMPORTANT FACTS**\n\n* Nitesh sells his car\n* The price of the car is ten thousand rupees",
+      "original_chunk_id": 1,
+      "keypoints_length": 422
+    }
+  ],
+  "rag_ready": {
+    "total_sections": 1,
+    "sections_by_theme": {
+      "General Content": 1
+    },
+    "data_structure": "Each section contains keypoints, numerical values, and takeaways for RAG processing"
+  }
+}
