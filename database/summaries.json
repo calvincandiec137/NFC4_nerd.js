@@ -1,143 +1,221 @@
 {
   "metadata": {
-    "source_pdf": "./database/sample_document.pdf",
+    "source_pdf": "sample_document.pdf",
     "model_used": "llama3",
-    "processing_date": "2025-08-06T00:19:44.731100",
-    "total_sections": 10,
-    "processing_version": "Enhanced v2.0"
+    "processing_date": "2025-08-06T01:00:21.663780",
+    "total_sections": 19,
+    "processing_version": "Keypoint Extraction v1.0",
+    "data_type": "keypoints_and_takeaways"
   },
   "document_analysis": {
-    "total_chars": 39511,
-    "total_words": 6095,
-    "paragraphs": 15,
-    "avg_paragraph_length": 2632.2,
-    "complexity_score": 0.9,
-    "academic_score": 6,
-    "technical_score": 3,
-    "target_compression": 0.35,
-    "estimated_summary_length": 13828,
-    "optimal_sections_created": 10,
-    "section_creation_strategy": "Context-aware with page tracking"
+    "total_chars": 28429,
+    "total_words": 4149,
+    "paragraphs": 6,
+    "avg_paragraph_length": 4736.5,
+    "complexity_score": 1.1,
+    "academic_score": 7,
+    "technical_score": 4,
+    "json_target_compression": 0.6,
+    "pdf_target_compression": 0.2,
+    "estimated_json_length": 17057,
+    "estimated_pdf_summary_length": 5685,
+    "sections_created": 19,
+    "extraction_strategy": "Keypoint and numerical value extraction"
   },
   "processing_statistics": {
-    "original_length": 39511,
-    "summary_length": 19526,
-    "compression_ratio": 0.4941914909771962,
-    "target_compression": 0.35,
-    "total_time": 92.26730465888977,
-    "successful_chunks": 10,
-    "total_chunks": 10,
-    "sections_successfully_processed": 10,
-    "average_section_compression": 0.43927007668750484
+    "original_length": 28429,
+    "keypoints_length": 20091,
+    "keypoint_extraction_ratio": 0.7067079390762954,
+    "total_time": 107.14911985397339,
+    "successful_chunks": 19,
+    "total_chunks": 19,
+    "pdf_summary_generated": true,
+    "pdf_summary_length": 1621,
+    "sections_successfully_processed": 19,
+    "total_keypoints_length": 20091,
+    "average_keypoint_section_length": 1057
   },
-  "executive_summary": {
-    "content": "Here is a comprehensive executive summary:\n\n**DOCUMENT OVERVIEW**\n\nThis paper introduces the Transformer model, a novel architecture that replaces traditional recurrent or convolutional neural networks with attention mechanisms. The purpose of this work is to demonstrate the effectiveness of the Transformer in machine translation tasks and explore its advantages over other models.\n\n**KEY CONTRIBUTIONS**\n\nThe main findings of this study are:\n\n* The Transformer achieves superior results on two machine translation tasks: WMT 2014 English-to-German (28.4 BLEU) and WMT 2014 English-to-French (41.8 BLEU).\n* The model requires significantly less training time, with the English-to-French task taking only 3.5 days to train on eight GPUs.\n* The Transformer generalizes well to other tasks, such as English constituency parsing, both with large and limited training data.\n\n**METHODOLOGY/APPROACH**\n\nThe methodology used in this study includes:\n\n* Training the Transformer model using the Adam optimizer with varying learning rates and three types of regularization: Residual Dropout, Label Smoothing, and positional encoding dropout.\n* Evaluating the performance of the Transformer on two machine translation tasks: WMT 2014 English-to-German and WMT 2014 English-to-French.\n\n**SIGNIFICANT RESULTS**\n\nThe significant results of this study are:\n\n* The big Transformer model outperformed previous state-of-the-art models on the English-to-German translation task, achieving a BLEU score of 28.4.\n* The base model surpassed all previously published models at a fraction of the training cost.\n* Label smoothing improved accuracy and BLEU score, while Residual Dropout reduced overfitting.\n\n**IMPLICATIONS**\n\nThe implications of this study are:\n\n* The Transformer model offers a simpler and more efficient architecture for sequence transduction tasks.\n* The attention mechanisms used in the Transformer allow it to attend over all positions in the input sequence, making it suitable for long-range dependency learning.\n* Future research directions include exploring the use of the Transformer in other NLP tasks, such as language modeling and parsing.\n\nTotal characters: 3160.",
-    "length": 2170,
-    "compression_ratio": 0.05492141428969148
-  },
-  "contextual_summaries": [
+  "contextual_keypoints": [
     {
       "section_number": 1,
-      "title": "Section 1: Technical Details",
+      "title": "Page 1, Line 1",
       "location": "Page 1, Line 1",
-      "theme": "Technical Details",
-      "summary": "Here is a comprehensive summary of the technical details section:\n\nThe paper introduces the Transformer model, a novel architecture that replaces complex recurrent or convolutional neural networks with attention mechanisms. The authors claim that their model achieves superior results in machine translation tasks while being more parallelizable and requiring less training time.\n\nKey insights from figures and tables include:\n\n* The Transformer model outperforms existing best results on two machine translation tasks: WMT 2014 English-to-German (28.4 BLEU) and WMT 2014 English-to-French (41.8 BLEU).\n* The model requires significantly less training time, with the English-to-French task taking only 3.5 days to train on eight GPUs.\n* The Transformer generalizes well to other tasks, such as English constituency parsing, both with large and limited training data.\n\nVisual evidence includes:\n\n* A graph showing the BLEU scores of different models on the WMT 2014 English-to-German translation task, with the Transformer model achieving the highest score.\n* A table comparing the performance of different models on the WMT 2014 English-to-French translation task, with the Transformer model establishing a new state-of-the-art BLEU score.\n\nOverall, the paper presents a significant advancement in sequence transduction models, offering a simpler and more efficient architecture that achieves superior results.",
+      "theme": "Abstract/Summary",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* People who want to buy a new home tend to save more on their budgets and market strategies.\n* The current system includes real estate calculations without the necessary forecasts for future market trends and inflation.\n* Asset pricing is an important factor in decision-making for both buyers and investors in supporting budget allocation, acquisition strategies, and deciding on the best plans.\n\n**NUMERICAL VALUES**\n\n* None mentioned\n\n**KEY TAKEAWAYS**\n\n* Machine learning ideas can be used to maximize and accurately anticipate prices.\n* Regression models with a range of characteristics can be utilized to reduce residual errors.\n* A set of multi-regression elements or a polynomial regression (with a set of varying strengths in the elements) is frequently utilized to improve model fit.\n\n**TECHNICAL DETAILS**\n\n* Engineering aspects are required when employing features in the regression model for improved prediction.\n* The spine used to reduce errors can significantly affect the model's performance.\n\n**IMPORTANT FACTS**\n\n* The housing market is one of the most competitive in terms of pricing and has varied greatly in terms of many factors.",
       "original_chunk_id": 1,
-      "summary_length": 1410
+      "keypoints_length": 1201
     },
     {
       "section_number": 2,
-      "title": "Section 2: Technical Details",
-      "location": "Page 2, Line 9",
-      "theme": "Technical Details",
-      "summary": "Here is a comprehensive summary of the technical details section:\n\nThe Transformer model architecture eschews recurrence and relies entirely on attention mechanisms to draw global dependencies between input and output sequences. This allows for significantly more parallelization and can reach a new state-of-the-art in translation quality after training for as little as 12 hours on 8 GPUs.\n\n**Key Insights:**\n\n* The sequential nature of computation precludes parallelization within training examples, which becomes critical at longer sequence lengths.\n* Attention mechanisms have become integral to compelling sequence modeling and transduction models.\n* The Transformer model architecture uses stacked self-attention and point-wise, fully connected layers for both the encoder and decoder.\n\n**Visual Evidence:**\n\n* Figure 1 illustrates the Transformer model architecture, showing the overall structure of the encoder and decoder.\n\n**Data Trends:**\n\n* The number of operations required to relate signals from two arbitrary input or output positions grows linearly for ConvS2S and logarithmically for ByteNet.\n* The Transformer reduces this growth to a constant number of operations, albeit at the cost of reduced effective resolution due to averaging attention-weighted positions.\n\n**Comparisons:**\n\n* The Transformer is compared to other models such as Extended Neural GPU, ByteNet, and ConvS2S, which use convolutional neural networks as basic building blocks.\n* The Transformer's advantages over these models include increased parallelization and improved performance in translation quality.\n\n**Technical Terms:**\n\n* Self-attention (intra-attention)\n* Multi-head attention\n* Residual connection\n* Layer normalization\n\n**Contextual Summary:** This section provides an overview of the Transformer model architecture, its key features, and its advantages over other models. The Transformer uses stacked self-attention and point-wise, fully connected layers for both the encoder and decoder, allowing for increased parallelization and improved performance in translation quality.",
+      "title": "Page 1, Line 23",
+      "location": "Page 1, Line 23",
+      "theme": "Results/Analysis",
+      "keypoints": "Here is the extracted data in a structured format:\n\n**KEY POINTS**\n\n* The study of land price patterns is crucial for urban planning decisions.\n* Real estate market is stochastic and intrinsically unpredictable.\n* Investors make choices based on market conditions to maximize profits.\n* Developers want to know about future patterns to inform decision-making.\n* A large number of details are required for predictions, modeling, and evaluating.\n* House prices have a non-linear pattern.\n\n**NUMERICAL VALUES**\n\n* None mentioned in this section\n\n**KEY TAKEAWAYS**\n\n* Random forest and gradient boosted trees work better with higher accuracy percentages and lower error values compared to other machine learning techniques.\n* These algorithms perform well when compared to expected outcomes.\n\n**TECHNICAL DETAILS**\n\n* Regression models are used for predicting free hold prices for free hold consumers based on their budgets and goals.\n* Machine learning techniques, such as random forest and gradient boosted trees, are used for modeling and evaluating.\n\n**IMPORTANT FACTS**\n\n* The real estate market has seen a large increase in investment over the years.\n* There is a non-uniform trend in terms of land prices.",
       "original_chunk_id": 2,
-      "summary_length": 2080
+      "keypoints_length": 1208
     },
     {
       "section_number": 3,
-      "title": "Section 3: Methodology",
-      "location": "Page 3, Line 13",
+      "title": "Page 1, Line 59",
+      "location": "Page 1, Line 59",
       "theme": "Methodology",
-      "summary": "Here is a comprehensive summary of the methodology section:\n\nThe methodology section describes the architecture of a neural network model that employs residual connections and layer normalization. The model consists of an encoder and a decoder, both composed of identical layers with three sub-layers each. The encoder produces outputs of dimension 512, while the decoder inserts a third sub-layer performing multi-head attention over the output of the encoder stack.\n\n**Attention Mechanism**\n\nThe attention mechanism is a key component of the model, allowing it to focus on relevant information. There are two types of attention: Scaled Dot-Product Attention and Multi-Head Attention (Figure 2).\n\n* **Scaled Dot-Product Attention**: This type of attention computes the dot products of queries with keys, divides each by √dk, and applies a softmax function to obtain weights on values.\n* **Multi-Head Attention**: Instead of performing a single attention function, this mechanism linearly projects queries, keys, and values h times with different learned projections. Each projected version is then processed in parallel, yielding dv-dimensional output values.\n\n**Key Insights**\n\nThe use of Scaled Dot-Product Attention helps to prevent the dot products from growing too large, which can occur when dealing with large values of dk. Multi-Head Attention allows the model to jointly attend to information from different representation subspaces at different positions, enabling it to capture more nuanced relationships between inputs.\n\n**Data Trends and Comparisons**\n\nThe use of Scaled Dot-Product Attention is faster and more space-efficient than Additive Attention for small values of dk, but outperformed by Additive Attention for larger values. The scaling factor in Scaled Dot-Product Attention helps to mitigate the effect of large dot products on the softmax function.\n\n**Visual Evidence**\n\nFigure 2 illustrates the architecture of the attention mechanism, showing both Scaled Dot-Product Attention and Multi-Head Attention.",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* Everyone in the sector recognized the necessity to foresee land price patterns.\n* A large number of longitudinal reports on land prices have been published over the last two decades.\n* As the country expands and the construction industry struggles to keep up with demand, prices will continue to increase as interest rates rise.\n\n**NUMERICAL VALUES**\n\n* None mentioned in this section\n\n**KEY TAKEAWAYS**\n\n* None mentioned in this section\n\n**TECHNICAL DETAILS**\n\n* Machine learning used for free hold price prediction\n* Longitudinal reports on land prices published over the last two decades\n\n**IMPORTANT FACTS**\n\n* The emphasis of this work is on improving the free hold price prediction model.\n* This Real Estate Value Prediction can be used to quickly identify trends and patterns.\n\nLet me know if you'd like me to extract anything else!",
       "original_chunk_id": 3,
-      "summary_length": 2030
+      "keypoints_length": 889
     },
     {
       "section_number": 4,
-      "title": "Section 4: Figures/Tables",
-      "location": "Page 5, Line 21",
-      "theme": "Figures/Tables",
-      "summary": "Here is a comprehensive summary of the figures/tables section:\n\nThe Transformer model uses multi-head attention in three ways: encoder-decoder attention, self-attention in the encoder, and self-attention in the decoder. The latter two allow each position to attend to all previous positions, mimicking typical sequence-to-sequence models (Figure 2). Additionally, each layer contains a fully connected feed-forward network (FFN) with ReLU activation.\n\nThe model uses learned embeddings to convert input tokens and output tokens to vectors of dimension dmodel=512. The same weight matrix is shared between the two embedding layers and the pre-softmax linear transformation.\n\nTable 1 compares the complexity, sequential operations, and maximum path lengths for different layer types: self-attention, recurrent, convolutional, and restricted self-attention. This table provides a visual representation of the computational requirements for each layer type.\n\nThe model also employs positional encoding to inject information about token order in the sequence. This is achieved by adding sine and cosine functions of different frequencies to the input embeddings at the bottoms of the encoder and decoder stacks.\n\nKey insights from this section include:\n\n* The Transformer's attention mechanisms allow it to attend over all positions in the input sequence.\n* The use of self-attention layers enables each position to attend to all previous positions.\n* The feed-forward network (FFN) with ReLU activation is applied separately to each position.\n* The model uses learned embeddings and shares weights between embedding layers and pre-softmax linear transformations.\n* Table 1 provides a visual representation of the computational requirements for different layer types.\n\nOverall, this section highlights the key components and mechanisms that enable the Transformer's ability to process sequential data.",
+      "title": "Page 2, Line 15",
+      "location": "Page 2, Line 15",
+      "theme": "Technical Details",
+      "keypoints": "Here is the extracted data in a structured format:\n\n**KEY POINTS**\n\n* Each framework can be shifted towards innovation due to ease of claiming activities.\n* E-taking will become part of the training structure.\n* Individuals are increasingly moving away from manual to automated processes.\n* The main purpose of this study is to estimate the cost of housing according to clients' plans.\n* Those show tactics could be a lengthy process that requires clients to contact the land operator.\n* Land operators provide an acceptable suggestion for estimating lodging prices.\n* The strategy's high risk may result in inaccurate customer information being provided by land operators.\n\n**NUMERICAL VALUES**\n\n* None mentioned\n\n**KEY TAKEAWAYS**\n\n* None mentioned\n\n**TECHNICAL DETAILS**\n\n* None mentioned\n\n**IMPORTANT FACTS**\n\n* Information used in this article has come from the Mumbai lodging board since 2009.\n* Land operators use simple relapse calculations to calculate expenses.\n\nNote: There are no numerical values, key takeaways, or technical details mentioned in this section. The extracted data consists mainly of key points and important facts.",
       "original_chunk_id": 4,
-      "summary_length": 1896
+      "keypoints_length": 1142
     },
     {
       "section_number": 5,
-      "title": "Section 5: Results/Analysis",
-      "location": "Page 6, Line 40",
-      "theme": "Results/Analysis",
-      "summary": "Here is a comprehensive summary of the results/analysis section:\n\nThe paper compares self-attention layers with recurrent and convolutional layers for sequence transduction tasks. The key findings are presented in Table 1, which shows that self-attention layers have a constant number of sequentially executed operations, whereas recurrent layers require O(n) sequential operations. This makes self-attention layers faster than recurrent layers when the sequence length is smaller than the representation dimensionality.\n\nThe paper also explores the maximum path length between any two input and output positions in networks composed of different layer types. The results show that self-attention layers have a shorter maximum path length compared to recurrent and convolutional layers, which makes it easier to learn long-range dependencies.\n\nIn terms of computational complexity, self-attention layers are faster than recurrent layers when the sequence length is smaller than the representation dimensionality. However, for very long sequences, restricting self-attention to considering only a neighborhood of size r in the input sequence could improve computational performance.\n\nThe paper also discusses the benefits of using self-attention layers, including improved interpretability and the ability to learn long-range dependencies. The attention distributions from the models are presented in the appendix and show that individual attention heads can learn to perform different tasks and exhibit behavior related to the syntactic and semantic structure of sentences.\n\nIn terms of training, the paper describes the regime for its models, including the use of the WMT 2014 English-German dataset and the WMT 2014 English-French dataset. The models were trained on one machine with 8 NVIDIA P100 GPUs, with each training step taking about 0.4 seconds for the base models and 1.0 seconds for the big models.\n\nOverall, the paper presents a comprehensive analysis of self-attention layers and their advantages over recurrent and convolutional layers for sequence transduction tasks. The results show that self-attention layers can improve computational performance, interpretability, and long-range dependency learning, making them a promising approach for future research in natural language processing.",
+      "title": "Page 2, Line 37",
+      "location": "Page 2, Line 37",
+      "theme": "Methodology",
+      "keypoints": "Here are the extracted keypoints:\n\n**KEY POINTS**\n\n* The methodology involves extracting data from figures, tables, graphs, and charts.\n* The research gathers information on Taipei lodging prices using a machine learning technique called a neural network.\n* The Root Mean Square Error can be used to determine the accuracy of predictions.\n\n**NUMERICAL VALUES**\n\n* None mentioned\n\n**KEY TAKEAWAYS**\n\n* None mentioned\n\n**TECHNICAL DETAILS**\n\n* Python is an elevated level, deciphered, and object-oriented programming language.\n* Jupyter Notebook is an open-source web application that allows users to create, share, and edit archives and records.\n\n**IMPORTANT FACTS**\n\n* China is one of the most populous countries on the planet.\n* The standard library in Python can be used for various purposes, including AI, GUI Applications, Picture Processing, Web Scraping, Web Frameworks, Text Processing, and Mixed media.",
       "original_chunk_id": 5,
-      "summary_length": 2305
+      "keypoints_length": 910
     },
     {
       "section_number": 6,
-      "title": "Section 6: Results/Analysis",
-      "location": "Page 7, Line 38",
-      "theme": "Results/Analysis",
-      "summary": "Here is a comprehensive summary of the results/analysis section:\n\n**Optimizer**: The Adam optimizer was used with varying learning rates, increasing linearly for the first 4000 training steps and decreasing thereafter proportionally to the inverse square root of the step number.\n\n**Regularization**: Three types of regularization were employed: Residual Dropout (rate Pdrop = 0.1), Label Smoothing (value ϵls = 0.1), and positional encoding dropout.\n\n**Machine Translation Results**: The big Transformer model outperformed previous state-of-the-art models on the English-to-German translation task, achieving a BLEU score of 28.4. The base model also surpassed all previously published models at a fraction of the training cost. On the English-to-French translation task, the big model achieved a BLEU score of 41.0.\n\n**Model Variations**: To evaluate the importance of different components of the Transformer, the base model was varied in different ways, measuring the change in performance on English-to-German translation. The results are summarized in Table 3.\n\n**Key Insights**:\n\n* The big Transformer model established a new state-of-the-art BLEU score of 28.4 on the English-to-German translation task.\n* The base model surpassed all previously published models at a fraction of the training cost.\n* Label smoothing improved accuracy and BLEU score, while Residual Dropout reduced overfitting.\n* Varying the learning rate and using different regularization techniques improved performance.\n\n**Visual Evidence**: Table 2 compares the Transformer's BLEU scores and training costs to other model architectures from the literature. Table 3 summarizes the results of varying the base model in different ways.",
+      "title": "Page 2, Line 72",
+      "location": "Page 2, Line 72",
+      "theme": "Technical Details",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* The web application is an intuitive program based instrument that permits maths, text and all the computational work done at an awesome rate.\n* Jupyter notebook report includes a collection of records and envelopes in the web application, including its I/P (input) and O/P (output) gadgets.\n* Google Chrome is the most appropriate internet browser to use with jupyter.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* The framework functions as a worker.\n* The record put away in the jupyter notebook is with the .ipynb expansion.\n\n**TECHNICAL DETAILS**\n\n* Jupyter is used in any limited internet browser yet Google Chrome is most appropriate.\n* The web application gets the URL in location bar with http://localhost: It essentially suggests that our framework is functioning as a worker.\n* Libraries are Python frameworks that handle often needed tasks.\n\n**IMPORTANT FACTS**\n\n* The record put away in the jupyter notebook is with the .ipynb expansion.",
       "original_chunk_id": 6,
-      "summary_length": 1711
+      "keypoints_length": 1005
     },
     {
       "section_number": 7,
-      "title": "Section 7: Introduction",
-      "location": "Page 9, Line 122",
-      "theme": "Introduction",
-      "summary": "Here is a comprehensive summary of the introduction section:\n\nThe Transformer model, introduced in this work, replaces traditional recurrent layers with multi-headed self-attention mechanisms. The authors present results from various experiments to demonstrate the effectiveness of the Transformer.\n\n**Table 3**: Varying attention heads and dimensions shows that single-head attention performs poorly compared to the best setting, while too many heads also lead to decreased quality. Reducing attention key size hurts model quality, suggesting a more sophisticated compatibility function may be beneficial. Larger models and dropout are shown to improve performance.\n\nThe authors then apply the Transformer to **English Constituency Parsing**, a task that presents specific challenges due to structural constraints and longer output sequences. They train a 4-layer Transformer on the Wall Street Journal (WSJ) portion of the Penn Treebank, achieving state-of-the-art results in both supervised and semi-supervised settings.\n\n**Table 4**: The Transformer outperforms previous models on English constituency parsing tasks, including discriminative and generative models. In the semi-supervised setting, the Transformer achieves comparable results to state-of-the-art models.\n\nThe authors conclude that the Transformer is a powerful tool for sequence transduction tasks, achieving new state-of-the-art results in translation tasks. They plan to apply attention-based models to other tasks and extend the Transformer to handle input and output modalities beyond text.\n\n**Key Insights**:\n\n* The Transformer can be trained significantly faster than architectures based on recurrent or convolutional layers.\n* Larger models and dropout improve performance.\n* Reducing attention key size hurts model quality, suggesting a more sophisticated compatibility function may be beneficial.\n* The Transformer outperforms previous models in English constituency parsing tasks.\n\n**Data Trends**: The results show that the Transformer achieves state-of-the-art performance in translation tasks and comparable results to state-of-the-art models in constituency parsing tasks.",
+      "title": "Page 2, Line 87",
+      "location": "Page 2, Line 87",
+      "theme": "Results/Analysis",
+      "keypoints": "Here is the extracted data:\n\n**KEY POINTS**\n\n* The proposed model's architecture includes stages: data selection, data preprocessing, feature scaling, model creation, and model evaluation.\n* Machine learning is used to develop programs when provided some kind of data, understands it and then learns on its own.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* None\n\n**TECHNICAL DETAILS**\n\n* The proposed model uses the following libraries: Pandas for structured data, Scikit Learn for machine learning, NumPy for linear algebra and mathematics, and Seaborn for data visualization.\n* The architecture of the price prediction model includes stages: data selection, data preprocessing, feature scaling, model creation, and model evaluation (Figure 1- Architecture of price prediction).\n\n**IMPORTANT FACTS**\n\n* None",
       "original_chunk_id": 7,
-      "summary_length": 2155
+      "keypoints_length": 815
     },
     {
       "section_number": 8,
-      "title": "Section 8: Technical Details",
-      "location": "Page 10, Line 67",
-      "theme": "Technical Details",
-      "summary": "Here is a comprehensive summary of the technical details section:\n\nThis section references 28 papers that explore various aspects of neural machine translation (NMT), recurrent neural networks (RNNs), and deep learning. The papers cover topics such as layer normalization, attention mechanisms, long short-term memory (LSTM) networks, and convolutional sequence-to-sequence learning.\n\nThe papers are grouped into categories, including:\n\n1. NMT architectures: Papers [2], [5], and [20] discuss different approaches to NMT, including jointly learning to align and translate, using RNN encoder-decoders, and exploring massive neural machine translation architectures.\n2. Attention mechanisms: Papers [6], [14], and [28] explore attention-based models for NMT, including structured attention networks and decomposable attention models.\n3. RNNs and LSTMs: Papers [7], [10], [13], and [22] discuss the use of RNNs and LSTMs in sequence modeling, including empirical evaluations of gated recurrent neural networks.\n4. Convolutional networks: Paper [11] discusses the application of convolutional networks to image recognition, while paper [16] explores the use of convolutional sequence-to-sequence learning for NMT.\n\nOther papers referenced include:\n\n* Papers on self-training PCFG grammars with latent annotations across languages (paper [14])\n* A structured self-attentive sentence embedding (paper [22])\n* Multi-task sequence-to-sequence learning (paper [23])\n* Effective approaches to attention-based neural machine translation (paper [24])\n\nOverall, this section provides a comprehensive overview of the technical details and methods used in NMT research.",
+      "title": "Page 3, Line 15",
+      "location": "Page 3, Line 15",
+      "theme": "Methodology",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* Machine learning focuses on areas where programs can be changed when exposed to new data.\n* The basic process starts with observing the data and searching for new trends in it.\n* Text is treated as a series of keywords by using semantic analysis approach.\n* The main goal is for computers to learn on their own, without human intervention, and modify their behavior.\n* Traditional machine learning algorithms are used instead of mimicking human ability to comprehend context.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* None\n\n**TECHNICAL DETAILS**\n\n* Semantic analysis approach is used to mimic human ability to comprehend text context.\n* Machine learning is commonly used in projects that include forecasting an outcome or identifying patterns.\n* A small amount of data is used to aid machines in learning patterns.\n\n**IMPORTANT FACTS**\n\n* Supervised learning, unsupervised learning, and Reinforcement learning are the three major categories of machine learning.",
       "original_chunk_id": 8,
-      "summary_length": 1654
+      "keypoints_length": 1021
     },
     {
       "section_number": 9,
-      "title": "Section 9: Technical Details",
-      "location": "Page 12, Line 9",
+      "title": "Page 3, Line 36",
+      "location": "Page 3, Line 36",
       "theme": "Technical Details",
-      "summary": "Here is a comprehensive summary of the technical details section:\n\nThe provided references [29-40] are related to natural language processing (NLP) and neural networks. The attention visualizations in Figures 3-5 demonstrate the ability of attention mechanisms to follow long-distance dependencies and resolve anaphora.\n\nFigure 3 shows that many attention heads attend to a distant dependency of the verb \"making\" in the encoder self-attention, completing the phrase \"making...more difficult\". This highlights the ability of attention mechanisms to capture complex relationships between words.\n\nFigure 4 illustrates two attention heads involved in anaphora resolution. The top panel displays full attentions for head 5, while the bottom panel shows isolated attentions from just the word \"its\" for attention heads 5 and 6. The sharp attentions for this word suggest that the model is able to accurately identify pronouns and their antecedents.\n\nFigure 5 demonstrates that many attention heads exhibit behavior related to the structure of the input sentence, highlighting the ability of attention mechanisms to capture complex relationships between words and phrases.\n\nOverall, these figures demonstrate the power of attention mechanisms in NLP tasks such as language modeling, machine translation, and parsing.",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* Supervised learning involves teaching a computer using well-labeled data.\n* Unsupervised machine learning algorithms are used when training data hasn't been categorized or labelled.\n* Reinforcement machine learning algorithms interact with their surroundings by generating actions and detecting errors or rewards.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* None\n\n**TECHNICAL DETAILS**\n\n* The learning algorithm creates a function that uses a well-known training dataset to make predictions about target values.\n* Unsupervised learning is the process of teaching a computer to act on data that hasn't been categorized or labeled and allowing the algorithm to act on it without human intervention.\n\n**IMPORTANT FACTS**\n\n* Supervised learning algorithms basically labelled dataset to adapt what they've learned in the past and then make predictions on new data.\n* Unsupervised learning is the process of teaching a computer to sort unsorted data into categories based on similarities, patterns, and differences.\n* Reinforcement machine learning algorithms are limited in their ability to discover secret structure in unlabeled data on their own.\n\n**KEYWORDS**\n\n* Supervised learning\n* Unsupervised machine learning\n* Reinforcement machine learning\n* Machine learning applications",
       "original_chunk_id": 9,
-      "summary_length": 1310
+      "keypoints_length": 1335
     },
     {
       "section_number": 10,
-      "title": "Section 10: General Content",
-      "location": "Page 15, Line 110",
-      "theme": "General Content",
-      "summary": "Here is a comprehensive summary of the content:\n\nThe self-attention mechanism in the encoder's layer 5 (of 6) demonstrates its ability to learn distinct tasks. Two examples from different heads illustrate this point. At layer 5, these heads have learned to perform unique functions, showcasing the versatility and adaptability of the self-attention mechanism. This is evident in the way the heads process input sequences, highlighting their capacity for task-specific learning.\n\nKey points:\n\n* Self-attention mechanism in layer 5 (of 6) demonstrates task-specific learning\n* Two examples from different heads illustrate this point\n* Heads learned to perform unique functions at layer 5\n\nTechnical terms and details preserved:\n\n* Encoder's self-attention mechanism\n* Layer 5 (of 6)\n* Task-specific learning",
+      "title": "Page 3, Line 75",
+      "location": "Page 3, Line 75",
+      "theme": "Results/Analysis",
+      "keypoints": "Here is the extracted data:\n\n**KEY POINTS**\n\n* The first step in creating a machine learning model is to collect data.\n* A significant amount of preprocessing is needed before any of the data can be used for evaluation.\n* Our dataset is fairly large, with 7109 rows and 19 features.\n\n**NUMERICAL VALUES**\n\n* 7109: Number of rows in the dataset\n* 19: Number of features in the dataset\n\n**KEY TAKEAWAYS**\n\n* The quality of the data collection phase has a cascading influence on the model's performance.\n* Preprocessing is necessary to extract all features needed to predict house prices.\n\n**TECHNICAL DETAILS**\n\n* \"NaN\" or \"Null\" indicators are used to describe missing values.\n* Options for dealing with missing values include removing samples or features with missing values.\n\n**IMPORTANT FACTS**\n\n* The dataset requires significant preprocessing before it can be used for evaluation.",
       "original_chunk_id": 10,
-      "summary_length": 805
+      "keypoints_length": 884
+    },
+    {
+      "section_number": 11,
+      "title": "Page 3, Line 101",
+      "location": "Page 3, Line 101",
+      "theme": "Methodology",
+      "keypoints": "Here are the extracted keypoints:\n\n**KEY POINTS**\n\n* Use pre-built estimators, such as Scikit-Imputer's class, to fill in missing variables.\n* Fit the data and alter it to figure out where the missing numbers are.\n* The mean value of the remaining samples is often used to fill in the missing values.\n\n**NUMERICAL VALUES**\n\n* None mentioned\n\n**KEY TAKEAWAYS**\n\n* None mentioned\n\n**TECHNICAL DETAILS**\n\n* Scikit-Imputer's class is a pre-built estimator for filling in missing variables.\n* Univariate analysis analyzes data with only one variable, while multivariate approach analyzes data with many variables.\n\n**IMPORTANT FACTS**\n\n* The purpose of descriptive analysis is to summarize and look for patterns, not to find relationships between causes or effects.\n\nLet me know if you'd like me to extract anything else!",
+      "original_chunk_id": 11,
+      "keypoints_length": 816
+    },
+    {
+      "section_number": 12,
+      "title": "Page 4, Line 28",
+      "location": "Page 4, Line 28",
+      "theme": "Methodology",
+      "keypoints": "Here is the extracted data:\n\n**KEY POINTS**\n\n* In a bivariate analysis, two features are taken together and analyzed to determine if there is a relationship between them.\n* Feature scaling is crucial during the preprocessing phase because most machine learning algorithms work better with characteristics on the same scale.\n\n**NUMERICAL VALUES**\n\n* [1,0] (interval for normative scaling)\n* Xmin (minimum value of feature column)\n* Xmax (maximum value of feature column)\n* mean (mean value of feature column)\n* std (standard deviation of feature column)\n\n**KEY TAKEAWAYS**\n\n* None\n\n**TECHNICAL DETAILS**\n\n* Normative scaling involves rescaling features to an interval of [1,0], which is a special case of min-max scaling.\n* Min-max method: Xchanged = (X - Xmin) / (Xmax - Xmin)\n* Standardization: Z = (X - mean) / std\n\n**IMPORTANT FACTS**\n\n* Most machine learning algorithms work better with characteristics on the same scale.\n* Feature scaling helps to make algorithms less sensitive to outliers while retaining useful information.",
+      "original_chunk_id": 12,
+      "keypoints_length": 1031
+    },
+    {
+      "section_number": 13,
+      "title": "Page 4, Line 60",
+      "location": "Page 4, Line 60",
+      "theme": "Results/Analysis",
+      "keypoints": "Here is the extracted data in a structured format:\n\n**KEY POINTS**\n\n* The actual machine-learning algorithms will be implemented during the model building step.\n* Linear regression machine learning algorithms are used to predict house prices according to the Chennai house price prediction model.\n* Independent variables are inputs to the process under study, and dependent variables depend on each other.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* None\n\n**TECHNICAL DETAILS**\n\n* The independent variables are considered in our model, with the target/dependent variable being \"SALES_PRICE\".\n* The relationship between independent and dependent variables is represented by the equation: y = f(x)\n\n**IMPORTANT FACTS**\n\n* All other features are considered independent variables in our model.\n* There can be either positive or negative change.\n\n**FIGURE 5: GRAPH ANALYSIS**\n\n* (Visual representation of graph analysis, not extractable data)",
+      "original_chunk_id": 13,
+      "keypoints_length": 945
+    },
+    {
+      "section_number": 14,
+      "title": "Page 5, Line 11",
+      "location": "Page 5, Line 11",
+      "theme": "Results/Analysis",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* Our data analysis will split the dataset into training sets, testing sets, and validating sets.\n* The model is trained with training data, evaluated with validation data, then tested one last time on test data.\n* The goal is to generalize unseen data well and predict accurate results based on parameters adjusted during training and validation.\n\n**NUMERICAL VALUES**\n\n* 70:30 ratio (training data:test data)\n* 70% of the dataset is training data\n* 30% of the dataset is testing data\n\n**TECHNICAL DETAILS**\n\n* Linear regression analysis involves identifying a relationship between predictor variables and a continuous response variable.\n* A straight line can be fitted for X and Y given.\n\nLet me know if you'd like me to extract anything else!",
+      "original_chunk_id": 14,
+      "keypoints_length": 793
+    },
+    {
+      "section_number": 15,
+      "title": "Page 5, Line 30",
+      "location": "Page 5, Line 30",
+      "theme": "Methodology",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* We will use the intercept and slope found to forecast the outcomes of new data using the fitted line.\n* Straight lines are defined by the formula: y = B0 + B1*x + u\n* The weights (B0 and B1) are the \"weights\" of the predicting function.\n* Repeating the process one step at a time iterates the process, making it more accurate and closer to the ideal line.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* None\n\n**TECHNICAL DETAILS**\n\n* The formula for straight lines: y = B0 + B1*x + u\n* The weights (B0 and B1) are used in the predicting function.\n* Random Forest is a type of random forest technique that can be used to predict both classification and regression.\n* Gradient Boosting works by repeating the process of learning to calculate the error residual using a basic regression predictor for the data.\n\n**IMPORTANT FACTS**\n\n* The Root Mean Square Error (RMSE) is a popular formula for calculating a regression model's error rate.\n* RMSE can only be used to compare models whose mistakes are quantified in the same units.",
+      "original_chunk_id": 15,
+      "keypoints_length": 1081
+    },
+    {
+      "section_number": 16,
+      "title": "Page 5, Line 62",
+      "location": "Page 5, Line 62",
+      "theme": "Results/Analysis",
+      "keypoints": "Here is the extracted data in a structured format:\n\n**KEY POINTS**\n\n* A score function [score()] and R2-squared metrics were used to assess the model.\n* The actual and anticipated values are distributed linearly in the Random Forest Predicted vs Actual scatter plot (Figure 6).\n* The predicted price accuracy of the Random Forest model is roughly 90.1% with a Root Mean Square Error of 0.0120.\n\n**NUMERICAL VALUES**\n\n* 90.1%: predicted price accuracy of the Random Forest model\n* 0.0120: Root Mean Square Error of the Random Forest model\n* 54.9%: predicted percentage of the Multiple Regression model\n* 0.701: Root Mean Square Error of the Multiple Regression model\n\n**KEY TAKEAWAYS**\n\n* The Random Forest algorithm performs admirably in predicting price values.\n* The actual and predicted price values are not identical for the Multiple Regression model.\n\n**TECHNICAL DETAILS**\n\n* Score function [score()] was used to assess the model.\n* R2-squared metrics were used to evaluate the model.\n* Root Mean Square Error (RMSE) was calculated for both models.\n\n**IMPORTANT FACTS**\n\n* The primary goal of this study is to generate a price forecast, which has been accomplished effectively using machine learning techniques.",
+      "original_chunk_id": 16,
+      "keypoints_length": 1217
+    },
+    {
+      "section_number": 17,
+      "title": "Page 6, Line 18",
+      "location": "Page 6, Line 18",
+      "theme": "Methodology",
+      "keypoints": "Here is the extracted data in a structured format:\n\n**KEY POINTS**\n\n* Many factors such as surrounds, marketplaces, and other associated variables can be added to properties to improve price prediction.\n* The projected data may be saved in databases, and an app can be developed for users so that they can get a quick idea and invest their money safely.\n* In order to estimate prices, various strategies have been utilized, such as hedonic regression, and machine learning techniques are being integrated with past research to estimate future real estate prices.\n\n**NUMERICAL VALUES**\n\n* Algorithm 1: Random forest - RMSE Error: 0.012, Accuracy: 90.1%\n* Algorithm 2: Neural Network - RMSE Error: 0.590, Accuracy: 60%\n* Algorithm 3: Gradient Boosted - RMSE Error: 0.573, Accuracy: 65%\n* Algorithm 4: Bagging - RMSE Error: 0.563, Accuracy: 70%\n* Algorithm 5: Support Vector machine - RMSE Error: 0.636, Accuracy: 58%\n* Algorithm 6: Multiple Regression - RMSE Error: 0.70, Accuracy: 54.9%\n\n**KEY TAKEAWAYS**\n\n* Random forest and gradient boosted trees work better with higher accuracy percentages and lower error values compared to other machine learning algorithms.\n\n**TECHNICAL DETAILS**\n\n* Machine learning techniques are being integrated with past research to estimate future real estate prices.\n* Hedonic regression is one of the strategies used to estimate prices.\n\n**IMPORTANT FACTS**\n\n* The experiments revealed that random forest and gradient boosted trees work better than other machine learning algorithms.",
+      "original_chunk_id": 17,
+      "keypoints_length": 1514
+    },
+    {
+      "section_number": 18,
+      "title": "Page 6, Line 62",
+      "location": "Page 6, Line 62",
+      "theme": "Methodology",
+      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* The algorithms perform brilliantly when compared to the projected results of this experiment.\n* The scope of the project was achieved with good accuracy and high working stability.\n* Future work will involve connecting a larger dataset to the model for better training.\n\n**NUMERICAL VALUES**\n\n* None mentioned\n\n**KEY TAKEAWAYS**\n\n* None mentioned\n\n**TECHNICAL DETAILS**\n\n* Techniques used: [15] Uni-variate Feature Selection and Recursive feature elimination\n* Model used: Multilayer Perceptron, FIR, and Elman Neural Networks\n\n**IMPORTANT FACTS**\n\n* The project was implemented with good accuracy and high working stability.\n* Future work will involve trying out other dimensionality reduction techniques.\n\nLet me know if you'd like me to extract anything else!",
+      "original_chunk_id": 18,
+      "keypoints_length": 812
+    },
+    {
+      "section_number": 19,
+      "title": "Page 6, Line 90",
+      "location": "Page 6, Line 90",
+      "theme": "Technical Details",
+      "keypoints": "Here are the extracted keypoints, numerical values, percentages, statistics, data points, and quantitative results:\n\n**KEY POINTS**\n\n* Big Data Analytics in Mobile Cellular Network (C. Qiu, 2016)\n* Linear Regression Analysis: Theory and Computing (Xin Yan, 2009)\n* Proceedings of Data Analytics and Management (Springer Science and Business Media LLC, 2022)\n* The Nature of Statistical Learning Theory (V. N. Vapnik, 2000)\n* Software Testing Resource Allocation and Release Time Problem: A Review (Abhirami K et al., 2014)\n* Unsupervised Machine Learning: Clustering Analysis (Victor Roman, 2019-04-21)\n* A Survey of Multi-Access Edge Computing in 5G and Beyond: Fundamentals, Technology Integration and State-of-the-Art (Quoc-Viet Pham et al., 2016)\n* Reinforcement Learning: A Survey (Leslie P. Kaelbling et al., 1996)\n* Data Science from Scratch (Joel Grus, 2015)\n* Bagging gradient-boosted trees for high precision, low variance ranking models (Y. Ganjisaffar et al., 2011)\n* Prediction of real estate price variation based on economic parameters (L. Li and K.-H. Chu, 2017)\n\n**NUMERICAL VALUES**\n\n* None found in this section.\n\n**KEY TAKEAWAYS**\n\n* None found in this section.\n\n**TECHNICAL DETAILS**\n\n* None found in this section.\n\n**IMPORTANT FACTS**\n\n* None found in this section.\n\nNote: Since there are no numerical values, percentages, statistics, measurements, or quantitative results in this section, the extraction is limited to key points and important facts.",
+      "original_chunk_id": 19,
+      "keypoints_length": 1472
     }
   ],
-  "summary_statistics": {
-    "total_sections": 10,
-    "total_summary_length": 17356,
-    "average_section_length": 1735,
+  "rag_ready": {
+    "total_sections": 19,
     "sections_by_theme": {
-      "Methodology": 1,
-      "Results/Analysis": 2,
-      "General Content": 1,
+      "Results/Analysis": 6,
+      "Abstract/Summary": 1,
       "Technical Details": 4,
-      "Introduction": 1,
-      "Figures/Tables": 1
-    }
+      "Methodology": 8
+    },
+    "data_structure": "Each section contains keypoints, numerical values, and takeaways for RAG processing"
   }
 }
