@@ -787,8 +787,8 @@ def main():
         base_name = os.path.splitext(os.path.basename(PDF_PATH))[0]
         timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
         
-        pdf_path = f"./database/{base_name}_enhanced_summary_{timestamp}.pdf"
-        json_path = f"./database/{base_name}_enhanced_analysis_{timestamp}.json"
+        pdf_path = f"./database/summaries.pdf"
+        json_path = f"./database/summaries.json"
         
         # Save enhanced PDF with proper section ordering
         processor.save_enhanced_pdf(chunk_summaries, executive_summary, pdf_path, 
