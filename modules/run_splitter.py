@@ -18,12 +18,13 @@ from collections import defaultdict
 class EnhancedIntelligentDocumentProcessor:
     def __init__(self, model_name: str = "llama3"):
         """
-        Initialize processor with intelligent compression and page tracking
+        Initialize processor for keypoint extraction and optional PDF summarization
         """
         self.model_name = model_name
-        self.min_compression = 0.25  # 25% minimum
-        self.max_compression = 0.40  # 40% maximum
+        self.min_compression = 0.15  # More aggressive for PDF summary
+        self.max_compression = 0.25  # Tighter compression for PDF
         self.max_workers = 4
+        self.complete_pdf_summary = None  # Store optional PDF summary
         
     def analyze_document_structure(self, text: str) -> Dict:
         """Analyze document to determine optimal processing strategy"""
@@ -43,17 +44,16 @@ class EnhancedIntelligentDocumentProcessor:
         avg_para_length = sum(len(p) for p in paragraphs) / len(paragraphs) if paragraphs else 100
         complexity_score = (academic_score + technical_score) / 10
         
-        # Calculate optimal compression based on content
-        if complexity_score > 0.7:  # High complexity (academic/technical)
-            target_compression = 0.35  # 35% - preserve more detail
-        elif complexity_score > 0.4:  # Medium complexity
-            target_compression = 0.30  # 30% - balanced
-        else:  # Lower complexity
-            target_compression = 0.25  # 25% - more aggressive
+        # Calculate optimal compression for JSON keypoints (preserve more detail)
+        json_target_compression = 0.60  # Keep 60% of content for keypoints
         
-        # Adjust based on document length
-        if total_chars > 100000:  # Very long documents
-            target_compression = min(target_compression + 0.05, self.max_compression)
+        # Calculate aggressive compression for optional PDF summary
+        if complexity_score > 0.7:  # High complexity (academic/technical)
+            pdf_target_compression = 0.20  # 20% - very compressed
+        elif complexity_score > 0.4:  # Medium complexity
+            pdf_target_compression = 0.18  # 18% - aggressive
+        else:  # Lower complexity
+            pdf_target_compression = 0.15  # 15% - most aggressive
         
         analysis = {
             'total_chars': total_chars,
@@ -63,15 +63,17 @@ class EnhancedIntelligentDocumentProcessor:
             'complexity_score': complexity_score,
             'academic_score': academic_score,
             'technical_score': technical_score,
-            'target_compression': target_compression,
-            'estimated_summary_length': int(total_chars * target_compression)
+            'json_target_compression': json_target_compression,
+            'pdf_target_compression': pdf_target_compression,
+            'estimated_json_length': int(total_chars * json_target_compression),
+            'estimated_pdf_summary_length': int(total_chars * pdf_target_compression)
         }
         
         print(f"📊 Document Analysis:")
         print(f"   • Length: {total_chars:,} chars, {total_words:,} words")
         print(f"   • Complexity: {complexity_score:.2f} (Academic: {academic_score}, Technical: {technical_score})")
-        print(f"   • Target compression: {target_compression:.1%}")
-        print(f"   • Expected summary: ~{analysis['estimated_summary_length']:,} chars")
+        print(f"   • JSON keypoints target: {json_target_compression:.1%} (~{analysis['estimated_json_length']:,} chars)")
+        print(f"   • PDF summary target: {pdf_target_compression:.1%} (~{analysis['estimated_pdf_summary_length']:,} chars)")
         
         return analysis
 
@@ -102,21 +104,20 @@ class EnhancedIntelligentDocumentProcessor:
                     
                     if page_text.strip():
                         lines = page_text.split('\n')
-                        page_start_pos = current_char_pos
                         
                         for line_num, line in enumerate(lines, 1):
-                            line_start_pos = current_char_pos
-                            line_end_pos = current_char_pos + len(line)
+                            if line.strip():  # Only track non-empty lines
+                                line_start_pos = current_char_pos
+                                
+                                # Store mapping for this line
+                                page_map[line_start_pos] = {
+                                    'page': page_num + 1,
+                                    'line': line_num,
+                                    'page_line_key': f"Page {page_num + 1}, Line {line_num}",
+                                    'text_preview': line[:50] + "..." if len(line) > 50 else line
+                                }
                             
-                            # Store mapping for this line
-                            page_map[line_start_pos] = {
-                                'page': page_num + 1,
-                                'line': line_num,
-                                'page_line_key': f"Page {page_num + 1}, Line {line_num}",
-                                'text_preview': line[:50] + "..." if len(line) > 50 else line
-                            }
-                            
-                            current_char_pos = line_end_pos + 1  # +1 for newline
+                            current_char_pos += len(line) + 1  # +1 for newline
                         
                         full_text += page_text + "\n"
                         
@@ -155,12 +156,13 @@ class EnhancedIntelligentDocumentProcessor:
                         # Basic line tracking for alternative method
                         lines = text.split('\n')
                         for line_num, line in enumerate(lines, 1):
-                            page_map[current_char_pos] = {
-                                'page': page_num + 1,
-                                'line': line_num,
-                                'page_line_key': f"Page {page_num + 1}, Line {line_num}",
-                                'text_preview': line[:50] + "..." if len(line) > 50 else line
-                            }
+                            if line.strip():
+                                page_map[current_char_pos] = {
+                                    'page': page_num + 1,
+                                    'line': line_num,
+                                    'page_line_key': f"Page {page_num + 1}, Line {line_num}",
+                                    'text_preview': line[:50] + "..." if len(line) > 50 else line
+                                }
                             current_char_pos += len(line) + 1
                         
                         full_text += text + "\n"
@@ -190,27 +192,15 @@ class EnhancedIntelligentDocumentProcessor:
         first_key = min(page_map.keys())
         return page_map[first_key]['page_line_key']
 
-    def create_contextual_chunks_with_tracking(self, text: str, page_map: Dict, analysis: Dict) -> List[Dict]:
-        """Create context-aware chunks with proper page/line tracking"""
-        target_compression = analysis['target_compression']
+    def create_contextual_chunks_with_tracking(self, text: str, page_map: Dict, analysis: Dict, target_sections: int = 25) -> List[Dict]:
+        """Create context-aware chunks for keypoint extraction"""
         total_chars = len(text)
         
-        # Calculate optimal number of chunks based on content and target compression
-        target_summary_chars = int(total_chars * target_compression)
-        
-        # Determine appropriate number of chunks based on document length and complexity
-        if total_chars < 20000:  # Small documents
-            optimal_chunks = max(3, min(6, target_summary_chars // 1000))
-        elif total_chars < 50000:  # Medium documents
-            optimal_chunks = max(6, min(12, target_summary_chars // 1200))
-        elif total_chars < 100000:  # Large documents
-            optimal_chunks = max(8, min(16, target_summary_chars // 1500))
-        else:  # Very large documents
-            optimal_chunks = max(12, min(20, target_summary_chars // 1800))
-        
+        # Use target_sections parameter for precise control
+        optimal_chunks = target_sections
         base_chunk_size = total_chars // optimal_chunks
         
-        print(f"🧩 Creating {optimal_chunks} contextual chunks (~{base_chunk_size:,} chars each)")
+        print(f"🧩 Creating {optimal_chunks} contextual chunks for keypoint extraction (~{base_chunk_size:,} chars each)")
         
         # Smart splitting strategies with section awareness
         section_patterns = [
@@ -255,10 +245,9 @@ class EnhancedIntelligentDocumentProcessor:
             if (len(current_chunk) + len(para) > base_chunk_size * 1.3 and 
                 current_chunk and len(current_chunk) > base_chunk_size * 0.7):
                 
-                # Create chunk with tracking information
+                # Create chunk for keypoint extraction
                 chunk_start_pos = text.find(current_chunk.split('\n\n')[0]) if current_chunk else 0
                 chunk_theme = self._identify_chunk_theme(current_paras)
-                target_summary_length = max(800, int(len(current_chunk) * target_compression * 1.2))
                 
                 # Get page/line information for this chunk
                 chunk_location = self.find_page_line_for_position(chunk_start_pos, page_map)
@@ -269,7 +258,6 @@ class EnhancedIntelligentDocumentProcessor:
                     "length": len(current_chunk),
                     "paragraph_count": len(current_paras),
                     "theme": chunk_theme,
-                    "target_summary_length": target_summary_length,
                     "context_type": self._classify_content_type(current_chunk),
                     "page_line_location": chunk_location,
                     "start_position": chunk_start_pos
@@ -291,7 +279,6 @@ class EnhancedIntelligentDocumentProcessor:
         if current_chunk.strip():
             chunk_start_pos = text.find(current_chunk.split('\n\n')[0]) if current_chunk else 0
             chunk_theme = self._identify_chunk_theme(current_paras)
-            target_summary_length = max(800, int(len(current_chunk) * target_compression * 1.2))
             chunk_location = self.find_page_line_for_position(chunk_start_pos, page_map)
             
             chunks.append({
@@ -300,7 +287,6 @@ class EnhancedIntelligentDocumentProcessor:
                 "length": len(current_chunk),
                 "paragraph_count": len(current_paras),
                 "theme": chunk_theme,
-                "target_summary_length": target_summary_length,
                 "context_type": self._classify_content_type(current_chunk),
                 "page_line_location": chunk_location,
                 "start_position": chunk_start_pos
@@ -313,9 +299,9 @@ class EnhancedIntelligentDocumentProcessor:
         for i, chunk in enumerate(chunks, 1):
             chunk['id'] = i
         
-        print(f"📋 Created {len(chunks)} contextual chunks with location tracking")
+        print(f"📋 Created {len(chunks)} contextual chunks for keypoint extraction")
         for chunk in chunks:
-            print(f"   Chunk {chunk['id']}: {chunk['theme']} at {chunk['page_line_location']} ({chunk['length']:,} chars → ~{chunk['target_summary_length']} chars)")
+            print(f"   Chunk {chunk['id']}: {chunk['theme']} at {chunk['page_line_location']} ({chunk['length']:,} chars)")
         
         return chunks
 
@@ -347,7 +333,7 @@ class EnhancedIntelligentDocumentProcessor:
         return best_theme
 
     def _classify_content_type(self, text: str) -> str:
-        """Classify the type of content for appropriate summarization"""
+        """Classify the type of content for appropriate keypoint extraction"""
         text_lower = text.lower()
         
         if any(word in text_lower for word in ['figure', 'table', 'graph', 'chart']):
@@ -361,41 +347,43 @@ class EnhancedIntelligentDocumentProcessor:
         else:
             return 'narrative'
 
-    def summarize_chunk_contextually(self, chunk: Dict) -> Tuple[int, str, str, str]:
-        """Create context-aware summaries preserving important information"""
+    def extract_keypoints_from_chunk(self, chunk: Dict) -> Tuple[int, str, str, str]:
+        """Extract keypoints, numerical values, and takeaways from chunk - NOT summary"""
         theme = chunk['theme']
         content_type = chunk['context_type']
-        target_length = chunk['target_summary_length']
         location = chunk['page_line_location']
         
-        # Customize prompts based on content type and theme
+        # Customize prompts for keypoint extraction based on content type
         if content_type == 'analytical':
-            prompt_focus = "Focus on key findings, data points, results, and their significance. Preserve specific numbers, percentages, and quantitative results."
+            extraction_focus = "Extract key findings, all numerical values, percentages, statistics, data points, and quantitative results. Include specific numbers, measurements, and analytical conclusions."
         elif content_type == 'procedural':
-            prompt_focus = "Detail the methods, procedures, algorithms, and technical approaches. Maintain step-by-step processes and technical specifications."
+            extraction_focus = "Extract key steps, procedures, algorithms, technical specifications, and methodological details. Include specific technical parameters and process steps."
         elif content_type == 'conceptual':
-            prompt_focus = "Explain key concepts, definitions, theories, and their relationships. Preserve technical terminology and conceptual frameworks."
+            extraction_focus = "Extract key concepts, definitions, theories, important terms, and conceptual frameworks. Include specific terminology and theoretical foundations."
         elif content_type == 'visual_content':
-            prompt_focus = "Describe figures, tables, graphs and their key insights. Include data trends, comparisons, and visual evidence."
+            extraction_focus = "Extract data from figures, tables, graphs, and charts. Include specific values, trends, comparisons, and visual evidence."
         else:
-            prompt_focus = "Capture main ideas, arguments, and supporting evidence. Maintain logical flow and key supporting details."
+            extraction_focus = "Extract key points, important facts, main arguments, and significant details. Include specific information and critical takeaways."
         
-        prompt = f"""Create a comprehensive summary of this {theme.lower()} section. {prompt_focus}
+        prompt = f"""Extract KEYPOINTS and IMPORTANT DATA from this {theme.lower()} section. DO NOT SUMMARIZE - extract actual content.
 
-Target length: {target_length} characters (approximately {target_length//5} words)
+{extraction_focus}
+
 Location: {location}
 
-Content to summarize:
+Content to extract from:
 {chunk['text'][:12000]}
 
-Requirements:
-- Maintain approximately {target_length} characters
-- Preserve key information and context
-- Keep technical terms and important details
-- Use clear, structured language
-- Focus on substantive content over style
+EXTRACT (not summarize):
+- KEY POINTS: Important facts and statements
+- NUMERICAL VALUES: All numbers, percentages, statistics, measurements
+- KEY TAKEAWAYS: Critical insights and conclusions
+- TECHNICAL DETAILS: Specific technical information
+- IMPORTANT FACTS: Significant information points
 
-CONTEXTUAL SUMMARY:"""
+Format as structured keypoint extraction, preserving original wording where important.
+
+KEYPOINT EXTRACTION:"""
         
         try:
             start_time = time.time()
@@ -406,9 +394,9 @@ CONTEXTUAL SUMMARY:"""
                     "prompt": prompt,
                     "stream": False,
                     "options": {
-                        "temperature": 0.2,  # More deterministic for consistency
-                        "top_p": 0.9,
-                        "num_predict": target_length // 3,  # Allow sufficient space
+                        "temperature": 0.1,  # Low temperature for accurate extraction
+                        "top_p": 0.95,
+                        "num_predict": 1500,  # Generous space for keypoints
                     }
                 },
                 timeout=120
@@ -416,50 +404,35 @@ CONTEXTUAL SUMMARY:"""
             
             processing_time = time.time() - start_time
             response.raise_for_status()
-            summary = response.json().get('response', 'ERROR: No response').strip()
+            keypoints = response.json().get('response', 'ERROR: No response').strip()
             
-            # Ensure reasonable length (allow some flexibility)
-            if len(summary) > target_length * 1.3:
-                summary = summary[:int(target_length * 1.2)] + "..."
-            
-            print(f"Chunk {chunk['id']} ({theme}) at {location}: {len(summary):,} chars in {processing_time:.1f}s")
-            return chunk['id'], summary, theme, location
+            print(f"Chunk {chunk['id']} ({theme}) at {location}: {len(keypoints):,} chars extracted in {processing_time:.1f}s")
+            return chunk['id'], keypoints, theme, location
             
         except Exception as e:
-            return chunk['id'], f"ERROR processing {theme}: {str(e)[:200]}", theme, location
+            return chunk['id'], f"ERROR extracting keypoints from {theme}: {str(e)[:200]}", theme, location
 
-    def create_executive_summary(self, chunk_summaries: List[Dict], analysis: Dict) -> str:
-        """Create intelligent executive summary"""
-        # Group summaries by theme for better organization
-        theme_groups = defaultdict(list)
-        for summary in chunk_summaries:
-            if not summary['summary'].startswith('ERROR'):
-                theme = summary['theme']
-                theme_groups[theme].append(summary['summary'])
+    def generate_complete_pdf_summary(self, text: str, analysis: Dict) -> str:
+        """Generate complete PDF summary - stored in local variable only"""
+        target_length = analysis['estimated_pdf_summary_length']
         
-        # Create organized summary text
-        organized_content = []
-        for theme, summaries in theme_groups.items():
-            organized_content.append(f"{theme}:\n" + "\n".join(summaries))
-        
-        combined_summaries = "\n\n".join(organized_content)
-        target_exec_length = max(2000, int(analysis['total_chars'] * 0.08))  # 8% for executive summary
-        
-        prompt = f"""Create a comprehensive executive summary from these section summaries. Target length: {target_exec_length} characters.
+        prompt = f"""Create an EXTREMELY CONCISE and INTELLIGENT complete document summary. Target: {target_length} characters.
 
-Section Summaries by Theme:
-{combined_summaries[:15000]}
+REQUIREMENTS:
+- MAXIMUM {target_length} characters (strict limit)
+- Focus on KEY TAKEAWAYS only
+- Include CRITICAL numerical values and findings
+- Highlight MAIN CONCLUSIONS and IMPLICATIONS
+- Preserve ESSENTIAL technical details
+- Skip redundant information
+- Use precise, dense language
 
-Create an executive summary with:
-1. DOCUMENT OVERVIEW (purpose, scope, type)
-2. KEY CONTRIBUTIONS (main findings, innovations, arguments)
-3. METHODOLOGY/APPROACH (if applicable)
-4. SIGNIFICANT RESULTS (important data, conclusions)
-5. IMPLICATIONS (significance, applications, future directions)
+Document content (first part):
+{text[:20000]}
 
-Target: {target_exec_length} characters. Be comprehensive but concise.
+Create ultra-compressed intelligent summary covering entire document:
 
-EXECUTIVE SUMMARY:"""
+COMPLETE DOCUMENT SUMMARY:"""
         
         try:
             response = requests.post(
@@ -471,188 +444,74 @@ EXECUTIVE SUMMARY:"""
                     "options": {
                         "temperature": 0.2,
                         "top_p": 0.9,
-                        "num_predict": target_exec_length // 3
+                        "num_predict": target_length // 2
                     }
                 },
-                timeout=150
+                timeout=180
             )
             
             response.raise_for_status()
-            summary = response.json().get('response', 'ERROR generating executive summary').strip()
+            summary = response.json().get('response', 'ERROR generating complete summary').strip()
             
-            if len(summary) > target_exec_length * 1.2:
-                summary = summary[:int(target_exec_length * 1.1)] + "..."
+            # Enforce strict length limit
+            if len(summary) > target_length:
+                summary = summary[:target_length-3] + "..."
             
+            print(f"✅ Complete PDF summary generated: {len(summary):,} chars (target: {target_length:,})")
             return summary
             
         except Exception as e:
-            return f"ERROR creating executive summary: {e}"
+            return f"ERROR creating complete PDF summary: {e}"
 
-    def save_enhanced_pdf(self, chunk_summaries: List[Dict], executive_summary: str, 
-                         output_path: str, original_pdf_name: str, analysis: Dict, stats: Dict):
-        """Save comprehensive PDF with proper section ordering"""
+    def save_enhanced_json(self, chunk_keypoints: List[Dict], analysis: Dict, stats: Dict, 
+                          original_pdf_name: str, output_path: str):
+        """Save JSON with keypoints (not summaries) and location tracking"""
         try:
-            doc = SimpleDocTemplate(output_path, pagesize=letter, 
-                                  topMargin=0.8*inch, bottomMargin=0.8*inch,
-                                  leftMargin=0.8*inch, rightMargin=0.8*inch)
-            
-            styles = getSampleStyleSheet()
-            story = []
-            
-            # Professional styles
-            title_style = ParagraphStyle(
-                'Title', parent=styles['Title'],
-                fontSize=18, spaceAfter=20, alignment=1, textColor='darkblue'
-            )
-            
-            section_style = ParagraphStyle(
-                'Section', parent=styles['Heading1'],
-                fontSize=14, spaceAfter=12, textColor='darkblue', spaceBefore=16
-            )
-            
-            subsection_style = ParagraphStyle(
-                'Subsection', parent=styles['Heading2'],
-                fontSize=12, spaceAfter=8, textColor='blue', spaceBefore=12
-            )
-            
-            body_style = ParagraphStyle(
-                'Body', parent=styles['Normal'],
-                fontSize=10, spaceAfter=8, leading=12, alignment=4  # Justified
-            )
-            
-            stats_style = ParagraphStyle(
-                'Stats', parent=styles['Normal'],
-                fontSize=9, spaceAfter=6, textColor='gray'
-            )
-            
-            location_style = ParagraphStyle(
-                'Location', parent=styles['Normal'],
-                fontSize=8, spaceAfter=4, textColor='darkgray', fontName='Helvetica-Oblique'
-            )
-            
-            # Title page
-            story.append(Paragraph(f"Enhanced Document Analysis", title_style))
-            story.append(Paragraph(f"{os.path.basename(original_pdf_name)}", subsection_style))
-            story.append(Spacer(1, 20))
-            
-            # Processing statistics
-            compression_achieved = stats['compression_ratio']
-            stats_text = f"""Processing Summary: {stats['total_time']:.1f}s processing time • 
-                          {compression_achieved:.1%} compression ratio • 
-                          {stats['successful_chunks']}/{stats['total_chunks']} sections processed • 
-                          Document complexity: {analysis['complexity_score']:.2f}"""
-            story.append(Paragraph(stats_text, stats_style))
-            story.append(Spacer(1, 20))
-            
-            # Executive Summary
-            story.append(Paragraph("EXECUTIVE SUMMARY", section_style))
-            story.append(Paragraph(executive_summary, body_style))
-            story.append(PageBreak())
-            
-            # Section-wise summaries in proper order
-            story.append(Paragraph("DETAILED SECTION ANALYSIS", section_style))
-            story.append(Paragraph("Sections are presented in document order with location references.", stats_style))
-            story.append(Spacer(1, 12))
-            
-            # Sort summaries by chunk ID (which corresponds to document order)
-            ordered_summaries = sorted([s for s in chunk_summaries if not s['summary'].startswith('ERROR')], 
-                                     key=lambda x: x['id'])
-            
-            for i, summary_data in enumerate(ordered_summaries, 1):
-                # Section header with proper numbering
-                section_title = f"Section {i}: {summary_data['theme']}"
-                story.append(Paragraph(section_title, subsection_style))
-                
-                # Location information
-                location_text = f"Location: {summary_data['location']}"
-                story.append(Paragraph(location_text, location_style))
-                story.append(Spacer(1, 4))
-                
-                # Summary content
-                story.append(Paragraph(summary_data['summary'], body_style))
-                story.append(Spacer(1, 12))
-            
-            # Document analysis appendix
-            story.append(PageBreak())
-            story.append(Paragraph("DOCUMENT ANALYSIS", section_style))
-            
-            analysis_text = f"""
-            <b>Document Characteristics:</b><br/>
-            • Total length: {analysis['total_chars']:,} characters ({analysis['total_words']:,} words)<br/>
-            • Paragraphs: {analysis['paragraphs']}<br/>
-            • Average paragraph length: {analysis['avg_paragraph_length']:.0f} characters<br/>
-            • Content complexity score: {analysis['complexity_score']:.2f}/1.0<br/>
-            • Academic indicators: {analysis['academic_score']} • Technical indicators: {analysis['technical_score']}<br/>
-            <br/>
-            <b>Compression Analysis:</b><br/>
-            • Target compression ratio: {analysis['target_compression']:.1%}<br/>
-            • Achieved compression ratio: {compression_achieved:.1%}<br/>
-            • Original document: {stats['original_length']:,} characters<br/>
-            • Summary length: {stats['summary_length']:,} characters<br/>
-            • Information preservation: {"Excellent" if compression_achieved >= 0.25 else "Good" if compression_achieved >= 0.15 else "Aggressive"}
-            """
-            
-            story.append(Paragraph(analysis_text, body_style))
-            
-            doc.build(story)
-            print(f"✅ Enhanced PDF summary saved: {output_path}")
-            
-        except Exception as e:
-            print(f"❌ Error creating PDF: {e}")
-
-    def save_enhanced_json(self, chunk_summaries: List[Dict], executive_summary: str, 
-                          analysis: Dict, stats: Dict, original_pdf_name: str, output_path: str):
-        """Save enhanced JSON with proper structure and location tracking"""
-        try:
-            # Prepare contextual summaries with proper ordering and location info
-            contextual_summaries = []
+            # Prepare contextual keypoints with proper ordering and location info
+            contextual_keypoints = []
             
             # Sort by chunk ID to maintain document order
-            ordered_summaries = sorted([s for s in chunk_summaries if not s['summary'].startswith('ERROR')], 
+            ordered_keypoints = sorted([k for k in chunk_keypoints if not k['keypoints'].startswith('ERROR')], 
                                      key=lambda x: x['id'])
             
-            for i, summary_data in enumerate(ordered_summaries, 1):
-                contextual_summaries.append({
+            for i, keypoint_data in enumerate(ordered_keypoints, 1):
+                contextual_keypoints.append({
                     "section_number": i,
-                    "title": f"Section {i}: {summary_data['theme']}",
-                    "location": summary_data['location'],
-                    "theme": summary_data['theme'],
-                    "summary": summary_data['summary'],
-                    "original_chunk_id": summary_data['id'],
-                    "summary_length": len(summary_data['summary'])
+                    "title": keypoint_data['location'],  # Title is now page/line location
+                    "location": keypoint_data['location'],
+                    "theme": keypoint_data['theme'],
+                    "keypoints": keypoint_data['keypoints'],  # Actual keypoints, not summary
+                    "original_chunk_id": keypoint_data['id'],
+                    "keypoints_length": len(keypoint_data['keypoints'])
                 })
             
-            # Create comprehensive JSON structure
+            # Create JSON structure focused on keypoints for RAG
             json_data = {
                 "metadata": {
                     "source_pdf": original_pdf_name,
                     "model_used": self.model_name,
                     "processing_date": __import__('datetime').datetime.now().isoformat(),
-                    "total_sections": len(contextual_summaries),
-                    "processing_version": "Enhanced v2.0"
+                    "total_sections": len(contextual_keypoints),
+                    "processing_version": "Keypoint Extraction v1.0",
+                    "data_type": "keypoints_and_takeaways"
                 },
                 "document_analysis": {
                     **analysis,
-                    "optimal_sections_created": len(contextual_summaries),
-                    "section_creation_strategy": "Context-aware with page tracking"
+                    "sections_created": len(contextual_keypoints),
+                    "extraction_strategy": "Keypoint and numerical value extraction"
                 },
                 "processing_statistics": {
                     **stats,
-                    "sections_successfully_processed": len(contextual_summaries),
-                    "average_section_compression": sum(len(s['summary']) for s in contextual_summaries) / sum(stats['original_length'] / len(contextual_summaries) for _ in contextual_summaries) if contextual_summaries else 0
+                    "sections_successfully_processed": len(contextual_keypoints),
+                    "total_keypoints_length": sum(len(k['keypoints']) for k in contextual_keypoints),
+                    "average_keypoint_section_length": sum(len(k['keypoints']) for k in contextual_keypoints) // len(contextual_keypoints) if contextual_keypoints else 0
                 },
-                "executive_summary": {
-                    "content": executive_summary,
-                    "length": len(executive_summary),
-                    "compression_ratio": len(executive_summary) / analysis['total_chars']
-                },
-                "contextual_summaries": contextual_summaries,
-                "summary_statistics": {
-                    "total_sections": len(contextual_summaries),
-                    "total_summary_length": sum(len(s['summary']) for s in contextual_summaries),
-                    "average_section_length": sum(len(s['summary']) for s in contextual_summaries) // len(contextual_summaries) if contextual_summaries else 0,
-                    "sections_by_theme": {theme: len([s for s in contextual_summaries if s['theme'] == theme]) 
-                                        for theme in set(s['theme'] for s in contextual_summaries)}
+                "contextual_keypoints": contextual_keypoints,  # Changed from summaries to keypoints
+                "rag_ready": {
+                    "total_sections": len(contextual_keypoints),
+                    "sections_by_theme": {theme: len([k for k in contextual_keypoints if k['theme'] == theme]) 
+                                        for theme in set(k['theme'] for k in contextual_keypoints)},
+                    "data_structure": "Each section contains keypoints, numerical values, and takeaways for RAG processing"
                 }
             }
             
@@ -660,103 +519,115 @@ EXECUTIVE SUMMARY:"""
             with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(json_data, f, indent=2, ensure_ascii=False)
             
-            print(f"✅ Enhanced JSON analysis saved: {output_path}")
-            print(f"   • {len(contextual_summaries)} contextual summaries with location tracking")
-            print(f"   • Sections properly ordered and numbered")
+            print(f"✅ Keypoint extraction JSON saved: {output_path}")
+            print(f"   • {len(contextual_keypoints)} sections with keypoints and numerical data")
+            print(f"   • Ready for RAG integration and Q&A systems")
             
         except Exception as e:
             print(f"❌ Error creating JSON: {e}")
 
-    def process_document_enhanced(self, pdf_path: str) -> Tuple[List[Dict], str, Dict, Dict]:
-        """Enhanced processing pipeline with location tracking"""
+    def process_document_for_rag(self, pdf_path: str, target_sections: int = 25, 
+                                generate_pdf_summary: bool = False) -> Tuple[List[Dict], Dict, Dict]:
+        """Main processing pipeline for RAG-ready keypoint extraction"""
         start_time = time.time()
         
         print("="*60)
-        print("ENHANCED INTELLIGENT DOCUMENT PROCESSOR")
+        print("RAG-READY KEYPOINT EXTRACTION PROCESSOR")
         print("="*60)
         
         # Step 1: Extract text with page tracking
         print("\n📄 Extracting text with location tracking...")
         text, page_map = self.extract_text_with_page_tracking(pdf_path)
         if not text:
-            return [], "", {}, {}
+            return [], {}, {}
         
         # Step 2: Analyze document
-        print("\n🧠 Analyzing document structure and complexity...")
+        print("\n🧠 Analyzing document for keypoint extraction...")
         analysis = self.analyze_document_structure(text)
         
-        # Step 3: Create intelligent chunks with tracking
-        print("\n🧩 Creating contextual chunks with location tracking...")
-        chunks = self.create_contextual_chunks_with_tracking(text, page_map, analysis)
+        # Step 3: Create chunks for keypoint extraction
+        print(f"\n🧩 Creating {target_sections} contextual chunks for keypoint extraction...")
+        chunks = self.create_contextual_chunks_with_tracking(text, page_map, analysis, target_sections)
         
-        # Step 4: Process chunks in parallel with location info
-        print(f"\n🤖 Processing {len(chunks)} chunks contextually with Llama3...")
-        chunk_summaries = []
-        successful_summaries = []
+        # Step 4: Extract keypoints (not summaries) in parallel
+        print(f"\n🔍 Extracting keypoints from {len(chunks)} chunks with Llama3...")
+        chunk_keypoints = []
+        successful_keypoints = []
         
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_chunk = {executor.submit(self.summarize_chunk_contextually, chunk): chunk 
+            future_to_chunk = {executor.submit(self.extract_keypoints_from_chunk, chunk): chunk 
                              for chunk in chunks}
             
             for future in tqdm(as_completed(future_to_chunk), total=len(chunks), 
-                             desc="Enhanced processing"):
+                             desc="Keypoint extraction"):
                 try:
-                    chunk_id, summary, theme, location = future.result()
-                    chunk_summaries.append({
+                    chunk_id, keypoints, theme, location = future.result()
+                    chunk_keypoints.append({
                         'id': chunk_id,
-                        'summary': summary,
+                        'keypoints': keypoints,
                         'theme': theme,
                         'location': location
                     })
                     
-                    if not summary.startswith('ERROR'):
-                        successful_summaries.append({
-                            'summary': summary, 
+                    if not keypoints.startswith('ERROR'):
+                        successful_keypoints.append({
+                            'keypoints': keypoints, 
                             'theme': theme,
                             'location': location
                         })
                         
                 except Exception as e:
-                    print(f"⚠️ Task failed: {e}")
+                    print(f"⚠️ Keypoint extraction failed: {e}")
         
         # Sort by chunk ID to maintain document order
-        chunk_summaries.sort(key=lambda x: x['id'])
+        chunk_keypoints.sort(key=lambda x: x['id'])
         
-        # Step 5: Create executive summary
-        print("\n📋 Creating executive summary...")
-        executive_summary = self.create_executive_summary(successful_summaries, analysis)
+        # Step 5: Generate optional complete PDF summary (stored in local variable)
+        if generate_pdf_summary:
+            print("\n📋 Generating optional complete PDF summary...")
+            self.complete_pdf_summary = self.generate_complete_pdf_summary(text, analysis)
+            print(f"✅ Complete PDF summary stored in memory: {len(self.complete_pdf_summary):,} chars")
         
         # Calculate final statistics
         total_time = time.time() - start_time
-        total_summary_length = sum(len(s['summary']) for s in chunk_summaries 
-                                 if not s['summary'].startswith('ERROR')) + len(executive_summary)
-        compression_achieved = total_summary_length / len(text) if len(text) > 0 else 0
+        total_keypoints_length = sum(len(k['keypoints']) for k in chunk_keypoints 
+                                   if not k['keypoints'].startswith('ERROR'))
         
         stats = {
             'original_length': len(text),
-            'summary_length': total_summary_length,
-            'compression_ratio': compression_achieved,
-            'target_compression': analysis['target_compression'],
+            'keypoints_length': total_keypoints_length,
+            'keypoint_extraction_ratio': total_keypoints_length / len(text) if len(text) > 0 else 0,
             'total_time': total_time,
-            'successful_chunks': len(successful_summaries),
-            'total_chunks': len(chunks)
+            'successful_chunks': len(successful_keypoints),
+            'total_chunks': len(chunks),
+            'pdf_summary_generated': generate_pdf_summary,
+            'pdf_summary_length': len(self.complete_pdf_summary) if self.complete_pdf_summary else 0
         }
         
-        return chunk_summaries, executive_summary, analysis, stats
+        return chunk_keypoints, analysis, stats
+
+    def get_complete_pdf_summary(self) -> str:
+        """Get the complete PDF summary from local variable"""
+        return self.complete_pdf_summary if self.complete_pdf_summary else "No PDF summary generated"
+
+    def clear_pdf_summary(self):
+        """Clear the stored PDF summary"""
+        self.complete_pdf_summary = None
 
 
 def main():
-    """Enhanced main function with improved processing and outputs"""
+    """Main function for RAG-ready keypoint extraction"""
     # Configuration
-    PDF_PATH = "./database/sample_document.pdf"
-    MODEL_NAME = "llama3"  # Updated to llama3
+    PDF_PATH = "sample_document.pdf"
+    MODEL_NAME = "llama3"
+    TARGET_SECTIONS = 25
+    GENERATE_PDF_SUMMARY = True  # Optional feature
     
-    print(f"Enhanced Configuration:")
+    print(f"RAG-Ready Configuration:")
     print(f"• PDF: {PDF_PATH}")
     print(f"• Model: {MODEL_NAME}")
-    print(f"• Intelligent compression: 25-40% (adaptive)")
-    print(f"• Location tracking: Enabled")
-    print(f"• Section ordering: Enhanced")
+    print(f"• Target sections: {TARGET_SECTIONS}")
+    print(f"• Generate PDF summary: {GENERATE_PDF_SUMMARY}")
     
     # Validate setup
     if not os.path.exists(PDF_PATH):
@@ -778,63 +649,64 @@ def main():
         print(f"❌ Ollama not accessible: {e}")
         return
     
-    # Process document with enhanced features
+    # Process document for RAG
     processor = EnhancedIntelligentDocumentProcessor(model_name=MODEL_NAME)
-    chunk_summaries, executive_summary, analysis, stats = processor.process_document_enhanced(PDF_PATH)
+    chunk_keypoints, analysis, stats = processor.process_document_for_rag(
+        PDF_PATH, TARGET_SECTIONS, GENERATE_PDF_SUMMARY
+    )
     
-    if chunk_summaries and stats:
+    if chunk_keypoints and stats:
         # Generate output filenames
         base_name = os.path.splitext(os.path.basename(PDF_PATH))[0]
         timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
         
-        pdf_path = f"./database/summaries.pdf"
-        json_path = f"./database/summaries.json"
+        json_path = f"{base_name}_rag_keypoints_{timestamp}.json"
         
-        # Save enhanced PDF with proper section ordering
-        processor.save_enhanced_pdf(chunk_summaries, executive_summary, pdf_path, 
-                                   PDF_PATH, analysis, stats)
-        
-        # Save enhanced JSON with location tracking and proper structure
-        processor.save_enhanced_json(chunk_summaries, executive_summary, analysis, 
-                                   stats, PDF_PATH, json_path)
+        # Save keypoint extraction JSON for RAG
+        processor.save_enhanced_json(chunk_keypoints, analysis, stats, PDF_PATH, json_path)
         
         # Results summary
         print("\n" + "="*60)
-        print("ENHANCED PROCESSING COMPLETE")
+        print("RAG-READY KEYPOINT EXTRACTION COMPLETE")
         print("="*60)
         print(f"📊 Original: {stats['original_length']:,} chars")
-        print(f"📄 Summary: {stats['summary_length']:,} chars")
-        print(f"🧠 Target compression: {analysis['target_compression']:.1%}")
-        print(f"🗜️  Achieved compression: {stats['compression_ratio']:.1%}")
-        print(f"📈 Complexity score: {analysis['complexity_score']:.2f}")
+        print(f"🔍 Keypoints: {stats['keypoints_length']:,} chars")
+        print(f"📈 Extraction ratio: {stats['keypoint_extraction_ratio']:.1%}")
         print(f"⏱️  Processing time: {stats['total_time']:.1f}s")
         print(f"✅ Success rate: {stats['successful_chunks']}/{stats['total_chunks']}")
-        print(f"📁 PDF Output: {pdf_path}")
         print(f"📁 JSON Output: {json_path}")
         
-        # Enhanced quality assessment
-        successful_sections = stats['successful_chunks']
-        if 0.25 <= stats['compression_ratio'] <= 0.40:
-            print("🎯 Compression ratio optimal - excellent information preservation!")
-        elif stats['compression_ratio'] < 0.25:
-            print("⚠️  Compression higher than optimal - some detail may be lost")
-        else:
-            print("📝 Compression lower than target - very detailed summary")
+        # PDF Summary info
+        if GENERATE_PDF_SUMMARY:
+            pdf_summary = processor.get_complete_pdf_summary()
+            print(f"📋 Complete PDF summary: {len(pdf_summary):,} chars (stored in memory)")
+            print(f"🗜️  PDF compression: {stats['pdf_summary_length'] / stats['original_length']:.1%}")
+            print("   Use processor.get_complete_pdf_summary() to access")
         
-        print(f"📚 Created {successful_sections} contextual summaries with location tracking")
-        print(f"🔢 Sections properly ordered and numbered in outputs")
+        # RAG readiness info
+        successful_sections = stats['successful_chunks']
+        print(f"🤖 RAG Integration Ready:")
+        print(f"   • {successful_sections} sections with keypoints and numerical data")
+        print(f"   • Location tracking for precise retrieval")
+        print(f"   • Structured format for embedding systems")
         
         # Theme distribution
-        if chunk_summaries:
+        if chunk_keypoints:
             themes = {}
-            for chunk in chunk_summaries:
-                if not chunk['summary'].startswith('ERROR'):
+            for chunk in chunk_keypoints:
+                if not chunk['keypoints'].startswith('ERROR'):
                     theme = chunk['theme']
                     themes[theme] = themes.get(theme, 0) + 1
             
             print(f"📊 Content distribution:")
             for theme, count in sorted(themes.items()):
                 print(f"   • {theme}: {count} section{'s' if count > 1 else ''}")
+        
+        # Usage examples
+        print(f"\n💡 Usage Examples:")
+        print(f"   • Load JSON for RAG: json.load(open('{json_path}'))")
+        print(f"   • Access PDF summary: processor.get_complete_pdf_summary()")
+        print(f"   • Clear memory: processor.clear_pdf_summary()")
             
     else:
         print("❌ Processing failed. Check error messages above.")
