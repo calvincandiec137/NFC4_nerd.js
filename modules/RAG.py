@@ -1,12 +1,11 @@
 import os
 import json
 import numpy as np
-import faiss #type:ignore
-from tqdm import tqdm #type:ignore
-from sentence_transformers import SentenceTransformer #type:ignore
+import faiss  # type: ignore
+import requests
+from tqdm import tqdm  # type: ignore
 
 # Configs
-MODEL_NAME = "all-MiniLM-L6-v2"
 DOCS_JSON_PATH = "./database/summaries.json"
 OUTPUT_DIR = "./embeddings"
 EMBED_FILE = os.path.join(OUTPUT_DIR, "vectors.npy")
@@ -15,15 +14,23 @@ METADATA_FILE = os.path.join(OUTPUT_DIR, "metadata.json")
 
 CHUNK_SIZE = 1000  # characters
 CHUNK_OVERLAP = 200  # characters
+EMBED_MODEL = "nomic-embed-text"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Load embedding model
-model = SentenceTransformer(MODEL_NAME)
-
-def fetch_embedding(text):
-    vec = model.encode(text, normalize_embeddings=True)
-    return vec.astype(np.float32)
+def fetch_embedding(text: str):
+    payload = {
+        "model": EMBED_MODEL,
+        "prompt": text
+    }
+    try:
+        response = requests.post("http://localhost:11434/api/embeddings", json=payload)
+        response.raise_for_status()
+        embedding = response.json()["embedding"]
+        return np.array(embedding, dtype=np.float32)
+    except Exception as e:
+        print(f"[❌] Error generating embedding: {e}")
+        return None
 
 def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     chunks = []
@@ -36,27 +43,32 @@ def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
 
 def build_index_from_json(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
-        documents = json.load(f)
+        json_data = json.load(f)
 
+    documents = json_data.get("contextual_summaries", [])
     vectors = []
     metadata = []
 
-    for doc in tqdm(documents, desc="Processing Documents"):
-        doc_id = doc.get("section_title", "unknown")
+    for doc in tqdm(documents, desc="🔧 Processing Documents"):
+        doc_id = doc.get("section_number", "unknown")
+        section_title = doc.get("title", "Untitled Section")
         content = doc.get("summary", "")
+
         chunks = chunk_text(content)
 
         for i, chunk in enumerate(chunks):
             vec = fetch_embedding(chunk)
-            vectors.append(vec)
-            metadata.append({
-                "doc_id": doc_id,
-                "chunk_index": i,
-                "text": chunk
-            })
+            if vec is not None:
+                vectors.append(vec)
+                metadata.append({
+                    "doc_id": doc_id,
+                    "section_title": section_title,
+                    "chunk_index": i,
+                    "text": chunk
+                })
 
     if not vectors:
-        print("No embeddings were created. Check your input data.")
+        print("[⚠️] No embeddings were created. Check input data.")
         return
 
     vectors = np.array(vectors, dtype=np.float32)
@@ -70,7 +82,7 @@ def build_index_from_json(json_path):
     with open(METADATA_FILE, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
 
-    print("Embedding, index, and metadata saved.")
+    print("✅ Embedding, index, and metadata saved.")
 
 if __name__ == "__main__":
     build_index_from_json(DOCS_JSON_PATH)

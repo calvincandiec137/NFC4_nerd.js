@@ -1,44 +1,58 @@
 import numpy as np
-import faiss #type:ignore
+import faiss  # type: ignore
 import json
 import os
-from sentence_transformers import SentenceTransformer #type:ignore
-import google.generativeai as genai #type:ignore
-from dotenv import load_dotenv
+import requests
 
-load_dotenv()
-
-
+# File paths
 VEC_PATH = "./embeddings/vectors.npy"
 INDEX_PATH = "./embeddings/index.faiss"
 META_PATH = "./embeddings/metadata.json"
-MODEL_NAME = "all-MiniLM-L6-v2"
-GEMINI_MODEL = "gemini-1.5-flash"
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-llm = genai.GenerativeModel(GEMINI_MODEL)
+# Ollama model names
+EMBED_MODEL = "nomic-embed-text"
+GEN_MODEL = "llama3"
 
-embedding_model = SentenceTransformer(MODEL_NAME)
+# Load FAISS index and metadata
 index = faiss.read_index(INDEX_PATH)
 with open(META_PATH, "r", encoding="utf-8") as f:
     metadata = json.load(f)
 
+# Get embedding from Ollama (nomic-embed-text)
 def get_embedding(text):
-    vec = embedding_model.encode(text, normalize_embeddings=True)
-    return vec.astype(np.float32)
+    payload = {
+        "model": EMBED_MODEL,
+        "prompt": text
+    }
+    try:
+        response = requests.post("http://localhost:11434/api/embeddings", json=payload)
+        response.raise_for_status()
+        embedding = response.json()["embedding"]
+        return np.array(embedding, dtype=np.float32)
+    except Exception as e:
+        print(f"[❌] Embedding Error: {e}")
+        return None
 
-def retrieve_top_chunk(query, top_k=1):
-    query_vec = get_embedding(query).reshape(1, -1)
+# Retrieve top-k relevant chunks from FAISS
+def retrieve_top_chunks(query, top_k=3):
+    query_vec = get_embedding(query)
+    if query_vec is None:
+        print("[⚠️] Could not get embedding for the query.")
+        return []
+
+    # Ensure shape is (1, dim)
+    query_vec = query_vec.reshape(1, -1)
+
     distances, indices = index.search(query_vec, top_k)
-
     results = []
     for i, dist in zip(indices[0], distances[0]):
         match = metadata[i]
-        match["similarity"] = 100 - dist
+        match["similarity"] = 100 - dist  # Lower distance = higher similarity
         results.append(match)
 
     return results
 
+# Generate streamed answer from LLaMA 3 using Ollama
 def generate_answer(query, context):
     prompt = f"""You are an intelligent assistant. Use the given context to answer the user query in 2 lines max.
 
@@ -50,13 +64,48 @@ Query:
 
 Only answer based on the context. If it is not answerable, say you don't know.
 """
-    response = llm.generate_content(prompt)
-    return response.text.strip()
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": GEN_MODEL,
+                "prompt": prompt,
+                "stream": True
+            },
+            stream=True
+        )
+        print("\n💬 Answer:", end=" ", flush=True)
+        for chunk in response.iter_lines():
+            if chunk:
+                content = json.loads(chunk.decode("utf-8"))["response"]
+                print(content, end="", flush=True)
+        print("\n")
+    except Exception as e:
+        print(f"\n[❌] Error generating response: {e}")
 
+# CLI Interaction Loop
 if __name__ == "__main__":
+    print("\n🤖 AI Document Assistant (powered by Ollama)\n")
     while True:
-        query = input("Ask something:\n")
-        top = retrieve_top_chunk(query, top_k=1)[0]
-        print(f"\nRetrieved Chunk (Similarity: {top['similarity']:.2f}%)\nSection: {top['doc_id']}\n")
-        answer = generate_answer(query, top["text"])
-        print(f"Answer: {answer}\n")
+        try:
+            query = input("🔎 Ask something:\n> ").strip()
+            if not query:
+                print("⚠️ Please enter a valid question.")
+                continue
+
+            top_chunks = retrieve_top_chunks(query, top_k=3)
+            if not top_chunks:
+                print("[⚠️] No relevant chunks found.\n")
+                continue
+
+            context = "\n\n---\n\n".join([chunk["text"] for chunk in top_chunks])
+
+            print(f"\n📄 Top {len(top_chunks)} Sections Retrieved:")
+            for i, chunk in enumerate(top_chunks, start=1):
+                print(f"[{i}] Section: {chunk['doc_id']} | Similarity: {chunk['similarity']:.2f}%")
+
+            generate_answer(query, context)
+
+        except KeyboardInterrupt:
+            print("\n👋 Exiting assistant.")
+            break
