@@ -1,7 +1,8 @@
 # File: enhanced_intelligent_document_processor.py
 import json
 import re
-import fitz
+import fitz # For PDF
+from docx import Document # For DOCX
 import requests
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -25,6 +26,84 @@ class EnhancedIntelligentDocumentProcessor:
         self.max_compression = 0.25  # Tighter compression for PDF
         self.max_workers = 4
         self.complete_pdf_summary = None  # Store optional PDF summary
+
+    @staticmethod
+    def get_file_extension(file_path: str) -> str:
+        """Get lowercase file extension"""
+        return os.path.splitext(file_path)[1].lower()
+
+    def extract_text_from_file(self, file_path: str) -> Tuple[str, Dict]:
+        """
+        Extract text from multiple file formats with position tracking
+        Returns: (full_text, position_map)
+        """
+        ext = self.get_file_extension(file_path)
+        
+        if ext == '.pdf':
+            return self.extract_text_with_page_tracking(file_path)
+        elif ext == '.docx':
+            return self._extract_text_from_docx(file_path)
+        elif ext in ('.txt', '.md'):
+            return self._extract_text_from_plaintext(file_path)
+        else:
+            raise ValueError(f"Unsupported file format: {ext}. Supported: PDF, DOCX, TXT, MD")
+
+    def _extract_text_from_docx(self, docx_path: str) -> Tuple[str, Dict]:
+        """Extract text from DOCX files with paragraph tracking"""
+        try:
+            print(f"📖 Opening DOCX: {docx_path}")
+            doc = Document(docx_path)
+            full_text = []
+            position_map = {}
+            current_pos = 0
+            
+            for para_num, paragraph in enumerate(doc.paragraphs, 1):
+                text = paragraph.text.strip()
+                if text:
+                    full_text.append(text)
+                    position_map[current_pos] = {
+                        'page': 1,  # DOCX doesn't have pages
+                        'line': para_num,
+                        'page_line_key': f"Paragraph {para_num}",
+                        'text_preview': text[:50] + "..." if len(text) > 50 else text
+                    }
+                    current_pos += len(text) + 2  # +2 for paragraph breaks
+            
+            result_text = "\n\n".join(full_text)
+            print(f"✅ Extracted {len(result_text):,} characters from DOCX")
+            return result_text, position_map
+            
+        except Exception as e:
+            print(f"❌ Error reading DOCX: {e}")
+            return "", {}
+
+    def _extract_text_from_plaintext(self, file_path: str) -> Tuple[str, Dict]:
+        """Extract text from plain text files with line tracking"""
+        try:
+            print(f"📖 Opening text file: {file_path}")
+            with open(file_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+            
+            full_text = "".join(lines)
+            position_map = {}
+            current_pos = 0
+            
+            for line_num, line in enumerate(lines, 1):
+                if line.strip():
+                    position_map[current_pos] = {
+                        'page': 1,
+                        'line': line_num,
+                        'page_line_key': f"Line {line_num}",
+                        'text_preview': line[:50] + "..." if len(line) > 50 else line.strip()
+                    }
+                current_pos += len(line)
+            
+            print(f"✅ Extracted {len(full_text):,} characters from text file")
+            return full_text.strip(), position_map
+            
+        except Exception as e:
+            print(f"❌ Error reading text file: {e}")
+            return "", {}
         
     def analyze_document_structure(self, text: str) -> Dict:
         """Analyze document to determine optimal processing strategy"""
@@ -198,7 +277,7 @@ class EnhancedIntelligentDocumentProcessor:
         
         # Use target_sections parameter for precise control
         optimal_chunks = target_sections
-        base_chunk_size = total_chars // optimal_chunks
+        base_chunk_size = total_chars // optimal_chunks if optimal_chunks > 0 else total_chars
         
         print(f"🧩 Creating {optimal_chunks} contextual chunks for keypoint extraction (~{base_chunk_size:,} chars each)")
         
@@ -526,18 +605,20 @@ COMPLETE DOCUMENT SUMMARY:"""
         except Exception as e:
             print(f"❌ Error creating JSON: {e}")
 
-    def process_document_for_rag(self, pdf_path: str, target_sections: int = 25, 
+    def process_document_for_rag(self, file_path: str, target_sections: int = 25, 
                                 generate_pdf_summary: bool = False) -> Tuple[List[Dict], Dict, Dict]:
-        """Main processing pipeline for RAG-ready keypoint extraction"""
+        """Main processing pipeline for RAG-ready keypoint extraction
+        Now supports: PDF, DOCX, TXT, MD files
+        """
         start_time = time.time()
         
         print("="*60)
-        print("RAG-READY KEYPOINT EXTRACTION PROCESSOR")
+        print(f"RAG-READY KEYPOINT EXTRACTION PROCESSOR ({self.get_file_extension(file_path)} FILE)")
         print("="*60)
         
-        # Step 1: Extract text with page tracking
-        print("\n📄 Extracting text with location tracking...")
-        text, page_map = self.extract_text_with_page_tracking(pdf_path)
+        # Step 1: Extract text with position tracking
+        print(f"\n📄 Extracting text from {os.path.basename(file_path)} with location tracking...")
+        text, page_map = self.extract_text_from_file(file_path)
         if not text:
             return [], {}, {}
         
@@ -584,9 +665,9 @@ COMPLETE DOCUMENT SUMMARY:"""
         
         # Step 5: Generate optional complete PDF summary (stored in local variable)
         if generate_pdf_summary:
-            print("\n📋 Generating optional complete PDF summary...")
+            print("\n📋 Generating optional complete document summary...")
             self.complete_pdf_summary = self.generate_complete_pdf_summary(text, analysis)
-            print(f"✅ Complete PDF summary stored in memory: {len(self.complete_pdf_summary):,} chars")
+            print(f"✅ Complete document summary stored in memory: {len(self.complete_pdf_summary):,} chars")
         
         # Calculate final statistics
         total_time = time.time() - start_time
@@ -617,22 +698,42 @@ COMPLETE DOCUMENT SUMMARY:"""
 
 def main():
     """Main function for RAG-ready keypoint extraction"""
-    # Configuration
-    PDF_PATH = "sample_document.pdf"
+    # --- START of new condition block ---
+    
+    # Define the directory to check and the target extensions
+    target_dir = "."  # Checks the current directory where the script is run
+    target_extensions = ('.pdf', '.docx')
+    
+    # Find all files with the target extensions
+    processable_files = []
+    for filename in os.listdir(target_dir):
+        if filename.lower().endswith(target_extensions):
+            processable_files.append(filename)
+            
+    # Check if the number of processable files is exactly one
+    if len(processable_files) != 1:
+        print("="*60)
+        print("‼️ SCRIPT HALTED ‼️")
+        print(f"Error: Expected exactly 1 processable file (.pdf or .docx), but found {len(processable_files)}.")
+        if processable_files:
+            print("Found files:", ", ".join(processable_files))
+        print("Please ensure the folder contains only one PDF or DOCX file to proceed.")
+        print("="*60)
+        return # Exit the function
+
+    # --- END of new condition block ---
+
+    # Configuration is now set based on the single file found
+    FILE_PATH = processable_files[0] 
     MODEL_NAME = "llama3"
     TARGET_SECTIONS = 25
     GENERATE_PDF_SUMMARY = True  # Optional feature
     
     print(f"RAG-Ready Configuration:")
-    print(f"• PDF: {PDF_PATH}")
+    print(f"• File Found: {FILE_PATH}")
     print(f"• Model: {MODEL_NAME}")
     print(f"• Target sections: {TARGET_SECTIONS}")
-    print(f"• Generate PDF summary: {GENERATE_PDF_SUMMARY}")
-    
-    # Validate setup
-    if not os.path.exists(PDF_PATH):
-        print(f"❌ PDF file '{PDF_PATH}' not found!")
-        return
+    print(f"• Generate summary: {GENERATE_PDF_SUMMARY}")
     
     # Test Ollama with llama3
     try:
@@ -652,18 +753,18 @@ def main():
     # Process document for RAG
     processor = EnhancedIntelligentDocumentProcessor(model_name=MODEL_NAME)
     chunk_keypoints, analysis, stats = processor.process_document_for_rag(
-        PDF_PATH, TARGET_SECTIONS, GENERATE_PDF_SUMMARY
+        FILE_PATH, TARGET_SECTIONS, GENERATE_PDF_SUMMARY
     )
     
     if chunk_keypoints and stats:
         # Generate output filenames
-        base_name = os.path.splitext(os.path.basename(PDF_PATH))[0]
+        base_name = os.path.splitext(os.path.basename(FILE_PATH))[0]
         timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
         
         json_path = f"{base_name}_rag_keypoints_{timestamp}.json"
         
         # Save keypoint extraction JSON for RAG
-        processor.save_enhanced_json(chunk_keypoints, analysis, stats, PDF_PATH, json_path)
+        processor.save_enhanced_json(chunk_keypoints, analysis, stats, FILE_PATH, json_path)
         
         # Results summary
         print("\n" + "="*60)
@@ -671,16 +772,18 @@ def main():
         print("="*60)
         print(f"📊 Original: {stats['original_length']:,} chars")
         print(f"🔍 Keypoints: {stats['keypoints_length']:,} chars")
-        print(f"📈 Extraction ratio: {stats['keypoint_extraction_ratio']:.1%}")
+        if stats['original_length'] > 0:
+             print(f"📈 Extraction ratio: {stats['keypoint_extraction_ratio']:.1%}")
         print(f"⏱️  Processing time: {stats['total_time']:.1f}s")
         print(f"✅ Success rate: {stats['successful_chunks']}/{stats['total_chunks']}")
         print(f"📁 JSON Output: {json_path}")
         
-        # PDF Summary info
+        # Summary info
         if GENERATE_PDF_SUMMARY:
-            pdf_summary = processor.get_complete_pdf_summary()
-            print(f"📋 Complete PDF summary: {len(pdf_summary):,} chars (stored in memory)")
-            print(f"🗜️  PDF compression: {stats['pdf_summary_length'] / stats['original_length']:.1%}")
+            summary = processor.get_complete_pdf_summary()
+            print(f"📋 Complete document summary: {len(summary):,} chars (stored in memory)")
+            if stats['original_length'] > 0:
+                print(f"🗜️  Summary compression: {stats['pdf_summary_length'] / stats['original_length']:.1%}")
             print("   Use processor.get_complete_pdf_summary() to access")
         
         # RAG readiness info
@@ -705,7 +808,7 @@ def main():
         # Usage examples
         print(f"\n💡 Usage Examples:")
         print(f"   • Load JSON for RAG: json.load(open('{json_path}'))")
-        print(f"   • Access PDF summary: processor.get_complete_pdf_summary()")
+        print(f"   • Access summary: processor.get_complete_pdf_summary()")
         print(f"   • Clear memory: processor.clear_pdf_summary()")
             
     else:
