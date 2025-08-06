@@ -2,17 +2,25 @@ import requests
 import json
 import os
 from dotenv import load_dotenv
+import chardet
+
+def read_file_with_encoding_detection(file_path):
+    with open(file_path, 'rb') as f:
+        raw_data = f.read()
+        result = chardet.detect(raw_data)
+        detected_encoding = result['encoding']
+
+    with open(file_path, 'r', encoding=detected_encoding, errors='ignore') as f:
+        return f.read()
+
 
 load_dotenv()
 api_key = os.getenv("OPEN_ROUTER")
 
 # Load and prepare the two documents
 def multi(doc1_path, doc2_path):
-    with open(f"{doc1_path}", "r") as f:
-        doc1 = f.read()
-
-    with open(f"{doc2_path}", "r") as f:
-        doc2 = f.read()
+    doc1 = read_file_with_encoding_detection(doc1_path)
+    doc2 = read_file_with_encoding_detection(doc2_path)
 
     # Initial context shared with model
     base_context = f"""

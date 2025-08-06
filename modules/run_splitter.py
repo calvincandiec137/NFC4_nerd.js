@@ -4,7 +4,6 @@ import re
 import fitz #type:ignore
 from docx import Document #type:ignore
 import requests
-import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from typing import List, Dict, Tuple
@@ -13,9 +12,15 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 import time
-import math
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from collections import defaultdict
-import multidocs
+from modules.multidocs import multi
+from modules.RAG import rag_main
+
+
 
 output_path = "./database/sample_json.json"
 
@@ -698,45 +703,29 @@ COMPLETE DOCUMENT SUMMARY:"""
         """Clear the stored PDF summary"""
         self.complete_pdf_summary = None
 
+def main(name):
+    FILE_PATH = os.path.join("C:\\Users\\Nitesh\\OneDrive\\Desktop\\NFC4_nerd.js\\database", name)
 
-def main():
-    """Main function for RAG-ready keypoint extraction"""
-    # --- START of new condition block ---
-    
-    # Define the directory to check and the target extensions
-    target_dir = "./database"  # Checks the current directory where the script is run
-    target_extensions = ('.pdf', '.docx', '.txt')
-    
-    # Find all files with the target extensions
-    processable_files = []
-    for filename in os.listdir(target_dir):
-        if filename.lower().endswith(target_extensions):
-            processable_files.append(filename)
-            
-    # Check if the number of processable files is exactly one
-    if len(processable_files) != 1:
-        #idhar a
-        multidocs.multi(f"./database/{processable_files[0]}", f"./database/{processable_files[1]}")
-        return # Exit the function
+    # Validate file extension
+    valid_extensions = (".pdf", ".docx", ".txt", ".md")
+    file_ext = os.path.splitext(FILE_PATH)[1].lower()
+    if file_ext not in valid_extensions:
+        raise ValueError(f"Unsupported file format: {file_ext}. Supported: PDF, DOCX, TXT, MD")
 
-    # --- END of new condition block ---
-
-    # Configuration is now set based on the single file found
-    FILE_PATH = f"./database/{processable_files[0]}"
     MODEL_NAME = "llama3"
     TARGET_SECTIONS = 25
-    GENERATE_PDF_SUMMARY = True  # Optional feature
-    
+    GENERATE_PDF_SUMMARY = True
+
     print(f"RAG-Ready Configuration:")
-    print(f"• File Found: {FILE_PATH}")
+    print(f"• File: {FILE_PATH}")
     print(f"• Model: {MODEL_NAME}")
-    print(f"• Target sections: {TARGET_SECTIONS}")
-    print(f"• Generate summary: {GENERATE_PDF_SUMMARY}")
-    
-    # Test Ollama with llama3
+    print(f"• Sections: {TARGET_SECTIONS}")
+    print(f"• Generate PDF Summary: {GENERATE_PDF_SUMMARY}")
+
+    # Test Ollama connectivity
     try:
         test_response = requests.post(
-            "https://a4d642916d4d.ngrok-free.app/api/generate",
+            "http://localhost:11434/api/embeddings",
             json={"model": MODEL_NAME, "prompt": "Test", "stream": False},
             timeout=10
         )
@@ -747,71 +736,59 @@ def main():
     except Exception as e:
         print(f"❌ Ollama not accessible: {e}")
         return
-    
+
     # Process document for RAG
     processor = EnhancedIntelligentDocumentProcessor(model_name=MODEL_NAME)
     chunk_keypoints, analysis, stats = processor.process_document_for_rag(
         FILE_PATH, TARGET_SECTIONS, GENERATE_PDF_SUMMARY
     )
-    
+
     if chunk_keypoints and stats:
-        # Generate output filenames
         base_name = os.path.splitext(os.path.basename(FILE_PATH))[0]
         timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
-        
-        json_path = f"{base_name}_rag_keypoints_{timestamp}.json"
-        
-        # Save keypoint extraction JSON for RAG
+        json_path = "./database/sample_json.json"
+
         processor.save_enhanced_json(chunk_keypoints, analysis, stats, FILE_PATH, json_path)
-        
-        # Results summary
-        print("\n" + "="*60)
+
+        print("\n" + "=" * 60)
         print("RAG-READY KEYPOINT EXTRACTION COMPLETE")
-        print("="*60)
+        print("=" * 60)
         print(f"📊 Original: {stats['original_length']:,} chars")
         print(f"🔍 Keypoints: {stats['keypoints_length']:,} chars")
         if stats['original_length'] > 0:
-             print(f"📈 Extraction ratio: {stats['keypoint_extraction_ratio']:.1%}")
+            print(f"📈 Extraction ratio: {stats['keypoint_extraction_ratio']:.1%}")
         print(f"⏱️  Processing time: {stats['total_time']:.1f}s")
         print(f"✅ Success rate: {stats['successful_chunks']}/{stats['total_chunks']}")
         print(f"📁 JSON Output: {json_path}")
-        
-        # Summary info
+
+        # Save and print summary
         if GENERATE_PDF_SUMMARY:
             summary = processor.get_complete_pdf_summary()
-            print(f"📋 Complete document summary: {len(summary):,} chars (stored in memory)")
-            if stats['original_length'] > 0:
-                print(f"🗜️  Summary compression: {stats['pdf_summary_length'] / stats['original_length']:.1%}")
-            print("   Use processor.get_complete_pdf_summary() to access")
-        
-        # RAG readiness info
-        successful_sections = stats['successful_chunks']
-        print(f"🤖 RAG Integration Ready:")
-        print(f"   • {successful_sections} sections with keypoints and numerical data")
-        print(f"   • Location tracking for precise retrieval")
-        print(f"   • Structured format for embedding systems")
-        
-        # Theme distribution
-        if chunk_keypoints:
-            themes = {}
-            for chunk in chunk_keypoints:
-                if not chunk['keypoints'].startswith('ERROR'):
-                    theme = chunk['theme']
-                    themes[theme] = themes.get(theme, 0) + 1
-            
-            print(f"📊 Content distribution:")
+            with open(f"./database/{base_name}_summary.txt", "w", encoding="utf-8") as f:
+                f.write(summary)
+            print(f"\n📝 Summary:\n\n{summary}\n")
+            print(f"📋 Total summary length: {len(summary):,} characters")
+
+        print(f"🤖 RAG Integration Ready with {stats['successful_chunks']} sections")
+        print(f"\n💡 Usage Examples:")
+        print(f"   • Load JSON: json.load(open('{json_path}'))")
+        print(f"   • Get summary: processor.get_complete_pdf_summary()")
+
+        # Print theme distribution
+        themes = {}
+        for chunk in chunk_keypoints:
+            if not chunk['keypoints'].startswith('ERROR'):
+                theme = chunk['theme']
+                themes[theme] = themes.get(theme, 0) + 1
+        if themes:
+            print(f"\n📊 Theme Distribution:")
             for theme, count in sorted(themes.items()):
                 print(f"   • {theme}: {count} section{'s' if count > 1 else ''}")
-        
-        # Usage examples
-        print(f"\n💡 Usage Examples:")
-        print(f"   • Load JSON for RAG: json.load(open('{json_path}'))")
-        print(f"   • Access summary: processor.get_complete_pdf_summary()")
-        print(f"   • Clear memory: processor.clear_pdf_summary()")
-            
-    else:
-        print("❌ Processing failed. Check error messages above.")
 
+        # Call chatbot loader
+        rag_main()
+    else:
+        print("❌ Document processing failed. No keypoints or stats generated.")
 
 if __name__ == "__main__":
     main()

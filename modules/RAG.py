@@ -6,7 +6,7 @@ import requests
 from tqdm import tqdm  # type: ignore
 
 # Configs
-DOCS_JSON_PATH = "./database/summaries.json"
+DOCS_JSON_PATH = "./database/sample_json.json"
 OUTPUT_DIR = "./embeddings"
 EMBED_FILE = os.path.join(OUTPUT_DIR, "vectors.npy")
 INDEX_FILE = os.path.join(OUTPUT_DIR, "index.faiss")
@@ -28,7 +28,7 @@ def fetch_embedding(text: str):
         "prompt": text
     }
     try:
-        response = requests.post("https://a4d642916d4d.ngrok-free.app/api/generate", 
+        response = requests.post("http://localhost:11434/api/embeddings", 
                                json=payload,
                                timeout=60)
         response.raise_for_status()
@@ -143,7 +143,11 @@ def build_index_from_json(json_path):
     print(f"✅ Saved index to {INDEX_FILE}")
     print(f"✅ Saved metadata to {METADATA_FILE}")
 
-if __name__ == "__main__":
+def rag_main():
     print("🚀 Starting RAG index building process")
     print(f"📂 Loading documents from {DOCS_JSON_PATH}")
     build_index_from_json(DOCS_JSON_PATH)
+
+
+if __name__ == "__main__":
+    rag_main()

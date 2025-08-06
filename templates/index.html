@@ -1576,47 +1576,129 @@
             fileInput.value = '';
         }
 
-        async function processFiles() {
-            if (uploadedFiles.length === 0) return;
-            
-            showProgress();
-            
-            try {
-                for (let i = 0; i < uploadedFiles.length; i++) {
-                    const fileObj = uploadedFiles[i];
-                    updateProgress((i / uploadedFiles.length) * 100);
-                    
-                    // Simulate processing time
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    
-                    fileObj.processed = true;
-                    processedFiles.push(fileObj);
-                    updateFileList();
-                }
-                
-                updateProgress(100);
-                showStatus(`Successfully processed ${uploadedFiles.length} files!`, 'success');
-                
-                // Show chat section after processing
-                setTimeout(() => {
-                    chatSection.style.display = 'flex';
-                    hideProgress();
-                    
-                    // Add welcome message from AI
-                    addMessage('ai', `Great! I've processed ${uploadedFiles.length} files. What would you like to know about them?`);
-                    speak(`Great! I've processed ${uploadedFiles.length} files. What would you like to know about them?`);
-                    
-                    // Scroll chat section into view
-                    chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 1000);
-                
-            } catch (error) {
-                console.error('Processing error:', error);
-                showStatus('Error during file processing: ' + error.message, 'error');
-                hideProgress();
-            }
+        // Replace the existing processFiles function with this:
+    async function processFiles() {
+    if (uploadedFiles.length === 0) return;
+    
+    showProgress();
+    
+    try {
+        // 1. Upload files to server
+        const formData = new FormData();
+        uploadedFiles.forEach(fileObj => {
+            formData.append('files', fileObj.file);
+        });
+
+        // 2. Send files to Flask's /upload endpoint (if needed)
+        const uploadResponse = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.status !== 'success') {
+            throw new Error(uploadResult.message || 'File upload failed');
         }
 
+        // 3. Call the /embed endpoint to process files
+        const embedResponse = await fetch('/embed', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ files: uploadResult.files }) // Send file metadata
+        });
+
+        const embedResult = await embedResponse.json();
+        if (embedResult.status !== 'success') {
+            throw new Error(embedResult.message || 'Embedding failed');
+        }
+
+        // 4. Mark files as processed
+        uploadedFiles.forEach(fileObj => {
+            fileObj.processed = true;
+            processedFiles.push(fileObj);
+        });
+
+        updateFileList();
+        updateProgress(100);
+        showStatus(`Successfully processed ${uploadedFiles.length} files!`, 'success');
+        
+        // 5. Show chat interface
+        setTimeout(() => {
+            chatSection.style.display = 'flex';
+            hideProgress();
+            
+            // Add welcome message from AI
+            addMessage('ai', `Great! I've processed ${uploadedFiles.length} files. What would you like to know about them?`);
+            speak(`Great! I've processed ${uploadedFiles.length} files. What would you like to know about them?`);
+            
+            // Scroll chat section into view
+            chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 1000);
+        
+    } catch (error) {
+        console.error('Processing error:', error);
+        showStatus('Error during processing: ' + error.message, 'error');
+        hideProgress();
+    }
+}
+
+    // Replace the existing sendMessage function with this:
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage('user', message);
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+
+        try {
+            // Send message to backend
+            const response = await fetch('/response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                addMessage('ai', data.response);
+                speak(data.response);
+            } else {
+                throw new Error(data.message || 'Failed to get response');
+            }
+        } catch (error) {
+            console.error('Error getting AI response:', error);
+            addMessage('ai', "Sorry, I encountered an error processing your request.");
+        }
+    }
+
+    // Add this function to handle file downloads
+    async function downloadFile(fileId) {
+        try {
+            const response = await fetch(`/download/${fileId}`);
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `file_${fileId}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            } else {
+                throw new Error('File download failed');
+            }
+        } catch (error) {
+            console.error('Download error:', error);
+            showStatus('Error downloading file: ' + error.message, 'error');
+        }
+    }
         function sendMessage() {
             const message = chatInput.value.trim();
             if (!message) return;

@@ -30,7 +30,7 @@ def get_embedding(text):
         "prompt": text
     }
     try:
-        response = requests.post("https://a4d642916d4d.ngrok-free.app/api/generate", json=payload)
+        response = requests.post("http://localhost:11434/api/embeddings", json=payload)
         response.raise_for_status()
         embedding = response.json()["embedding"]
         return np.array(embedding, dtype=np.float32)
@@ -72,7 +72,7 @@ def generate_answer(query, context):
     context_history=context_extract()
     prompt = f"""You are an chatbot for the given data only and nothing else in the world. Use the given context to answer the user query in 2 lines max.
 
-current_convo_history:
+previous_convo_history:
 {context_history}    
 
 Context:
@@ -85,10 +85,10 @@ Only answer based on the context. If it is not answerable, say you don't know fo
 """
     try:
         response = requests.post(
-            "https://a4d642916d4d.ngrok-free.app/api/generate",
+            "http://localhost:11434/api/generate",
             json={
                 "model": GEN_MODEL,
-                "prompt": prompt,
+                "prompt": f"{prompt}",
                 "stream": True
             },
             stream=True
@@ -102,10 +102,12 @@ Only answer based on the context. If it is not answerable, say you don't know fo
         print("\n")
         full_response = "".join(response_buffer)
         context_add(f"Assistant: {full_response}")
+        return full_response
     except Exception as e:
         print(f"\n[❌] Error generating response: {e}")
 
-def main(query):
+def res_main(query):
+    answer=" "
     try:
         if not query.strip():
             print("⚠️ Please enter a valid question.")
@@ -123,13 +125,19 @@ def main(query):
         for i, chunk in enumerate(top_chunks, start=1):
             print(f"[{i}] Section: {chunk['doc_id']} | Similarity: {chunk['similarity']:.2f}%")
 
-        generate_answer(query, context)
-
+        answer=generate_answer(query, context)
+        return answer
     except KeyboardInterrupt:
         print("\n👋 Exiting assistant.")
 
+def local_run():
+    while True:
+        user_input = input("\nYou: ")
+        if user_input.strip().lower() in ["exit", "quit"]:
+            print("👋 Goodbye!")
+            break
+        res_main(user_input)
+
 # CLI Interaction Loop
 if __name__ == "__main__":
-    while(True):
-        query=input("Enter your query: ")
-        main(query)
+        res_main("Who is on Apiyornis island?")
