@@ -13,12 +13,15 @@ def read_file_with_encoding_detection(file_path):
     with open(file_path, 'r', encoding=detected_encoding, errors='ignore') as f:
         return f.read()
 
-
 load_dotenv()
 api_key = os.getenv("OPEN_ROUTER")
 
 # Load and prepare the two documents
 def multi(doc1_path, doc2_path):
+    doc1_path=f"C:\\Users\\Nitesh\\OneDrive\\Desktop\\NFC4_nerd.js\\multifiles\\file1.txt"
+    doc2_path=f"C:\\Users\\Nitesh\\OneDrive\\Desktop\\NFC4_nerd.js\\multifiles\\file2.txt"
+
+
     doc1 = read_file_with_encoding_detection(doc1_path)
     doc2 = read_file_with_encoding_detection(doc2_path)
 
@@ -56,7 +59,7 @@ def multi(doc1_path, doc2_path):
             },
             data=json.dumps({
                 "model": "mistralai/mistral-small-3.2-24b-instruct:free",
-                "messages": chat_history,
+                "messages": f"Consider this as the chat history {chat_history}. Give me the most appropriate response that you can give to the given prompt {user_input}",
             })
         )
 

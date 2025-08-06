@@ -97,6 +97,7 @@ if code_option == "Newly Trained Code":
 
         if process_btn and uploaded_file is not None:
             try:
+                empty_folder(folder_path)
                 database_dir = Path("database")
                 save_path = database_dir / uploaded_file.name
                 database_dir.mkdir(parents=True, exist_ok=True)
@@ -143,31 +144,32 @@ if code_option == "Newly Trained Code":
 if st.session_state.document_processed:
     st.markdown("---")
     st.subheader("💬 Document Chatbot")
-    
-    # Display chat messages
+
+    # Display chat messages using simple st.write
     for message in st.session_state.messages:
-        with st.container():
-            if message["role"] == "user":
-                st.write(f"You:{message['content']}")
-            else:
-                st.write(f"Assistant:{message['content']}")
-    
+        role = "You" if message["role"] == "user" else "Assistant"
+        st.write(f"**{role}:** {message['content']}")  # Use Markdown for bold labels
+        # conversation+=f"{role}: {message['content']}+\n"
     # Chat input
     query = st.chat_input("Ask your question about the document...")
-    
+
+    # with open("conversation_log.txt", "w", encoding="utf-8") as f:
+    #     f.write(conversation)
+
     if query:
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": query})
-        
+
         with st.spinner("Thinking..."):
             try:
                 # Get response from RAG system
                 answer = res_main(query)
-                
+
                 # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": answer})
-                
-                # Rerun to update the chat display
-                
+
+                # Refresh to show new messages
+                st.rerun()
+
             except Exception as e:
                 st.error(f"Error generating response: {str(e)}")

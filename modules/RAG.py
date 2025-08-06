@@ -148,6 +148,5 @@ def rag_main():
     print(f"📂 Loading documents from {DOCS_JSON_PATH}")
     build_index_from_json(DOCS_JSON_PATH)
 
-
 if __name__ == "__main__":
     rag_main()

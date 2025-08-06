@@ -74,16 +74,14 @@ def empty_folder(folder_path):
     else:
         st.warning(f"⚠️ Folder '{folder_path}' does not exist.")
 
-
-
 # Set default preprocessed file path when using "Previously Available Code"
 if code_option == "Previously Available Code":
     st.session_state.document_processed = True
-    st.session_state.file_path = "database/sample_document.pdf"  # Adjust to your actual preprocessed file
+    st.session_state.file_path = "C:\\Users\\Nitesh\\OneDrive\\Desktop\\NFC4_nerd.js\\statictemp\\aepyornis-island.pdf"  # Adjust to your actual preprocessed file
+    # Skip the upload section and go straight to chatbot
+    st.session_state.messages=[]  # This will refresh the page and skip the upload section
 
-
-# --------------------------- Upload Section --------------------------- #
-# --------------------------- Upload Section --------------------------- #
+# --------------------------- Upload Section (ONLY for Newly Trained Code) --------------------------- #
 if code_option == "Newly Trained Code":
     with st.container():
         st.subheader("Upload Document for Processing")
@@ -91,14 +89,16 @@ if code_option == "Newly Trained Code":
             uploaded_file = st.file_uploader(
                 "Choose a file (PDF, DOCX, TXT, MD)",
                 type=["pdf", "docx", "txt", "md"],
-                accept_multiple_files=False,
+                accept_multiple_files=True,
                 key="file-uploader",
                 help="Maximum file size: 16MB"
+                
             )
             process_btn = st.form_submit_button("Process Document")
 
         if process_btn and uploaded_file is not None:
             try:
+                empty_folder(folder_path)
                 database_dir = Path("database")
                 save_path = database_dir / uploaded_file.name
                 database_dir.mkdir(parents=True, exist_ok=True)
@@ -141,36 +141,33 @@ if code_option == "Newly Trained Code":
         elif process_btn and uploaded_file is None:
             st.warning("⚠️ Please upload a file first.")
 
-
-# --------------------------- Chatbot Section --------------------------- #
+# --------------------------- Chatbot Section (shown when document is processed) --------------------------- #
 if st.session_state.document_processed:
     st.markdown("---")
     st.subheader("💬 Document Chatbot")
-    
-    # Display chat messages
+
+    # Display chat messages using simple st.write
     for message in st.session_state.messages:
-        with st.container():
-            if message["role"] == "user":
-                st.write(f"You:{message['content']}")
-            else:
-                st.write(f"Assistant:{message['content']}")
-    
+        role = "You" if message["role"] == "user" else "Assistant"
+        st.write(f"**{role}:** {message['content']}")  # Use Markdown for bold labels
+
     # Chat input
     query = st.chat_input("Ask your question about the document...")
-    
+
     if query:
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": query})
-        
+
         with st.spinner("Thinking..."):
             try:
                 # Get response from RAG system
                 answer = res_main(query)
-                
+
                 # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": answer})
-                # Rerun to update the chat display
-                
+
+                # Refresh to show new messages
+                st.rerun()
+
             except Exception as e:
                 st.error(f"Error generating response: {str(e)}")
-
