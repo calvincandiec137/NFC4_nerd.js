@@ -1,34 +1,32 @@
-# File: enhanced_intelligent_document_processor.py
 import json
 import re
 import fitz #type:ignore
 from docx import Document #type:ignore
-import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tqdm import tqdm
+from tqdm import tqdm #type:ignore
 from typing import List, Dict, Tuple
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
 import time
 import sys
 import os
+from groq import Groq #type:ignore
+from RAG import rag_main
+from dotenv import load_dotenv #type:ignore
+
+load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from collections import defaultdict
-from modules.multidocs import multi
-from modules.RAG import rag_main
-
-
-
 output_path = "./database/sample_json.json"
 
 class EnhancedIntelligentDocumentProcessor:
-    def __init__(self, model_name: str = "llama3"):
+    def __init__(self, model_name: str = "gemini-1.5-flash"):
         """
         Initialize processor for keypoint extraction and optional PDF summarization
         """
+        try:
+            self.groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+            print("✅ Groq client configured successfully.")
+        except Exception as e:
+            raise ValueError(f"❌ Failed to configure Groq client. Is GROQ_API_KEY set? Error: {e}")
+
         self.model_name = model_name
         self.min_compression = 0.15  # More aggressive for PDF summary
         self.max_compression = 0.25  # Tighter compression for PDF
@@ -472,30 +470,26 @@ Format as structured keypoint extraction, preserving original wording where impo
 
 KEYPOINT EXTRACTION:"""
         
+        # In extract_keypoints_from_chunk
         try:
             start_time = time.time()
-            response = requests.post(
-                "http://localhost:11434/api/generate",
-                json={
-                    "model": self.model_name,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {
-                        "temperature": 0.1,  # Low temperature for accurate extraction
-                        "top_p": 0.95,
-                        "num_predict": 1500,  # Generous space for keypoints
-                    }
-                },
-                timeout=120
+
+            chat_completion = self.groq_client.chat.completions.create(
+                messages=[{"role": "user", "content": prompt}],
+                model=self.model_name,
+                temperature=0.1,
+                top_p=0.95,
+                max_tokens=2048 # Generous limit for keypoints
             )
-            
+
             processing_time = time.time() - start_time
-            response.raise_for_status()
-            keypoints = response.json().get('response', 'ERROR: No response').strip()
-            
+            keypoints = chat_completion.choices[0].message.content.strip()
+
             print(f"Chunk {chunk['id']} ({theme}) at {location}: {len(keypoints):,} chars extracted in {processing_time:.1f}s")
+
+            # You no longer need time.sleep(4) with Groq's high rate limits
+            time.sleep(10)
             return chunk['id'], keypoints, theme, location
-            
         except Exception as e:
             return chunk['id'], f"ERROR extracting keypoints from {theme}: {str(e)[:200]}", theme, location
 
@@ -521,32 +515,23 @@ Create ultra-compressed intelligent summary covering entire document:
 
 COMPLETE DOCUMENT SUMMARY:"""
         
+       # In generate_complete_pdf_summary
         try:
-            response = requests.post(
-                "http://localhost:11434/api/generate",
-                json={
-                    "model": self.model_name,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {
-                        "temperature": 0.2,
-                        "top_p": 0.9,
-                        "num_predict": target_length // 2
-                    }
-                },
-                timeout=180
+            chat_completion = self.groq_client.chat.completions.create(
+                messages=[{"role": "user", "content": prompt}],
+                model=self.model_name,
+                temperature=0.2,
+                top_p=0.9,
+                max_tokens=2048
             )
-            
-            response.raise_for_status()
-            summary = response.json().get('response', 'ERROR generating complete summary').strip()
-            
-            # Enforce strict length limit
+
+            summary = chat_completion.choices[0].message.content.strip()
+
             if len(summary) > target_length:
                 summary = summary[:target_length-3] + "..."
-            
+
             print(f"✅ Complete PDF summary generated: {len(summary):,} chars (target: {target_length:,})")
             return summary
-            
         except Exception as e:
             return f"ERROR creating complete PDF summary: {e}"
 
@@ -639,7 +624,7 @@ COMPLETE DOCUMENT SUMMARY:"""
         chunks = self.create_contextual_chunks_with_tracking(text, page_map, analysis, target_sections)
         
         # Step 4: Extract keypoints (not summaries) in parallel
-        print(f"\n🔍 Extracting keypoints from {len(chunks)} chunks with Llama3...")
+        print(f"\n🔍 Extracting keypoints from {len(chunks)} chunks with genai...")
         chunk_keypoints = []
         successful_keypoints = []
         
@@ -703,8 +688,8 @@ COMPLETE DOCUMENT SUMMARY:"""
         """Clear the stored PDF summary"""
         self.complete_pdf_summary = None
 
-def main(name):
-    FILE_PATH = os.path.join("C:\\Users\\Nitesh\\OneDrive\\Desktop\\NFC4_nerd.js\\database", name)
+def main(name="sample_document.pdf"):
+    FILE_PATH = os.path.join("./database", name)
 
     # Validate file extension
     valid_extensions = (".pdf", ".docx", ".txt", ".md")
@@ -712,7 +697,7 @@ def main(name):
     if file_ext not in valid_extensions:
         raise ValueError(f"Unsupported file format: {file_ext}. Supported: PDF, DOCX, TXT, MD")
 
-    MODEL_NAME = "llama3"
+    MODEL_NAME = "llama-3.3-70b-versatile"
     TARGET_SECTIONS = 25
     GENERATE_PDF_SUMMARY = True
 
@@ -722,21 +707,6 @@ def main(name):
     print(f"• Sections: {TARGET_SECTIONS}")
     print(f"• Generate PDF Summary: {GENERATE_PDF_SUMMARY}")
 
-    # Test Ollama connectivity
-    try:
-        test_response = requests.post(
-            "http://localhost:11434/api/embeddings",
-            json={"model": MODEL_NAME, "prompt": "Test", "stream": False},
-            timeout=10
-        )
-        if test_response.status_code != 200:
-            print(f"❌ Ollama connection failed: {test_response.status_code}")
-            return
-        print("✅ Ollama connection verified with Llama3")
-    except Exception as e:
-        print(f"❌ Ollama not accessible: {e}")
-        return
-
     # Process document for RAG
     processor = EnhancedIntelligentDocumentProcessor(model_name=MODEL_NAME)
     chunk_keypoints, analysis, stats = processor.process_document_for_rag(
@@ -745,7 +715,7 @@ def main(name):
 
     if chunk_keypoints and stats:
         base_name = os.path.splitext(os.path.basename(FILE_PATH))[0]
-        timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
+       # timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
         json_path = "./database/sample_json.json"
 
         processor.save_enhanced_json(chunk_keypoints, analysis, stats, FILE_PATH, json_path)

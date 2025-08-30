@@ -2,8 +2,9 @@ import os
 import json
 import numpy as np
 import faiss  # type: ignore
-import requests
+import requests # type: ignore
 from tqdm import tqdm  # type: ignore
+from sentence_transformers import SentenceTransformer  # type: ignore
 
 # Configs
 DOCS_JSON_PATH = "./database/sample_json.json"
@@ -14,33 +15,21 @@ METADATA_FILE = os.path.join(OUTPUT_DIR, "metadata.json")
 
 CHUNK_SIZE = 1000  # characters
 CHUNK_OVERLAP = 200  # characters
-EMBED_MODEL = "nomic-embed-text"
+EMBED_MODEL = SentenceTransformer("BAAI/bge-m3")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def fetch_embedding(text: str):
+def fetch_embedding(text: str, model: SentenceTransformer):
+    """Generates an embedding for a single text string using the loaded model."""
     if not text.strip():
         print("[⚠️] Warning: Empty text passed to embedding function")
         return None
-        
-    payload = {
-        "model": EMBED_MODEL,
-        "prompt": text
-    }
     try:
-        response = requests.post("http://localhost:11434/api/embeddings", 
-                               json=payload,
-                               timeout=60)
-        response.raise_for_status()
-        embedding = response.json()["embedding"]
-        return np.array(embedding, dtype=np.float32)
-    except requests.exceptions.RequestException as e:
-        print(f"[❌] Network error generating embedding: {e}")
-    except KeyError:
-        print(f"[❌] Unexpected response format from embedding service")
+        embedding = model.encode(text, normalize_embeddings=True)
+        return embedding.astype(np.float32)
     except Exception as e:
         print(f"[❌] Error generating embedding: {e}")
-    return None
+        return None
 
 def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     if not text:
@@ -74,24 +63,22 @@ def build_index_from_json(json_path):
 
     print(f"📄 Found {len(documents)} documents to process")
     
-    vectors = []
+    # ✅ REPLACE WITH THIS EFFICIENT BATCH-PROCESSING BLOCK
+    all_chunks = []
     metadata = []
-    empty_docs = 0
-
-    for doc in tqdm(documents, desc="🔧 Processing Documents"):
+    
+    for doc in tqdm(documents, desc="🔧 Preparing Chunks"):
         if not isinstance(doc, dict):
             print("[⚠️] Skipping non-dictionary document")
             continue
-
+        
         doc_id = doc.get("section_number", "unknown")
         section_title = doc.get("title", "Untitled Section")
         content = doc.get("keypoints", "")
-        
+
         if not content.strip():
-            empty_docs += 1
             continue
 
-        # Include other relevant fields
         if "theme" in doc:
             content += f"\nTheme: {doc['theme']}"
         if "location" in doc:
@@ -102,26 +89,31 @@ def build_index_from_json(json_path):
             continue
 
         for i, chunk in enumerate(chunks):
-            vec = fetch_embedding(chunk)
-            if vec is not None:
-                vectors.append(vec)
-                metadata.append({
-                    "doc_id": doc_id,
-                    "section_title": section_title,
-                    "location": doc.get("location", ""),
-                    "theme": doc.get("theme", ""),
-                    "chunk_index": i,
-                    "text": chunk,
-                    "original_chunk_id": doc.get("original_chunk_id", ""),
-                    "keypoints_length": doc.get("keypoints_length", 0)
-                })
+            all_chunks.append(chunk)
+            metadata.append({
+                "doc_id": doc_id,
+                "section_title": section_title,
+                "location": doc.get("location", ""),
+                "theme": doc.get("theme", ""),
+                "chunk_index": i,
+                "text": chunk,
+                "original_chunk_id": doc.get("original_chunk_id", ""),
+                "keypoints_length": doc.get("keypoints_length", 0)
+            })
 
-    if empty_docs:
-        print(f"[⚠️] Skipped {empty_docs} empty documents")
+    if not all_chunks:
+        print("[❌] No valid text chunks to embed.")
+        return
 
-    if not vectors:
+    # --- BATCH EMBEDDING ---
+    print(f"🚀 Genera~~ng embeddings for {len(all_chunks)} chunks in one batch...")
+    vectors = EMBED_MODEL.encode(all_chunks, 
+                           batch_size=32,
+                           show_progress_bar=True, 
+                           normalize_embeddings=True)
+
+    if vectors.size == 0:
         print("[❌] No embeddings were created. Possible reasons:")
-        print("- Ollama service not running (try 'ollama serve' in another terminal)")
         print("- No valid content in documents")
         print("- Network issues")
         return
@@ -133,6 +125,7 @@ def build_index_from_json(json_path):
 
     dims = vectors.shape[1]
     index = faiss.IndexFlatL2(dims)
+    faiss.normalize_L2(vectors)
     index.add(vectors)
     faiss.write_index(index, INDEX_FILE)
 

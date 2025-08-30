@@ -1,138 +1,238 @@
 {
   "metadata": {
-    "source_pdf": "C:\\Users\\Nitesh\\OneDrive\\Desktop\\NFC4_nerd.js\\database\\aepyornis-island.pdf",
-    "model_used": "llama3",
-    "processing_date": "2025-08-06T09:50:12.018684",
-    "total_sections": 10,
+    "source_pdf": "./database/sample_document.pdf",
+    "model_used": "llama-3.3-70b-versatile",
+    "processing_date": "2025-08-30T11:38:12.499958",
+    "total_sections": 21,
     "processing_version": "Keypoint Extraction v1.0",
     "data_type": "keypoints_and_takeaways"
   },
   "document_analysis": {
-    "total_chars": 25743,
-    "total_words": 4969,
+    "total_chars": 28630,
+    "total_words": 5011,
     "paragraphs": 9,
-    "avg_paragraph_length": 2858.5555555555557,
+    "avg_paragraph_length": 3179.3333333333335,
     "complexity_score": 0.1,
     "academic_score": 1,
     "technical_score": 0,
     "json_target_compression": 0.6,
     "pdf_target_compression": 0.15,
-    "estimated_json_length": 15445,
-    "estimated_pdf_summary_length": 3861,
-    "sections_created": 10,
+    "estimated_json_length": 17178,
+    "estimated_pdf_summary_length": 4294,
+    "sections_created": 21,
     "extraction_strategy": "Keypoint and numerical value extraction"
   },
   "processing_statistics": {
-    "original_length": 25743,
-    "keypoints_length": 11413,
-    "keypoint_extraction_ratio": 0.44334382162141167,
-    "total_time": 79.64135098457336,
-    "successful_chunks": 10,
-    "total_chunks": 10,
+    "original_length": 28630,
+    "keypoints_length": 30883,
+    "keypoint_extraction_ratio": 1.0786936779601817,
+    "total_time": 74.23574447631836,
+    "successful_chunks": 21,
+    "total_chunks": 21,
     "pdf_summary_generated": true,
-    "pdf_summary_length": 2137,
-    "sections_successfully_processed": 10,
-    "total_keypoints_length": 11413,
-    "average_keypoint_section_length": 1141
+    "pdf_summary_length": 831,
+    "sections_successfully_processed": 21,
+    "total_keypoints_length": 30883,
+    "average_keypoint_section_length": 1470
   },
   "contextual_keypoints": [
     {
       "section_number": 1,
       "title": "Page 1, Line 1",
       "location": "Page 1, Line 1",
-      "theme": "Figures/Tables",
-      "keypoints": "Here is the extracted data in a structured format:\n\n**KEY POINTS**\n\n* The man with the scarred face has been to Aepyornis Island 25-27 years ago.\n* He used to collect orchids, specifically Cypripediums.\n* He worked for Dawson's and collected for them.\n* He knows someone named Butcher.\n\n**NUMERICAL VALUES**\n\n* 25-27: Number of years the man with the scarred face has been to Aepyornis Island.\n* 2: Number of years he spent in the East Indies.\n* 7: Number of years he spent in Brazil.\n\n**KEY TAKEAWAYS**\n\n* The man with the scarred face is an experienced explorer who has been to various places, including Aepyornis Island.\n* He worked for Dawson's and collected orchids for them.\n\n**TECHNICAL DETAILS**\n\n* None\n\n**IMPORTANT FACTS**\n\n* The man with the scarred face has a history of collecting orchids, specifically Cypripediums.\n* He is familiar with someone named Butcher.",
+      "theme": "General Content",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Randolph Carter lost the key of the gate of dreams when he was thirty.\n2. Prior to that time, he had made nightly excursions to strange and ancient cities beyond space.\n3. He had read much of things as they are, and talked with too many people.\n4. Well-meaning philosophers had taught him to look into the logical relations of things, and analyse the processes which shaped his thoughts and fancies.\n5. Wonder had gone away, and he had forgotten that all life is only a set of pictures in the brain.\n\n**NUMERICAL VALUES:**\n1. Thirty (Randolph Carter's age when he lost the key of the gate of dreams)\n\n**KEY TAKEAWAYS:**\n1. The loss of the key of the gate of dreams marks a significant change in Randolph Carter's life.\n2. The influence of well-meaning philosophers and the emphasis on logical relations can lead to the loss of wonder and the devaluation of inward dreamings.\n3. The distinction between reality and dreams is not as clear-cut as it seems, and both can be valuable aspects of human experience.\n\n**TECHNICAL DETAILS:**\n None\n\n**IMPORTANT FACTS:**\n1. Randolph Carter used to sail up the river Oukranos past the gilded spires of Thran.\n2. He used to tramp through perfumed jungles in Kled, where forgotten palaces with veined ivory columns sleep lovely and unbroken under the moon.\n3. Custom had dinned into his ears a superstitious reverence for that which tangibly and physically exists.\n4. He had become secretly ashamed to dwell in visions.\n5. All life is only a set of pictures in the brain, among which there is no difference betwixt those born of real things and those born of inward dreamings.",
       "original_chunk_id": 1,
-      "keypoints_length": 874
+      "keypoints_length": 1653
     },
     {
       "section_number": 2,
-      "title": "Page 1, Line 16",
-      "location": "Page 1, Line 16",
+      "title": "Page 1, Line 17",
+      "location": "Page 1, Line 17",
       "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* The man with the scar sued someone for four years' salary.\n* He was cast away on a desert island and made a little fortune doing nothing.\n* The case often amused him while he was on the island.\n* He did calculations about it, thinking over the situation.\n\n**NUMERICAL VALUES**\n\n* Four years\n* Ninety miles (distance from the swamp to somewhere)\n* 20 years ago (when the man with the scar found something)\n* 1991 (year when Aepyornis bones were found)\n\n**KEY TAKEAWAYS**\n\n* The man with the scar is critical of Dawson's actions regarding salary.\n* He believes that if Dawson hadn't been \"silly\" about the salary, a perfect ring could have been made in the Aepyornis bones.\n\n**TECHNICAL DETAILS**\n\n* None\n\n**IMPORTANT FACTS**\n\n* The Aepyornis was a monster-sized bird with a thigh-bone nearly a yard long.\n* Sindbad's roc is a legend compared to the real-life size of the Aepyornis.",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Men told him his simple fancies were inane and childish, and he believed it.\n2. The deeds of reality are just as inane and childish, and even more absurd.\n3. The actors in reality persist in fancying them full of meaning and purpose.\n4. The blind cosmos grinds aimlessly on from nothing to something and from something back to nothing again.\n5. They had chained him down to things that are, and had then explained the workings of those things till mystery had gone out of the world.\n6. He longed to escape into twilight realms where magic moulded all the little vivid fragments and prized associations of his mind.\n7. They turned him toward the new-found prodigies of science, bidding him find wonder in the atom’s vortex and mystery in the sky’s dimensions.\n8. He preferred dream-illusions to the illusions of our physical creation.\n9. Carter had tried to do as others did, and pretended that the common events and emotions of earthy minds were more important than the fantasies of rare and delicate souls.\n\n**NUMERICAL VALUES:** \n None mentioned in the content.\n\n**KEY TAKEAWAYS:**\n1. The idea that reality is just as absurd as fanciful ideas, but people persist in giving it meaning.\n2. The importance of mystery and wonder in life, which can be lost when everything is explained.\n3. The tension between preferring dream-illusions and the illusions of physical creation.\n\n**TECHNICAL DETAILS:** \n None mentioned in the content, except for general references to:\n1. The atom’s vortex\n2. The sky’s dimensions\n\n**IMPORTANT FACTS:**\n1. The cosmos is described as \"blind\" and grinding \"aimlessly\" through existence.\n2. Human minds \"flicker for a second now and then in the darkness\" of the cosmos.\n3. The idea that people are conditioned to value reality over fantasy, and that this can stifle imagination and creativity.",
       "original_chunk_id": 2,
-      "keypoints_length": 930
+      "keypoints_length": 1860
     },
     {
       "section_number": 3,
-      "title": "Page 2, Line 9",
-      "location": "Page 2, Line 9",
+      "title": "Page 1, Line 33",
+      "location": "Page 1, Line 33",
       "theme": "General Content",
-      "keypoints": "Here is the extracted content in a structured format:\n\n**KEY POINTS**\n\n* The location mentioned is Antananarivo, which can be reached by boat along the coast.\n* The speaker has visited the place and found something that keeps things from decaying, similar to creosote.\n* The area is mostly salt and has a swamp that goes circling round, cutting off a bit of land.\n* The speaker went on an expedition with two native chaps in a rum canoe to find eggs and discovered bones at the same time.\n* They spent four days camping with provisions and pitched their tent on a firmer place.\n\n**NUMERICAL VALUES**\n\n* 4: Number of days they spent camping\n* 1.5: Length of some of the eggs found (in feet)\n* 400: Number of years since the Aepyornises are believed to have lived\n\n**KEY TAKEAWAYS**\n\n* The speaker had a unique experience finding fresh eggs in a swampy area.\n* The eggs were as fresh as if they had been newly laid, despite being over 400 years old.\n\n**TECHNICAL DETAILS**\n\n* The speaker used iron rods to probe into the mud while searching for eggs.\n* Eggs can get smashed during the process of collecting them.\n\n**IMPORTANT FACTS**\n\n* Aepyornises are mentioned as a type of bird that lived in the past.\n* The missionaries say that the natives have legends about when the Aepyornises were alive, but the speaker never heard these stories themselves.",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n  - The animal pain of a stuck pig or dyspeptic ploughman in real life is a greater thing than the peerless beauty of Narath with its hundred carven gates and domes of chalcedony.\n  - Human aspirations are shallow, fickle, and meaningless.\n  - Our real impulses contrast with those pompous ideals we profess to hold.\n  - The daily life of our world is extravagant and artificial, and far less worthy of respect because of its poverty in beauty and its silly reluctance to admit its own lack of reason and purpose.\n  - Even humour is empty in a mindless universe devoid of any true standard of consistency or inconsistency.\n  - The gentle churchly faith is characterized by starved fancy and beauty, stale and prosy triteness, and owlish gravity and grotesque claims of solid truth.\n* **NUMERICAL VALUES:**\n  - One hundred carven gates (of Narath)\n* **KEY TAKEAWAYS:**\n  - The importance of pity and tragedy in understanding human experience.\n  - The contrast between the beauty of dreams and the emptiness of real life.\n  - The idea that humour can be used to cope with the extravagance and artificiality of human existence.\n* **TECHNICAL DETAILS:**\n  - None\n* **IMPORTANT FACTS:**\n  - The concept of a \"mindless universe devoid of any true standard of consistency or inconsistency\" is mentioned as a philosophical idea.\n  - The character's fathers had a naive trust in the gentle churchly faith.\n  - The character cultivated a painstaking sense of pity and tragedy under the guidance of others.\n  - The character became a kind of humorist as a way to cope with the emptiness of human existence.",
       "original_chunk_id": 3,
-      "keypoints_length": 1348
+      "keypoints_length": 1635
     },
     {
       "section_number": 4,
-      "title": "Page 2, Line 26",
-      "location": "Page 2, Line 26",
+      "title": "Page 2, Line 14",
+      "location": "Page 2, Line 14",
       "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* A centipede had bitten someone.\n* It took all day to dig into the slush and get eggs out unbroken.\n* The narrator was cross because they were covered in black mud.\n* The eggs were perfect, not even cracked, and meant to be blown when returned.\n* Someone dropped three hours' work due to a centipede bite.\n* The narrator hit someone about it.\n\n**NUMERICAL VALUES**\n\n* Three: the number of hours' work dropped by someone.\n* Three: the number of others eggs collected (in addition to the first set).\n\n**KEY TAKEAWAYS**\n\n* The narrator was annoyed at someone dropping their work due to a centipede bite.\n* The narrator hit someone about it.\n\n**TECHNICAL DETAILS**\n\n* None\n\n**IMPORTANT FACTS**\n\n* The eggs were perfect and unbroken, unlike those found at the Natural History Museum in London.\n* The narrator went to the museum to compare the eggs.",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n\t+ People tried to make earthly reality out of old myths which every step of their boasted science confuted\n\t+ Beauty lies in harmony, and loveliness of life has no standard amidst an aimless cosmos save only its harmony with the dreams and the feelings which have gone before\n\t+ Good and evil and beauty and ugliness are only ornamental fruits of perspective, whose sole value lies in their linkage to what chance made our fathers think and feel\n\t+ These things are different for every race and culture\n* **NUMERICAL VALUES:** None\n* **KEY TAKEAWAYS:**\n\t+ The attempt to make earthly reality out of old myths is misplaced seriousness\n\t+ Harmony is essential for beauty and loveliness of life\n\t+ Perspective is crucial in determining good, evil, beauty, and ugliness\n* **TECHNICAL DETAILS:** None\n* **IMPORTANT FACTS:**\n\t+ The old myths are outgrown fears and guesses of a primal race confronting the unknown\n\t+ Science confutes the old myths\n\t+ The dreams and feelings which have gone before blindly moulded our little spheres out of the rest of chaos\n\t+ Every race and culture has its own unique perspective on good, evil, beauty, and ugliness",
       "original_chunk_id": 4,
-      "keypoints_length": 892
+      "keypoints_length": 1185
     },
     {
       "section_number": 5,
-      "title": "Page 3, Line 10",
-      "location": "Page 3, Line 10",
-      "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* The narrator is stranded on a black beach with three days' provisions and no drinkable water.\n* A group of people (heathens) try to cut off the narrator's boat and leave him alone, but he manages to fend them off.\n* The narrator shoots one of the attackers with his revolver, causing him to jump into the water and drown.\n* The narrator swims after the canoe and eventually catches up to it, finding the attacker dead.\n* The narrator discovers a keg of water, coffee, biscuits, and methylated spirit in the canoe.\n\n**NUMERICAL VALUES**\n\n* 50 yards: distance from land where the narrator first sees the attackers\n* 20 yards: distance from land where the narrator is when he shoots one of the attackers\n* 3 days: amount of provisions the narrator has\n\n**KEY TAKEAWAYS**\n\n* The narrator is stranded and must rely on his wits to survive.\n* The narrator's gun is ineffective, but his revolver proves useful in fending off the attackers.\n\n**TECHNICAL DETAILS**\n\n* Phosphorescence: a glowing effect caused by bioluminescent organisms in the water\n* Clasp-knife: a type of knife used by the narrator\n\n**IMPORTANT FACTS**\n\n* The narrator is left alone with limited provisions and no drinkable water.\n* The attacker who was shot is found dead, with no signs of life or injury other than being puffed up and purple.",
+      "title": "Page 2, Line 30",
+      "location": "Page 2, Line 30",
+      "theme": "Figures/Tables",
+      "keypoints": "Since there are no figures, tables, graphs, or charts in the provided content, the extraction will focus on the text itself. Here are the extracted keypoints:\n\n**KEY POINTS:**\n- They had traded the false gods of fear and blind piety for those of licence and anarchy.\n- Carter did not taste deeply of these modern freedoms; for their cheapness and squalor sickened a spirit loving beauty alone.\n- Their champions tried to gild brute impulse with a sacredness stripped from the idols they had discarded.\n- Most of them could not escape from the delusion that life has a meaning apart from that which men dream into it.\n- They could not lay aside the crude notion of ethics and obligations beyond those of beauty.\n- Warped and bigoted with preconceived illusions of justice, freedom, and consistency, they cast off the old lore and the old ways with the old beliefs.\n\n**NUMERICAL VALUES:** None\n\n**KEY TAKEAWAYS:**\n- The loss of traditional beliefs and values led to a void in direction and dramatic interest in their lives.\n- The old lore and ways were the sole makers of their present thoughts and judgments, and the sole guides and standards in a meaningless universe.\n\n**TECHNICAL DETAILS:** None\n\n**IMPORTANT FACTS:**\n- The concept of life having a meaning apart from what men dream into it is a delusion.\n- The old lore and ways were the foundation of their thoughts, judgments, and standards.\n- The loss of artificial settings (traditional beliefs and values) led to a lack of direction and interest in their lives.\n- The universe is described as meaningless with no fixed aims or stable points of reference.",
       "original_chunk_id": 5,
-      "keypoints_length": 1354
+      "keypoints_length": 1612
     },
     {
       "section_number": 6,
-      "title": "Page 4, Line 31",
-      "location": "Page 4, Line 31",
+      "title": "Page 3, Line 8",
+      "location": "Page 3, Line 8",
       "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* \"I never read one through thoroughly before, but it's odd what you get up to when you're alone...\"\n* \"...the pitch in the canoe simply reeked with the heat and rose up into big blisters.\"\n* \"I drifted ten days...\"\n* \"Every day was like the last. Except in the morning and the evening I never kept a lookout even—the blaze was so infernal.\"\n* \"I didn't see a sail after the first three days, and those I saw took no notice of me.\"\n* \"About the sixth night a ship went by scarcely half a mile away from me, with all its lights ablaze and its ports open, looking like a big firefly. There was music aboard.\"\n* \"I stood up and shouted and screamed at it.\"\n\n**NUMERICAL VALUES**\n\n* 10: number of days drifted\n* 3: number of days before not seeing another sail\n\n**KEY TAKEAWAYS**\n\n* The narrator spent 10 days drifting, with each day feeling like the last.\n* The narrator did not see any other sails after the first three days.\n\n**TECHNICAL DETAILS**\n\n* None extracted from this section.\n\n**IMPORTANT FACTS**\n\n* The narrator found an Aepyornis egg and ate it, describing its taste as \"a bit flavoury—not bad, I mean—but with something of the taste of a duck's egg.\"\n* There was a circular patch on one side of the yolk with streaks of blood and a white mark like a ladder that the narrator found queer.",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. People drown their ennui in bustle and pretended usefulness, noise and excitement, barbaric display and animal sensation.\n2. They cultivated irony and bitterness, and found fault with the social order when these things palled, disappointed, or grew nauseous.\n3. Their brute foundations were as shifting and contradictory as the gods of their elders.\n4. The satisfaction of one moment is the bane of the next.\n5. Calm, lasting beauty comes only in dream.\n6. The world had thrown away the secrets of childhood and innocence in its worship of the real.\n7. Carter tried to live as befitted a man of keen thought and good heritage.\n8. He could not believe in anything, but the love of harmony kept him close to the ways of his race and station.\n\n**NUMERICAL VALUES:** \n None mentioned in the content.\n\n**KEY TAKEAWAYS:**\n1. The pursuit of fleeting pleasures and distractions cannot provide lasting satisfaction.\n2. The loss of childhood innocence and the rejection of dreams can lead to a sense of hollowness and unrest.\n3. The search for harmony and beauty is a fundamental human desire.\n\n**TECHNICAL DETAILS:** \n None mentioned in the content.\n\n**IMPORTANT FACTS:**\n1. The world has thrown away the secrets of childhood and innocence in its worship of the real.\n2. Calm, lasting beauty can only be found in dreams.\n3. The satisfaction of one moment can be the cause of suffering in the next.\n4. Carter's dreams faded under the ridicule of the age.\n5. He felt homesick for ethereal lands he no longer knew how to find.",
       "original_chunk_id": 6,
-      "keypoints_length": 1346
+      "keypoints_length": 1555
     },
     {
       "section_number": 7,
-      "title": "Page 5, Line 8",
-      "location": "Page 5, Line 8",
-      "theme": "Technical Details",
-      "keypoints": "Here is the extracted data in a structured format:\n\n**Location**: Page 5, Line 8\n\n**Key Points**:\n\n* The narrator hatches an Aepyornis egg and names the chick \"Man Friday\".\n* Man Friday grows rapidly and becomes a friendly companion to the narrator.\n* The narrator and Man Friday live on the island for nearly two years, with the narrator decorating the island with designs worked in sea-urchins and fancy shells.\n* Man Friday begins to show signs of a nasty temper and starts to cock his comb at the narrator.\n* The narrator's fishing becomes unlucky, leading to tension between him and Man Friday.\n* Man Friday attacks the narrator, causing physical harm and emotional distress.\n\n**Numerical Values**:\n\n* Three hundred years: the length of time the Aepyornis egg had been submerged in mud before being found by the narrator.\n* Four miles: the diameter of the atoll where the narrator lands after hatching the egg.\n* Two years: the duration of the narrator's life on the island with Man Friday.\n\n**Key Takeaways**:\n\n* The narrator forms a strong bond with Man Friday, but this bond is eventually broken due to Man Friday's growing temper and aggression.\n* The narrator's attempts to reconcile with Man Friday are unsuccessful, leading to feelings of hurt and betrayal.\n\n**Technical Details**:\n\n* The Aepyornis egg is described as having an embryo with a big head and curved back, and its heart beating under its throat.\n* The narrator uses the shell of the Aepyornis to make a storm-shelter after a thunderstorm hits the island.\n* Man Friday's plumage changes from dirty brown to fine green feathers during his growth.\n\n**Important Facts**:\n\n* The narrator is stranded on the island with no means of communication or rescue.\n* The narrator has no business worries, as he knows his salary is mounting up at Dawsons'.\n* The narrator uses sea-urchins and fancy shells to decorate the island.",
+      "title": "Page 3, Line 22",
+      "location": "Page 3, Line 22",
+      "theme": "General Content",
+      "keypoints": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS:**\n\t+ Travel was only a mockery\n\t+ He served in the Foreign Legion of France from the first\n\t+ He felt vaguely glad that all his relatives were distant and out of touch with him\n\t+ None but his grandfather and great-uncle Christopher could understand his mental life\n\t+ The touch of earth was upon his mind, and he could not think of lovely things as he had done of yore\n\t+ Ironic humour dragged down all the twilight minarets he reared\n\t+ The earthy fear of improbability blasted all the delicate and amazing flowers in his faery gardens\n\t+ The convention of assumed pity spilt mawkishness on his characters\n\t+ The myth of an important reality and significant human events and emotions debased all his high fantasy into thin-veiled allegory and cheap social satire\n\t+ His new novels were successful as his old ones had never been\n\t+ He burned his novels and ceased his writing\n* **NUMERICAL VALUES:** None\n* **KEY TAKEAWAYS:**\n\t+ The protagonist's experiences and emotions have become mundane and unfulfilling\n\t+ He is disillusioned with the world and his own creative abilities\n\t+ He is aware of the emptiness of his new novels and the audience they cater to\n* **TECHNICAL DETAILS:** None\n* **IMPORTANT FACTS:**\n\t+ The protagonist served in the Foreign Legion of France\n\t+ His grandfather and great-uncle Christopher were the only ones who could understand his mental life\n\t+ He had previously written books, but stopped when his dreams failed him\n\t+ He began writing again, but was unsatisfied with the result\n\t+ He burned his new novels and ceased writing due to their emptiness and lack of fulfillment",
       "original_chunk_id": 7,
-      "keypoints_length": 1889
+      "keypoints_length": 1646
     },
     {
       "section_number": 8,
-      "title": "Page 8, Line 19",
-      "location": "Page 8, Line 19",
-      "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* The narrator had a terrible experience sleeping on a palm tree due to an extinct bird's presence.\n* The bird was \"mooning about my island like a sulky duke\" and would not leave the narrator alone.\n* The narrator tried to reason with the bird, but it only snapped its beak at them.\n* The narrator eventually killed the bird using a South American dodge involving fishing lines, seaweed, and coral rocks.\n\n**NUMERICAL VALUES**\n\n* 12 yards: length of the string made by joining fishing lines together\n* Unknown duration: how long the narrator was chased by the bird before killing it\n\n**KEY TAKEAWAYS**\n\n* The narrator felt intense anger towards the bird but also regretted having to kill it.\n* The experience left the narrator feeling lonely and sorrowful.\n\n**TECHNICAL DETAILS**\n\n* South American dodge: a method used by the narrator to catch the bird\n* Fishing lines, seaweed, and coral rocks: materials used to create the string\n\n**IMPORTANT FACTS**\n\n* The bird was an anachronism on the island.\n* The narrator felt like a murderer while killing the bird.\n* The experience left the narrator feeling desolate and silent.",
+      "title": "Page 3, Line 38",
+      "location": "Page 3, Line 38",
+      "theme": "Figures/Tables",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* KEY POINTS: \n  - He cultivated deliberate illusion, and dabbled in the notions of the bizarre and the eccentric as an antidote for the commonplace.\n  - The popular doctrines of occultism are as dry and inflexible as those of science, yet without even the slender palliative of truth to redeem them.\n  - He decided to live on a rarer plane, and furnished his Boston home to suit his changing moods.\n  - He visited a man in the South who was shunned and feared for the blasphemous things he read in prehistoric books and clay tablets smuggled from India and Arabia.\n\n* NUMERICAL VALUES: \n  - 7 years: the amount of time he lived with the man in the South and shared his studies.\n\n* KEY TAKEAWAYS: \n  - Gross stupidity, falsehood, and muddled thinking are not dream; and form no escape from life to a mind trained above their level.\n  - He saw that the popular doctrines of occultism are as dry and inflexible as those of science, yet without even the slender palliative of truth to redeem them.\n\n* TECHNICAL DETAILS: \n  - Arcana of consciousness: a term used to describe the secret and mysterious aspects of human consciousness that few have explored.\n  - Prehistoric books and clay tablets: ancient texts and artifacts that hold secrets and knowledge from the past.\n\n* IMPORTANT FACTS: \n  - He bought stranger books and sought out deeper and more terrible men of fantastic erudition.\n  - He delved into arcana of consciousness that few have trod, and learned things about the secret pits of life, legend, and immemorial antiquity which disturbed him ever afterward.\n  - He furnished his Boston home with one room for each of his changing moods, hung in appropriate colours, furnished with befitting books and objects, and provided with sources of the proper sensations of light, heat, sound, taste, and odour.",
       "original_chunk_id": 8,
-      "keypoints_length": 1170
+      "keypoints_length": 1832
     },
     {
       "section_number": 9,
-      "title": "Page 9, Line 8",
-      "location": "Page 9, Line 8",
+      "title": "Page 4, Line 16",
+      "location": "Page 4, Line 16",
       "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* The narrator couldn't think of eating a human and instead put it in the lagoon for the fish to clean.\n* A chap cruising on a yacht visited the atoll, which was desolate and almost led the narrator to consider ending their life.\n* The narrator sold the bones to Winslow, who then sold them to Havers.\n* Havers didn't understand that the bones were extra large until after his death.\n\n**NUMERICAL VALUES**\n\n* None\n\n**KEY TAKEAWAYS**\n\n* The narrator was considering suicide due to the desolation of their atoll.\n* The narrator's friend mentioned Aepyornis vastus, which is relevant to the story.\n\n**TECHNICAL DETAILS**\n\n* None\n\n**IMPORTANT FACTS**\n\n* Aepyornis vastus is a type of bird.",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n- one midnight in an unknown and archaic graveyard, and only one emerged where two had entered\n- He went back to Arkham, the terrible witch-haunted old town of his forefathers in New England\n- experiences in the dark, amidst the hoary willows and tottering gambrel roofs, made him seal forever certain pages in the diary of a wild-minded ancestor\n- Having perceived at last the hollowness and futility of real things, Carter spent his days in retirement\n- He thought it rather silly that he bothered to keep on living at all, and got from a South American acquaintance a very curious liquid to take him to oblivion without suffering\n- Inertia and force of habit, however, caused him to defer action\n- He lingered indecisively among thoughts of old times, taking down the strange hangings from his walls and refitting the house as it was in his early boyhood\n\n**NUMERICAL VALUES:**\n- fifty: the age at which Carter despaired of any rest or contentment in a world grown too busy for beauty and too shrewd for dream\n- one: midnight in an unknown and archaic graveyard, and only one emerged where two had entered\n\n**KEY TAKEAWAYS:**\n- The world had grown too busy for beauty and too shrewd for dream\n- Carter despaired of any rest or contentment at the age of fifty\n- He became almost glad he had lingered, for his relics of youth\n\n**TECHNICAL DETAILS:**\n- None\n\n**IMPORTANT FACTS:**\n- Arkham is described as the terrible witch-haunted old town of Carter's forefathers in New England\n- Carter had experiences in the dark, amidst the hoary willows and tottering gambrel roofs\n- He sealed forever certain pages in the diary of a wild-minded ancestor\n- Carter got a very curious liquid from a South American acquaintance to take him to oblivion without suffering\n- He refitted his house as it was in his early boyhood, with purple panes, Victorian furniture, and all.",
       "original_chunk_id": 9,
-      "keypoints_length": 733
+      "keypoints_length": 1898
     },
     {
       "section_number": 10,
-      "title": "Page 9, Line 18",
-      "location": "Page 9, Line 18",
+      "title": "Page 4, Line 31",
+      "location": "Page 4, Line 31",
       "theme": "General Content",
-      "keypoints": "Here is the extracted content:\n\n**KEY POINTS**\n\n* When they found an Aepyornis with a thigh a yard long, they thought they had reached the top of the scale and called it Aepyornis maximus.\n* Then someone turned up another thigh-bone four feet six or more, and that was called Aepyornis titan.\n* Your vastus was found after old Havers died, in his collection, and then a vastissimus turned up.\n\n**NUMERICAL VALUES**\n\n* 1 yard: length of the thigh of an Aepyornis\n* 4 feet 6 or more: length of another thigh-bone\n\n**KEY TAKEAWAYS**\n\n* The discovery of larger Aepyornises led to the naming of new species.\n* The man with the scar is aware that further discoveries could lead to scientific controversy.\n\n**TECHNICAL DETAILS**\n\n* None extracted from this content section.\n\n**IMPORTANT FACTS**\n\n* The story mentions the death of old Havers, which led to the discovery of your vastus.",
+      "keypoints": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS:**\n\t+ His cleavage from the world made life and sophistication seem very distant and unreal\n\t+ A touch of magic and expectancy stole back into his nightly slumbers\n\t+ His grandfather reminded him of a key\n\t+ The grey old scholar spoke of their ancient line and the strange visions of the delicate and sensitive men who composed it\n\t+ The flame-eyed Crusader learnt wild secrets of the Saracens that held him captive\n\t+ The first Sir Randolph Carter studied magic when Elizabeth was queen\n\t+ Edmund Carter had just escaped hanging in the Salem witchcraft and placed a great silver key in an antique box\n* **NUMERICAL VALUES:**\n\t+ A quarter of a century (time since his mother and grandfather's death)\n\t+ Two centuries (time since the carved oak box's grotesque lid was raised)\n* **KEY TAKEAWAYS:**\n\t+ The protagonist's dreams are influenced by his family's past and their experiences with magic\n\t+ The protagonist is being guided by his grandfather's spirit to uncover a family secret\n* **TECHNICAL DETAILS:**\n\t+ The carved oak box has a grotesque lid\n\t+ The box is an antique and has been untouched for two centuries\n* **IMPORTANT FACTS:**\n\t+ The protagonist's mother and grandfather have been dead for a quarter of a century\n\t+ The family has a history of magic and supernatural experiences\n\t+ The great silver key has been handed down from the protagonist's ancestors\n\t+ The antique box is a significant family heirloom with a mysterious past",
       "original_chunk_id": 10,
-      "keypoints_length": 877
+      "keypoints_length": 1484
+    },
+    {
+      "section_number": 11,
+      "title": "Page 5, Line 10",
+      "location": "Page 5, Line 10",
+      "theme": "General Content",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n- It was about a foot square\n- Its Gothic carvings were so fearful that he did not marvel no person since Edmund Carter had dared to open it\n- That it held a key was indeed only a dim legend\n- Carter vaguely understood that he would find within it some key to the lost gate of dreams\n- Inside, wrapped in a discoloured parchment, was a huge key of tarnished silver covered with cryptical arabesques\n\n**NUMERICAL VALUES:**\n- a foot square (measurement)\n- no specific numbers, percentages, statistics mentioned\n\n**KEY TAKEAWAYS:**\n- The box held a key to the lost gate of dreams, but the details of how to use it were unknown\n- The box and its contents were mysterious and feared by those who knew of its existence\n\n**TECHNICAL DETAILS:**\n- The box was bound in rusty iron\n- The key was made of tarnished silver and covered with cryptical arabesques\n- The parchment was written with an antique reed in an unknown tongue\n\n**IMPORTANT FACTS:**\n- The box was found in a tall chest in the attic\n- No means was provided for working the formidable lock\n- The parchment held only the strange hieroglyphs of an unknown tongue\n- Randolph Carter’s father had never known such a box existed\n- The old servant was able to force the carven lid open, despite being shaken by the hideous faces on the box",
+      "original_chunk_id": 11,
+      "keypoints_length": 1325
+    },
+    {
+      "section_number": 12,
+      "title": "Page 5, Line 23",
+      "location": "Page 5, Line 23",
+      "theme": "General Content",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n\t+ The characters were seen on a certain papyrus scroll belonging to a terrible scholar of the South.\n\t+ The man had always shivered when he read this scroll, and Carter shivered now.\n\t+ Carter's dreams were increasing in vividness and assuming a definite cast whose purpose could not be mistaken.\n\t+ He must go into the past and merge himself with old things.\n\t+ Carter thought of the hills to the north where haunted Arkham and the rushing Miskatonic and the lonely rustic homestead of his people lay.\n* **NUMERICAL VALUES:**\n\t+ one midnight\n\t+ a century and a half\n* **KEY TAKEAWAYS:**\n\t+ Carter is being called back along the years to some hidden and ancestral source.\n\t+ His dreams are pulling him toward this source with the mingled wills of all his fathers.\n* **TECHNICAL DETAILS:**\n\t+ The key was kept in an aromatic box of ancient oak.\n\t+ The papyrus scroll belonged to a scholar of the South.\n* **IMPORTANT FACTS:**\n\t+ An ancestor had oddly vanished a century and a half before among a group of giant elms.\n\t+ The crumbling farmhouse of old Goody Fowler is located in the area Carter is traveling to.\n\t+ Haunted Arkham and the rushing Miskatonic are located in the hills to the north.\n\t+ The location includes rolling hill and stone-walled meadow, distant vale and hanging woodland, curving road and nestling farmstead.",
+      "original_chunk_id": 12,
+      "keypoints_length": 1369
+    },
+    {
+      "section_number": 13,
+      "title": "Page 6, Line 2",
+      "location": "Page 6, Line 2",
+      "theme": "Introduction",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n\t+ The location has \"little evil windows\" and a \"great roof sloping nearly to the ground on the north side\"\n\t+ The old white house is where the narrator's \"mother and her fathers before her were born\"\n\t+ The landscape includes \"rocky slope and verdant valley\" with \"distant spires of Kingsport on the horizon\"\n\t+ The narrator had not seen the \"old Carter place\" in \"over forty years\"\n\t+ The narrator feels that \"motors did not belong in the realm he was seeking\"\n* **NUMERICAL VALUES:**\n\t+ 40 years (time since the narrator last saw the old Carter place)\n* **KEY TAKEAWAYS:**\n\t+ The narrator is returning to a location with significant family history and personal connection\n\t+ The landscape is described as \"hushed and unearthly\" with a sense of \"strangeness and expectancy\"\n* **TECHNICAL DETAILS:**\n\t+ None\n* **IMPORTANT FACTS:**\n\t+ The narrator's family has a history in the location, with his \"mother and her fathers before her\" being born there\n\t+ The location includes a \"breathlessly lovely panorama\" with \"hints of the archaic, dream-laden sea in the farthest background\"\n\t+ The narrator is experiencing a sense of nostalgia and wonder as he returns to the location",
+      "original_chunk_id": 13,
+      "keypoints_length": 1213
+    },
+    {
+      "section_number": 14,
+      "title": "Page 6, Line 18",
+      "location": "Page 6, Line 18",
+      "theme": "General Content",
+      "keypoints": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS**\n\t+ The house was left vacant and untended through neglect since the death of his great-uncle Christopher thirty years before.\n\t+ The narrator had visited the house in his boyhood and found weird marvels in the woods beyond the orchard.\n\t+ The old white church had long been torn down to make room for the Congregational Hospital.\n\t+ The narrator recalled a glimpse of the old Congregational steeple on Central Hill in Kingsport from childish memory alone.\n* **NUMERICAL VALUES**\n\t+ Thirty years: the time since the death of his great-uncle Christopher\n* **KEY TAKEAWAYS**\n\t+ The narrator's memory of the old church was from his childhood, and the church had been torn down.\n\t+ The house had been neglected for a long time, and the narrator was unsure of its current state.\n* **TECHNICAL DETAILS**\n\t+ The Congregational Hospital was built on the site of the old white church.\n\t+ The old church had little round windows that reflected fire.\n* **IMPORTANT FACTS**\n\t+ The narrator's great-uncle Christopher had died thirty years before.\n\t+ The house was located on a high knoll that cleared the trees except to the north.\n\t+ The narrator had read about strange burrows or passages found in the rocky hill beneath the old church.\n\t+ The paper had told about the old church being torn down to make room for the Congregational Hospital.",
+      "original_chunk_id": 14,
+      "keypoints_length": 1371
+    },
+    {
+      "section_number": 15,
+      "title": "Page 6, Line 32",
+      "location": "Page 6, Line 32",
+      "theme": "General Content",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n- Old Benijah Corey was Randolph Carter's Uncle Christopher's hired man.\n- Old Benijah Corey is aged over a hundred.\n- Randolph Carter had strayed very far away to places where he had not belonged.\n- Randolph Carter was inexcusably late.\n- Aunt Marthy had told Randolph Carter to keep nigh the place in the afternoon and get back before dark.\n\n**NUMERICAL VALUES:**\n- Over a hundred (Old Benijah Corey's age)\n- Page 6 (location)\n- Line 32 (location)\n- Afternoon (time of day)\n- Afur dark (time of day, implying after sunset)\n\n**KEY TAKEAWAYS:**\n- Randolph Carter's sense of time and location is disrupted.\n- Old Benijah Corey's voice is unmistakable and haunting.\n- Randolph Carter has a history of running off into the woods.\n\n**TECHNICAL DETAILS:**\n- Pocket telescope (technical device used by Randolph Carter)\n\n**IMPORTANT FACTS:**\n- Randolph Carter had been somewhere he ought not to be.\n- Old Benijah Corey is still alive despite being very old.\n- Randolph Carter can easily make out the time on the Kingsport steeple with his pocket telescope.\n- Randolph Carter is referred to as \"Ran . . . dee\" by Old Benijah Corey.\n- There is a snake-den in the upper timber-lot that Randolph Carter has visited before.",
+      "original_chunk_id": 15,
+      "keypoints_length": 1249
+    },
+    {
+      "section_number": 16,
+      "title": "Page 7, Line 10",
+      "location": "Page 7, Line 10",
+      "theme": "General Content",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. He had a big silver key in his blouse pocket.\n2. Uncle Chris had told him something odd about an old unopened box with a key in it.\n3. Aunt Martha had stopped the story abruptly, saying it was no kind of thing to tell a child.\n4. He found the key in a box, possibly in the attic at home in Boston.\n5. He bribed Parks with half his week’s allowance to help him open the box and keep quiet about it.\n6. Old Benijah was calling out to the boy, warning him about being in the woods after dark.\n7. Aunt Marthy was worried about the boy being off after dark.\n8. The woods were considered not a safe place to be at that hour.\n\n**NUMERICAL VALUES:**\n1. Half his week’s allowance (amount not specified)\n2. A half hour (duration of time Old Benijah was calling out)\n\n**KEY TAKEAWAYS:**\n1. The boy has a mysterious key with an unclear origin.\n2. The woods are considered a potentially dangerous place, especially at night.\n3. The boy's family is concerned about his safety and well-being.\n\n**TECHNICAL DETAILS:**\n None mentioned in this section.\n\n**IMPORTANT FACTS:**\n1. The boy has a little telescope, but it's not with him.\n2. Uncle Chris knows something about an old unopened box with a key.\n3. Aunt Martha is protective of the boy and doesn't want him to know certain things.\n4. Parks, possibly a servant, helped the boy open the box.\n5. Old Benijah has knowledge about the woods and its potential dangers, passed down from his grandfather.",
+      "original_chunk_id": 16,
+      "keypoints_length": 1474
+    },
+    {
+      "section_number": 17,
+      "title": "Page 7, Line 28",
+      "location": "Page 7, Line 28",
+      "theme": "Figures/Tables",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n\t+ Randolph Carter was marched up the road\n\t+ Aunt Martha did not scold too hard when Benijah shoved the truant in\n\t+ Randolph did not show his key\n\t+ Randolph wanted to use the key\n\t+ Uncle Chris caught Randolph and forced him into his chair by the breakfast table\n\t+ The trees and the hills were close to Randolph, and formed the gates of that timeless realm which was his true country\n* **NUMERICAL VALUES:** None\n* **KEY TAKEAWAYS:**\n\t+ Randolph has a key that he wants to use\n\t+ Randolph has a special connection to the trees and hills\n\t+ Randolph's family has a history of unusual behavior (Uncle Chris and the Carter blood)\n* **TECHNICAL DETAILS:** None\n* **IMPORTANT FACTS:**\n\t+ The setting is in autumn\n\t+ The location is near a wooded hill and an orchard\n\t+ Randolph has a blouse pocket where he keeps the key\n\t+ The room where Randolph has breakfast has a rag carpet, exposed beams, and corner-posts\n\t+ The rear window has leaded panes and orchard boughs scratch against it",
+      "original_chunk_id": 17,
+      "keypoints_length": 1024
+    },
+    {
+      "section_number": 18,
+      "title": "Page 8, Line 10",
+      "location": "Page 8, Line 10",
+      "theme": "Methodology",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n\t+ Randolph crossed a rushing stream whose falls sang runic incantations to the lurking fauns and aegipans and dryads.\n\t+ The \"snake-den\" cave was deep, with a fissure in the farthermost black corner that led to a loftier grotto beyond.\n\t+ Randolph found a curious illusion of conscious artifice on the granite walls of the grotto.\n\t+ Randolph approached the farther wall confidently and drew forth the great silver key.\n\t+ Something occurred to heighten Randolph's imagination in his tenth year.\n* **NUMERICAL VALUES:**\n\t+ Tenth year: the age at which something occurred to heighten Randolph's imagination.\n* **KEY TAKEAWAYS:**\n\t+ Randolph's experiences in the cave and the forest slope had a profound impact on his imagination.\n\t+ The \"snake-den\" cave held secrets and mysteries that Randolph was drawn to.\n* **TECHNICAL DETAILS:**\n\t+ The cave had a fissure in the farthermost black corner that led to a loftier grotto beyond.\n\t+ The granite walls of the grotto held a curious illusion of conscious artifice.\n* **IMPORTANT FACTS:**\n\t+ The country folk shunned the \"snake-den\" cave, and Benijah had warned Randolph away from it.\n\t+ Randolph used matches filched from the sitting-room match-safe to light his way in the cave.\n\t+ Randolph's cousin, Ernest B. Aspinwall, Esq., agreed that something occurred to heighten Randolph's imagination in his tenth year.",
+      "original_chunk_id": 18,
+      "keypoints_length": 1399
+    },
+    {
+      "section_number": 19,
+      "title": "Page 8, Line 28",
+      "location": "Page 8, Line 28",
+      "theme": "General Content",
+      "keypoints": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS:**\n\t+ Randolph had looked on scenes of fantasy that few others can ever have beheld\n\t+ He seemed to have picked up an odd gift of prophecy\n\t+ He reacted unusually to things which, though at the time without meaning, were later found to justify the singular impressions\n\t+ Carter did not himself understand these words, or know why certain things made him feel certain emotions\n\t+ He fancied that some unremembered dream must be responsible\n\t+ Carter’s relatives talk much of these things because he has lately disappeared\n* **NUMERICAL VALUES:**\n\t+ 1883: the autumn when a change in Randolph was noticed\n\t+ 1897: the year Carter turned pale when some traveller mentioned the French town of Belloy-en-Santerre\n\t+ 1916: the year Carter was almost mortally wounded in Belloy-en-Santerre while serving with the Foreign Legion in the Great War\n\t+ 10: the number of years Chicago is senior to Randolph\n* **KEY TAKEAWAYS:**\n\t+ Carter had a unique ability to predict future events\n\t+ His predictions were often made without him understanding the meaning or significance\n\t+ His disappearance has led to his relatives recalling and discussing his prophetic abilities\n* **TECHNICAL DETAILS:**\n\t+ None\n* **IMPORTANT FACTS:**\n\t+ Carter was serving with the Foreign Legion in the Great War\n\t+ He was almost mortally wounded in Belloy-en-Santerre\n\t+ He had a little old servant named Parks who helped him get the key he had recently found\n\t+ Parks was the last person to see Carter before he drove off alone in his car",
+      "original_chunk_id": 19,
+      "keypoints_length": 1543
+    },
+    {
+      "section_number": 20,
+      "title": "Page 9, Line 7",
+      "location": "Page 9, Line 7",
+      "theme": "Figures/Tables",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n* KEY POINTS: \n  - Carter left to visit his old ancestral country around Arkham\n  - A box of fragrant wood with carvings was found in Carter's motor\n  - The box held a queer parchment with undecipherable characters\n  - Rain had effaced any possible footprints\n  - Evidences of disturbances were found among the fallen timbers of the Carter place\n  - A common white handkerchief was found among forest rocks on the hillside beyond\n  - There is talk of apportioning Randolph Carter’s estate among his heirs\n* NUMERICAL VALUES: \n  - None\n* KEY TAKEAWAYS: \n  - Carter is missing and his whereabouts are unknown\n  - The circumstances of his disappearance are mysterious and unexplained\n* TECHNICAL DETAILS: \n  - The carvings on the box frightened the countrymen\n  - The characters on the parchment could not be deciphered or identified by linguists or palaeographers\n* IMPORTANT FACTS: \n  - Carter's motor was found carefully set by the roadside, half way up Elm Mountain\n  - The box in Carter's motor was made of fragrant wood\n  - The handkerchief found on the hillside beyond the Carter place cannot be identified as belonging to Carter\n  - The speaker does not believe Carter is dead, citing \"twists of time and\" (unspecified factors)",
+      "original_chunk_id": 20,
+      "keypoints_length": 1254
+    },
+    {
+      "section_number": 21,
+      "title": "Page 9, Line 21",
+      "location": "Page 9, Line 21",
+      "theme": "General Content",
+      "keypoints": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Carter has found a way to traverse the mazes of vision and reality.\n2. He wanted the lands of dream he had lost, and yearned for the days of his childhood.\n3. He found a key, and was able to use it to strange advantage.\n4. A new king reigns on the opal throne in Ilek-Vad.\n5. The great silver key may hold symbolised all the aims and mysteries of a blindly impersonal cosmos.\n\n**NUMERICAL VALUES:**\n1. Page 9\n2. Line 21\n3. (No other numerical values mentioned)\n\n**KEY TAKEAWAYS:**\n1. Carter's ability to traverse the mazes of vision and reality is a significant aspect of his journey.\n2. The great silver key is crucial to understanding the aims and mysteries of the cosmos.\n3. The rumour of a new king in Ilek-Vad may be connected to Carter's journey.\n\n**TECHNICAL DETAILS:**\n1. The great silver key has cryptical arabesques.\n2. The labyrinths in the twilight sea are built by the bearded and finny Gnorri.\n3. The town of Ilek-Vad is situated atop the hollow cliffs of glass.\n\n**IMPORTANT FACTS:**\n1. Carter and the narrator plan to meet in a certain dream-city.\n2. The dream-city is located beyond the river Skai, in Ulthar.\n3. Ilek-Vad is a fabulous town of turrets.\n4. The narrator believes they know how to interpret the rumour of the new king in Ilek-Vad.",
+      "original_chunk_id": 21,
+      "keypoints_length": 1302
     }
   ],
   "rag_ready": {
-    "total_sections": 10,
+    "total_sections": 21,
     "sections_by_theme": {
-      "General Content": 8,
-      "Figures/Tables": 1,
-      "Technical Details": 1
+      "General Content": 15,
+      "Methodology": 1,
+      "Introduction": 1,
+      "Figures/Tables": 4
     },
     "data_structure": "Each section contains keypoints, numerical values, and takeaways for RAG processing"
   }
