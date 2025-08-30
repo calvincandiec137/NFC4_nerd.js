@@ -171,9 +171,7 @@ def res_main(query):
     except KeyboardInterrupt:
         print("\n👋 Exiting assistant.")
         return None
-
-# --- Command Line Interaction Loop ---
-if __name__ == "__main__":
+def main():
     while True:
         try:
             user_query = input("\n❓ Ask a question (or type 'exit' to quit):\n> ").strip()
@@ -184,3 +182,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("\n👋 Interrupted by user.")
             break
+
+# --- Command Line Interaction Loop ---
+if __name__ == "__main__":
+   main()

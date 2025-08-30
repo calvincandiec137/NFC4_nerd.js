@@ -1,72 +1,72 @@
 {
-  "query": "At what age did Randolph Carter lose the key to the gate of dreams?",
-  "rag_response": "According to the context, Randolph Carter lost the key to the gate of dreams when he was thirty years old.",
+  "query": "How old was Ralph ?",
+  "rag_response": "The context does not mention a person named Ralph. The context only mentions Randolph Carter, Old Benijah Corey, and Aunt Marthy. Therefore, the information is not available.",
   "chunks": [
+    {
+      "doc_id": 15,
+      "section_title": "Page 6, Line 32",
+      "location": "Page 6, Line 32",
+      "theme": "General Content",
+      "chunk_index": 0,
+      "text": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Old Benijah Corey was Randolph Carter's Uncle Christopher's hired man.\n2. Old Benijah Corey is aged over a hundred.\n3. Randolph Carter had strayed very far away to places where he had not belonged.\n4. Randolph Carter was inexcusably late.\n5. Aunt Marthy had told Randolph Carter to keep nigh the place in the afternoon and get back before dark.\n\n**NUMERICAL VALUES:**\n1. Over a hundred (Old Benijah Corey's age)\n\n**KEY TAKEAWAYS:**\n1. Randolph Carter's sense of time and location is disrupted, as evidenced by his lateness and disorientation.\n2. Old Benijah Corey's piping voice is unmistakable and haunting, triggering memories in Randolph Carter.\n\n**TECHNICAL DETAILS:**\n1. Pocket telescope (used by Randolph Carter to potentially tell time on the Kingsport steeple)\n\n**IMPORTANT FACTS:**\n1. Randolph Carter had been somewhere he ought not to be.\n2. Randolph Carter had not noticed the time on the Kingsport steeple.\n3. Old Benijah Corey refers to Randolph ",
+      "original_chunk_id": 15,
+      "keypoints_length": 1205,
+      "similarity": 45.55958938598633
+    },
+    {
+      "doc_id": 18,
+      "section_title": "Page 8, Line 10",
+      "location": "Page 8, Line 10",
+      "theme": "Methodology",
+      "chunk_index": 1,
+      "text": "proached the farther wall.\n  + Something occurred to heighten Randolph's imagination in his tenth year.\n* **NUMERICAL VALUES:**\n  + Tenth year (Randolph's age when something occurred to heighten his imagination)\n* **KEY TAKEAWAYS:**\n  + Randolph's experience in the cave and the forest slope had a significant impact on his imagination.\n  + The cave, particularly the loftier grotto, held a mysterious and haunting quality that drew Randolph in.\n* **TECHNICAL DETAILS:**\n  + None\n* **IMPORTANT FACTS:**\n  + The country folk shunned the strange cave in the forest slope, known as the “snake-den”.\n  + Benijah had warned Randolph again and again to stay away from the cave.\n  + Randolph's cousin, Ernest B. Aspinwall, Esq., agreed that something occurred to heighten Randolph's imagination in his tenth year.\n  + The granite walls of the loftier grotto held a curious illusion of conscious artifice.\nTheme: Methodology\nLocation: Page 8, Line 10",
+      "original_chunk_id": 18,
+      "keypoints_length": 1697,
+      "similarity": 45.533042907714844
+    },
+    {
+      "doc_id": 19,
+      "section_title": "Page 8, Line 28",
+      "location": "Page 8, Line 28",
+      "theme": "General Content",
+      "chunk_index": 0,
+      "text": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS:**\n\t+ Randolph had looked on scenes of fantasy that few others can ever have beheld\n\t+ He seemed to have picked up an odd gift of prophecy\n\t+ He reacted unusually to things which, though at the time without meaning, were later found to justify the singular impressions\n\t+ Carter had years before let fall some careless word of undoubted connexion with what was then far in the future\n\t+ He did not himself understand these words, or know why certain things made him feel certain emotions\n\t+ Carter’s relatives talk much of these things because he has lately disappeared\n* **NUMERICAL VALUES:**\n\t+ 1883: the autumn when a change was noticed in Randolph\n\t+ 1897: the year Carter turned pale when some traveller mentioned the French town of Belloy-en-Santerre\n\t+ 1916: the year Carter was almost mortally wounded in Belloy-en-Santerre while serving with the Foreign Legion in the Great War\n\t+ 10: the number of years Chicago is senior to Randolph\n* **KEY TAKEAWAY",
+      "original_chunk_id": 19,
+      "keypoints_length": 1595,
+      "similarity": 44.798927307128906
+    },
+    {
+      "doc_id": 19,
+      "section_title": "Page 8, Line 28",
+      "location": "Page 8, Line 28",
+      "theme": "General Content",
+      "chunk_index": 1,
+      "text": "1916: the year Carter was almost mortally wounded in Belloy-en-Santerre while serving with the Foreign Legion in the Great War\n\t+ 10: the number of years Chicago is senior to Randolph\n* **KEY TAKEAWAYS:**\n\t+ Carter had a unique ability to predict future events\n\t+ His predictions were often made without him understanding the meaning or significance\n\t+ His disappearance has led to his relatives recalling and discussing his prophetic abilities\n* **TECHNICAL DETAILS:**\n\t+ None\n* **IMPORTANT FACTS:**\n\t+ Carter was serving with the Foreign Legion in the Great War\n\t+ He was almost mortally wounded in Belloy-en-Santerre\n\t+ He had a little old servant named Parks who had helped him get the key he had recently found\n\t+ Parks was the last person to see Carter before he drove off alone in his car\nTheme: General Content\nLocation: Page 8, Line 28",
+      "original_chunk_id": 19,
+      "keypoints_length": 1595,
+      "similarity": 44.56040954589844
+    },
+    {
+      "doc_id": 18,
+      "section_title": "Page 8, Line 10",
+      "location": "Page 8, Line 10",
+      "theme": "Methodology",
+      "chunk_index": 0,
+      "text": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n  + Great lichened rocks rose vaguely here and there in the dim light like Druid monoliths among the swollen and twisted trunks of a sacred grove.\n  + Randolph crossed a rushing stream whose falls a little way off sang runic incantations to the lurking fauns and aegipans and dryads.\n  + The strange cave in the forest slope, the dreaded “snake-den” which country folk shunned, was deep; far deeper than anyone but Randolph suspected.\n  + A fissure in the farthermost black corner led to a loftier grotto beyond—a haunting sepulchral place whose granite walls held a curious illusion of conscious artifice.\n  + Randolph crawled in as usual, lighting his way with matches filched from the sitting-room match-safe.\n  + He drew forth the great silver key as he approached the farther wall.\n  + Something occurred to heighten Randolph's imagination in his tenth year.\n* **NUMERICAL VALUES:**\n  + Tenth year (Randolph's age when something occurred to heighten his i",
+      "original_chunk_id": 18,
+      "keypoints_length": 1697,
+      "similarity": 44.51050567626953
+    },
     {
       "doc_id": 1,
       "section_title": "Page 1, Line 1",
       "location": "Page 1, Line 1",
       "theme": "General Content",
       "chunk_index": 0,
-      "text": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Randolph Carter lost the key of the gate of dreams when he was thirty.\n2. Prior to that time, he had made nightly excursions to strange and ancient cities beyond space.\n3. He had read much of things as they are, and talked with too many people.\n4. Well-meaning philosophers had taught him to look into the logical relations of things, and analyse the processes which shaped his thoughts and fancies.\n5. Wonder had gone away, and he had forgotten that all life is only a set of pictures in the brain.\n\n**NUMERICAL VALUES:**\n1. Thirty (Randolph Carter's age when he lost the key of the gate of dreams)\n\n**KEY TAKEAWAYS:**\n1. The loss of the key of the gate of dreams marks a significant change in Randolph Carter's life.\n2. The influence of well-meaning philosophers and the emphasis on logical relations can lead to the loss of wonder and the devaluation of inward dreamings.\n3. The distinction between reality and dreams is not as clear-cut as it seems, and b",
+      "text": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Randolph Carter lost the key of the gate of dreams when he was thirty.\n2. Prior to that time, he had made nightly excursions to strange and ancient cities beyond space.\n3. He had read much of things as they are, and talked with too many people.\n4. Well-meaning philosophers had taught him to look into the logical relations of things, and analyse the processes which shaped his thoughts and fancies.\n5. Wonder had gone away, and he had forgotten that all life is only a set of pictures in the brain.\n\n**NUMERICAL VALUES:**\n1. Thirty (Randolph Carter's age when he lost the key of the gate of dreams)\n\n**KEY TAKEAWAYS:**\n1. The loss of the key of the gate of dreams marks a significant change in Randolph Carter's life, as he can no longer access the world of dreams and imagination.\n2. The influence of well-meaning philosophers and the emphasis on logical relations and analysis can lead to the loss of wonder and the devaluation of inward dreamings.\n\n**TECH",
       "original_chunk_id": 1,
-      "keypoints_length": 1653,
-      "similarity": 75.33544921875
-    },
-    {
-      "doc_id": 19,
-      "section_title": "Page 8, Line 28",
-      "location": "Page 8, Line 28",
-      "theme": "General Content",
-      "chunk_index": 0,
-      "text": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS:**\n\t+ Randolph had looked on scenes of fantasy that few others can ever have beheld\n\t+ He seemed to have picked up an odd gift of prophecy\n\t+ He reacted unusually to things which, though at the time without meaning, were later found to justify the singular impressions\n\t+ Carter did not himself understand these words, or know why certain things made him feel certain emotions\n\t+ He fancied that some unremembered dream must be responsible\n\t+ Carter’s relatives talk much of these things because he has lately disappeared\n* **NUMERICAL VALUES:**\n\t+ 1883: the autumn when a change in Randolph was noticed\n\t+ 1897: the year Carter turned pale when some traveller mentioned the French town of Belloy-en-Santerre\n\t+ 1916: the year Carter was almost mortally wounded in Belloy-en-Santerre while serving with the Foreign Legion in the Great War\n\t+ 10: the number of years Chicago is senior to Randolph\n* **KEY TAKEAWAYS:**\n\t+ Carter had a unique ability to predict f",
-      "original_chunk_id": 19,
-      "keypoints_length": 1543,
-      "similarity": 58.07693099975586
-    },
-    {
-      "doc_id": 17,
-      "section_title": "Page 7, Line 28",
-      "location": "Page 7, Line 28",
-      "theme": "Figures/Tables",
-      "chunk_index": 0,
-      "text": "KEYPOINT EXTRACTION:\n\n* **KEY POINTS:**\n\t+ Randolph Carter was marched up the road\n\t+ Aunt Martha did not scold too hard when Benijah shoved the truant in\n\t+ Randolph did not show his key\n\t+ Randolph wanted to use the key\n\t+ Uncle Chris caught Randolph and forced him into his chair by the breakfast table\n\t+ The trees and the hills were close to Randolph, and formed the gates of that timeless realm which was his true country\n* **NUMERICAL VALUES:** None\n* **KEY TAKEAWAYS:**\n\t+ Randolph has a key that he wants to use\n\t+ Randolph has a special connection to the trees and hills\n\t+ Randolph's family has a history of unusual behavior (Uncle Chris and the Carter blood)\n* **TECHNICAL DETAILS:** None\n* **IMPORTANT FACTS:**\n\t+ The setting is in autumn\n\t+ The location is near a wooded hill and an orchard\n\t+ Randolph has a blouse pocket where he keeps the key\n\t+ The room where Randolph has breakfast has a rag carpet, exposed beams, and corner-posts\n\t+ The rear window has leaded panes and orchard b",
-      "original_chunk_id": 17,
-      "keypoints_length": 1024,
-      "similarity": 55.4188232421875
-    },
-    {
-      "doc_id": 10,
-      "section_title": "Page 4, Line 31",
-      "location": "Page 4, Line 31",
-      "theme": "General Content",
-      "chunk_index": 0,
-      "text": "**KEYPOINT EXTRACTION**\n\n* **KEY POINTS:**\n\t+ His cleavage from the world made life and sophistication seem very distant and unreal\n\t+ A touch of magic and expectancy stole back into his nightly slumbers\n\t+ His grandfather reminded him of a key\n\t+ The grey old scholar spoke of their ancient line and the strange visions of the delicate and sensitive men who composed it\n\t+ The flame-eyed Crusader learnt wild secrets of the Saracens that held him captive\n\t+ The first Sir Randolph Carter studied magic when Elizabeth was queen\n\t+ Edmund Carter had just escaped hanging in the Salem witchcraft and placed a great silver key in an antique box\n* **NUMERICAL VALUES:**\n\t+ A quarter of a century (time since his mother and grandfather's death)\n\t+ Two centuries (time since the carved oak box's grotesque lid was raised)\n* **KEY TAKEAWAYS:**\n\t+ The protagonist's dreams are influenced by his family's past and their experiences with magic\n\t+ The protagonist is being guided by his grandfather's spirit to ",
-      "original_chunk_id": 10,
-      "keypoints_length": 1484,
-      "similarity": 55.31016159057617
-    },
-    {
-      "doc_id": 19,
-      "section_title": "Page 8, Line 28",
-      "location": "Page 8, Line 28",
-      "theme": "General Content",
-      "chunk_index": 1,
-      "text": "d in Belloy-en-Santerre while serving with the Foreign Legion in the Great War\n\t+ 10: the number of years Chicago is senior to Randolph\n* **KEY TAKEAWAYS:**\n\t+ Carter had a unique ability to predict future events\n\t+ His predictions were often made without him understanding the meaning or significance\n\t+ His disappearance has led to his relatives recalling and discussing his prophetic abilities\n* **TECHNICAL DETAILS:**\n\t+ None\n* **IMPORTANT FACTS:**\n\t+ Carter was serving with the Foreign Legion in the Great War\n\t+ He was almost mortally wounded in Belloy-en-Santerre\n\t+ He had a little old servant named Parks who helped him get the key he had recently found\n\t+ Parks was the last person to see Carter before he drove off alone in his car\nTheme: General Content\nLocation: Page 8, Line 28",
-      "original_chunk_id": 19,
-      "keypoints_length": 1543,
-      "similarity": 54.22123718261719
-    },
-    {
-      "doc_id": 9,
-      "section_title": "Page 4, Line 16",
-      "location": "Page 4, Line 16",
-      "theme": "General Content",
-      "chunk_index": 1,
-      "text": "down the strange hangings from his walls and refitting the house as it was in his early boyhood\n\n**NUMERICAL VALUES:**\n- fifty: the age at which Carter despaired of any rest or contentment in a world grown too busy for beauty and too shrewd for dream\n- one: midnight in an unknown and archaic graveyard, and only one emerged where two had entered\n\n**KEY TAKEAWAYS:**\n- The world had grown too busy for beauty and too shrewd for dream\n- Carter despaired of any rest or contentment at the age of fifty\n- He became almost glad he had lingered, for his relics of youth\n\n**TECHNICAL DETAILS:**\n- None\n\n**IMPORTANT FACTS:**\n- Arkham is described as the terrible witch-haunted old town of Carter's forefathers in New England\n- Carter had experiences in the dark, amidst the hoary willows and tottering gambrel roofs\n- He sealed forever certain pages in the diary of a wild-minded ancestor\n- Carter got a very curious liquid from a South American acquaintance to take him to oblivion without suffering\n- He r",
-      "original_chunk_id": 9,
-      "keypoints_length": 1898,
-      "similarity": 53.76626205444336
+      "keypoints_length": 1597,
+      "similarity": 43.133514404296875
     }
   ]
 }

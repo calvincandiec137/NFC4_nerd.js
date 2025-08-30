@@ -9,7 +9,6 @@ import time
 import sys
 import os
 from groq import Groq #type:ignore
-from RAG import rag_main
 from dotenv import load_dotenv #type:ignore
 
 load_dotenv()
@@ -485,7 +484,7 @@ KEYPOINT EXTRACTION:"""
             processing_time = time.time() - start_time
             keypoints = chat_completion.choices[0].message.content.strip()
 
-            print(f"Chunk {chunk['id']} ({theme}) at {location}: {len(keypoints):,} chars extracted in {processing_time:.1f}s")
+           # print(f"Chunk {chunk['id']} ({theme}) at {location}: {len(keypoints):,} chars extracted in {processing_time:.1f}s")
 
             # You no longer need time.sleep(4) with Groq's high rate limits
             time.sleep(10)
@@ -755,8 +754,6 @@ def main(name="sample_document.pdf"):
             for theme, count in sorted(themes.items()):
                 print(f"   • {theme}: {count} section{'s' if count > 1 else ''}")
 
-        # Call chatbot loader
-        rag_main()
     else:
         print("❌ Document processing failed. No keypoints or stats generated.")
 
