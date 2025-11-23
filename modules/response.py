@@ -6,6 +6,10 @@ from dotenv import load_dotenv # type: ignore
 from groq import Groq  # type: ignore
 from sentence_transformers import SentenceTransformer  # type: ignore
 from collections import deque
+import warnings
+
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 load_dotenv()
 # --- CONFIGURATION ---
 # File paths
@@ -14,7 +18,7 @@ INDEX_PATH = "./embeddings/index.faiss"
 META_PATH = "./embeddings/metadata.json"
 
 # Model names
-GEN_MODEL = "llama3-8b-8192" # Groq model for generation
+GEN_MODEL = "llama-3.1-8b-instant" # Groq model for generation
 
 # --- 🧠 LOAD MODELS AND CLIENTS ONCE AT STARTUP ---
 try:
