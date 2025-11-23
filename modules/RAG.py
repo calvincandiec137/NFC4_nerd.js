@@ -1,34 +1,33 @@
 import os
 import json
 import numpy as np
-import faiss  # type: ignore
-import requests # type: ignore
-from tqdm import tqdm  # type: ignore
-from sentence_transformers import SentenceTransformer  # type: ignore
+import faiss
+import requests
+from tqdm import tqdm
+from sentence_transformers import SentenceTransformer
 
-# Configs
 DOCS_JSON_PATH = "./database/sample_json.json"
 OUTPUT_DIR = "./embeddings"
 EMBED_FILE = os.path.join(OUTPUT_DIR, "vectors.npy")
 INDEX_FILE = os.path.join(OUTPUT_DIR, "index.faiss")
 METADATA_FILE = os.path.join(OUTPUT_DIR, "metadata.json")
 
-CHUNK_SIZE = 1000  # characters
-CHUNK_OVERLAP = 200  # characters
-EMBED_MODEL = SentenceTransformer("BAAI/bge-m3")
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
+EMBED_MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def fetch_embedding(text: str, model: SentenceTransformer):
     """Generates an embedding for a single text string using the loaded model."""
     if not text.strip():
-        print("[⚠️] Warning: Empty text passed to embedding function")
+        print("Warning: Empty text passed to embedding function")
         return None
     try:
         embedding = model.encode(text, normalize_embeddings=True)
         return embedding.astype(np.float32)
     except Exception as e:
-        print(f"[❌] Error generating embedding: {e}")
+        print(f"Error generating embedding: {e}")
         return None
 
 def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
@@ -51,27 +50,23 @@ def build_index_from_json(json_path):
         return
 
     if not json_data:
-        print("[❌] JSON file is empty")
+        print("JSON file is empty")
         return
 
-    # Extract documents from the contextual_keypoints array
     documents = json_data.get("contextual_keypoints", [])
-    
     if not documents:
-        print("[❌] No documents found in contextual_keypoints array")
+        print("No documents found in contextual_keypoints array")
         return
 
-    print(f"📄 Found {len(documents)} documents to process")
-    
-    # ✅ REPLACE WITH THIS EFFICIENT BATCH-PROCESSING BLOCK
+    print(f"Found {len(documents)} documents to process")
     all_chunks = []
     metadata = []
-    
-    for doc in tqdm(documents, desc="🔧 Preparing Chunks"):
+
+    for doc in tqdm(documents, desc="Preparing Chunks"):
         if not isinstance(doc, dict):
-            print("[⚠️] Skipping non-dictionary document")
+            print("Skipping non-dictionary document")
             continue
-        
+
         doc_id = doc.get("section_number", "unknown")
         section_title = doc.get("title", "Untitled Section")
         content = doc.get("keypoints", "")
@@ -102,24 +97,18 @@ def build_index_from_json(json_path):
             })
 
     if not all_chunks:
-        print("[❌] No valid text chunks to embed.")
+        print("No valid text chunks to embed.")
         return
 
-    # --- BATCH EMBEDDING ---
-    print(f"🚀 Genera~~ng embeddings for {len(all_chunks)} chunks in one batch...")
-    vectors = EMBED_MODEL.encode(all_chunks, 
-                           batch_size=32,
-                           show_progress_bar=True, 
-                           normalize_embeddings=True)
+    print(f"Generating embeddings for {len(all_chunks)} chunks in one batch...")
+    vectors = EMBED_MODEL.encode(all_chunks, batch_size=32, show_progress_bar=True, normalize_embeddings=True)
 
     if vectors.size == 0:
-        print("[❌] No embeddings were created. Possible reasons:")
-        print("- No valid content in documents")
-        print("- Network issues")
+        print("No embeddings were created.")
         return
 
-    print(f"✅ Created {len(vectors)} embeddings from {len(documents)} documents")
-    
+    print(f"Created {len(vectors)} embeddings from {len(documents)} documents")
+
     vectors = np.array(vectors, dtype=np.float32)
     np.save(EMBED_FILE, vectors)
 
@@ -132,9 +121,9 @@ def build_index_from_json(json_path):
     with open(METADATA_FILE, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
 
-    print(f"✅ Saved embeddings to {EMBED_FILE}")
-    print(f"✅ Saved index to {INDEX_FILE}")
-    print(f"✅ Saved metadata to {METADATA_FILE}")
+    print(f"Saved embeddings to {EMBED_FILE}")
+    print(f"Saved index to {INDEX_FILE}")
+    print(f"Saved metadata to {METADATA_FILE}")
 
 def rag_main():
     print("🚀 Starting RAG index building process")

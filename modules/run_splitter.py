@@ -1,15 +1,15 @@
 import json
 import re
-import fitz #type:ignore
-from docx import Document #type:ignore
+import fitz
+from docx import Document
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tqdm import tqdm #type:ignore
+from tqdm import tqdm
 from typing import List, Dict, Tuple
 import time
 import sys
 import os
-from groq import Groq #type:ignore
-from dotenv import load_dotenv #type:ignore
+from groq import Groq
+from dotenv import load_dotenv
 
 load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -17,9 +17,6 @@ output_path = "./database/sample_json.json"
 
 class EnhancedIntelligentDocumentProcessor:
     def __init__(self, model_name: str = "gemini-1.5-flash"):
-        """
-        Initialize processor for keypoint extraction and optional PDF summarization
-        """
         try:
             self.groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
             print("✅ Groq client configured successfully.")
@@ -27,21 +24,16 @@ class EnhancedIntelligentDocumentProcessor:
             raise ValueError(f"❌ Failed to configure Groq client. Is GROQ_API_KEY set? Error: {e}")
 
         self.model_name = model_name
-        self.min_compression = 0.15  # More aggressive for PDF summary
-        self.max_compression = 0.25  # Tighter compression for PDF
+        self.min_compression = 0.15
+        self.max_compression = 0.25
         self.max_workers = 4
-        self.complete_pdf_summary = None  # Store optional PDF summary
+        self.complete_pdf_summary = None
 
     @staticmethod
     def get_file_extension(file_path: str) -> str:
-        """Get lowercase file extension"""
         return os.path.splitext(file_path)[1].lower()
 
     def extract_text_from_file(self, file_path: str) -> Tuple[str, Dict]:
-        """
-        Extract text from multiple file formats with position tracking
-        Returns: (full_text, position_map)
-        """
         ext = self.get_file_extension(file_path)
         
         if ext == '.pdf':
@@ -54,7 +46,6 @@ class EnhancedIntelligentDocumentProcessor:
             raise ValueError(f"Unsupported file format: {ext}. Supported: PDF, DOCX, TXT, MD")
 
     def _extract_text_from_docx(self, docx_path: str) -> Tuple[str, Dict]:
-        """Extract text from DOCX files with paragraph tracking"""
         try:
             print(f"📖 Opening DOCX: {docx_path}")
             doc = Document(docx_path)
@@ -67,12 +58,12 @@ class EnhancedIntelligentDocumentProcessor:
                 if text:
                     full_text.append(text)
                     position_map[current_pos] = {
-                        'page': 1,  # DOCX doesn't have pages
+                        'page': 1,
                         'line': para_num,
                         'page_line_key': f"Paragraph {para_num}",
                         'text_preview': text[:50] + "..." if len(text) > 50 else text
                     }
-                    current_pos += len(text) + 2  # +2 for paragraph breaks
+                    current_pos += len(text) + 2
             
             result_text = "\n\n".join(full_text)
             print(f"✅ Extracted {len(result_text):,} characters from DOCX")
@@ -83,7 +74,6 @@ class EnhancedIntelligentDocumentProcessor:
             return "", {}
 
     def _extract_text_from_plaintext(self, file_path: str) -> Tuple[str, Dict]:
-        """Extract text from plain text files with line tracking"""
         try:
             print(f"📖 Opening text file: {file_path}")
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -111,33 +101,27 @@ class EnhancedIntelligentDocumentProcessor:
             return "", {}
         
     def analyze_document_structure(self, text: str) -> Dict:
-        """Analyze document to determine optimal processing strategy"""
-        # Basic document analysis
         total_chars = len(text)
         total_words = len(text.split())
         paragraphs = text.split('\n\n')
         
-        # Detect document type and complexity
         academic_keywords = ['abstract', 'introduction', 'methodology', 'conclusion', 'references', 'figure', 'table']
         technical_keywords = ['algorithm', 'implementation', 'system', 'architecture', 'framework']
         
         academic_score = sum(1 for keyword in academic_keywords if keyword.lower() in text.lower())
         technical_score = sum(1 for keyword in technical_keywords if keyword.lower() in text.lower())
         
-        # Determine document complexity
         avg_para_length = sum(len(p) for p in paragraphs) / len(paragraphs) if paragraphs else 100
         complexity_score = (academic_score + technical_score) / 10
         
-        # Calculate optimal compression for JSON keypoints (preserve more detail)
-        json_target_compression = 0.60  # Keep 60% of content for keypoints
+        json_target_compression = 0.60
         
-        # Calculate aggressive compression for optional PDF summary
-        if complexity_score > 0.7:  # High complexity (academic/technical)
-            pdf_target_compression = 0.20  # 20% - very compressed
-        elif complexity_score > 0.4:  # Medium complexity
-            pdf_target_compression = 0.18  # 18% - aggressive
-        else:  # Lower complexity
-            pdf_target_compression = 0.15  # 15% - most aggressive
+        if complexity_score > 0.7:
+            pdf_target_compression = 0.20
+        elif complexity_score > 0.4:
+            pdf_target_compression = 0.18
+        else:
+            pdf_target_compression = 0.15
         
         analysis = {
             'total_chars': total_chars,
@@ -162,7 +146,6 @@ class EnhancedIntelligentDocumentProcessor:
         return analysis
 
     def extract_text_with_page_tracking(self, pdf_path: str) -> Tuple[str, Dict]:
-        """Enhanced text extraction with page and line number tracking"""
         doc = None
         try:
             if not os.path.exists(pdf_path):
@@ -178,7 +161,7 @@ class EnhancedIntelligentDocumentProcessor:
             
             print(f"📄 Processing {doc.page_count} pages with tracking...")
             full_text = ""
-            page_map = {}  # Maps character positions to page/line info
+            page_map = {}
             current_char_pos = 0
             
             for page_num in range(doc.page_count):
@@ -190,10 +173,8 @@ class EnhancedIntelligentDocumentProcessor:
                         lines = page_text.split('\n')
                         
                         for line_num, line in enumerate(lines, 1):
-                            if line.strip():  # Only track non-empty lines
+                            if line.strip():
                                 line_start_pos = current_char_pos
-                                
-                                # Store mapping for this line
                                 page_map[line_start_pos] = {
                                     'page': page_num + 1,
                                     'line': line_num,
@@ -201,7 +182,7 @@ class EnhancedIntelligentDocumentProcessor:
                                     'text_preview': line[:50] + "..." if len(line) > 50 else line
                                 }
                             
-                            current_char_pos += len(line) + 1  # +1 for newline
+                            current_char_pos += len(line) + 1
                         
                         full_text += page_text + "\n"
                         
@@ -224,7 +205,6 @@ class EnhancedIntelligentDocumentProcessor:
                     pass
 
     def _try_alternative_extraction(self, pdf_path: str) -> Tuple[str, Dict]:
-        """Alternative extraction methods with basic page tracking"""
         try:
             print("🔄 Trying alternative extraction...")
             with fitz.open(pdf_path) as doc:
@@ -237,7 +217,6 @@ class EnhancedIntelligentDocumentProcessor:
                     text = page.get_text("text")
                     
                     if text.strip():
-                        # Basic line tracking for alternative method
                         lines = text.split('\n')
                         for line_num, line in enumerate(lines, 1):
                             if line.strip():
@@ -259,11 +238,9 @@ class EnhancedIntelligentDocumentProcessor:
         return "", {}
 
     def find_page_line_for_position(self, char_pos: int, page_map: Dict) -> str:
-        """Find the best page/line reference for a character position"""
         if not page_map:
             return "Unknown Location"
         
-        # Find the closest preceding position in our map
         best_pos = 0
         for pos in page_map:
             if pos <= char_pos and pos > best_pos:
@@ -272,29 +249,23 @@ class EnhancedIntelligentDocumentProcessor:
         if best_pos in page_map:
             return page_map[best_pos]['page_line_key']
         
-        # Fallback: use the first available mapping
         first_key = min(page_map.keys())
         return page_map[first_key]['page_line_key']
 
     def create_contextual_chunks_with_tracking(self, text: str, page_map: Dict, analysis: Dict, target_sections: int = 25) -> List[Dict]:
-        """Create context-aware chunks for keypoint extraction"""
         total_chars = len(text)
-        
-        # Use target_sections parameter for precise control
         optimal_chunks = target_sections
         base_chunk_size = total_chars // optimal_chunks if optimal_chunks > 0 else total_chars
         
         print(f"🧩 Creating {optimal_chunks} contextual chunks for keypoint extraction (~{base_chunk_size:,} chars each)")
         
-        # Smart splitting strategies with section awareness
         section_patterns = [
             r'\n(?=(?:Abstract|Introduction|Methodology|Methods|Results|Discussion|Conclusion|References|Bibliography|Appendix|Chapter \d+|Section \d+|\d+\.|\w+\.\s*\w+))',
-            r'\n(?=\d+\.\s+[A-Z])',  # Numbered sections
-            r'\n(?=[A-Z][^.]*\n)',   # Titles
-            r'\n\s*\n(?=[A-Z])',     # Paragraph breaks before capitals
+            r'\n(?=\d+\.\s+[A-Z])',
+            r'\n(?=[A-Z][^.]*\n)',
+            r'\n\s*\n(?=[A-Z])',
         ]
         
-        # Try different splitting strategies
         best_splits = None
         for pattern in section_patterns:
             try:
@@ -305,11 +276,9 @@ class EnhancedIntelligentDocumentProcessor:
             except:
                 continue
         
-        # Fallback to paragraph splitting
         if not best_splits:
             best_splits = re.split(r'\n\s*\n', text)
         
-        # Group paragraphs into appropriately sized chunks
         chunks = []
         current_chunk = ""
         current_paras = []
@@ -325,15 +294,11 @@ class EnhancedIntelligentDocumentProcessor:
             if para_start_pos == -1:
                 para_start_pos = current_start_pos
             
-            # Check if adding this paragraph exceeds optimal chunk size
             if (len(current_chunk) + len(para) > base_chunk_size * 1.3 and 
                 current_chunk and len(current_chunk) > base_chunk_size * 0.7):
                 
-                # Create chunk for keypoint extraction
                 chunk_start_pos = text.find(current_chunk.split('\n\n')[0]) if current_chunk else 0
                 chunk_theme = self._identify_chunk_theme(current_paras)
-                
-                # Get page/line information for this chunk
                 chunk_location = self.find_page_line_for_position(chunk_start_pos, page_map)
                 
                 chunks.append({
@@ -359,7 +324,6 @@ class EnhancedIntelligentDocumentProcessor:
                     current_start_pos = para_start_pos
                 current_paras.append(para)
         
-        # Add final chunk
         if current_chunk.strip():
             chunk_start_pos = text.find(current_chunk.split('\n\n')[0]) if current_chunk else 0
             chunk_theme = self._identify_chunk_theme(current_paras)
@@ -376,10 +340,8 @@ class EnhancedIntelligentDocumentProcessor:
                 "start_position": chunk_start_pos
             })
         
-        # Sort chunks by their position in the document
         chunks.sort(key=lambda x: x['start_position'])
         
-        # Reassign sequential IDs after sorting
         for i, chunk in enumerate(chunks, 1):
             chunk['id'] = i
         
@@ -390,7 +352,6 @@ class EnhancedIntelligentDocumentProcessor:
         return chunks
 
     def _identify_chunk_theme(self, paragraphs: List[str]) -> str:
-        """Identify the main theme/topic of a chunk"""
         combined_text = " ".join(paragraphs).lower()
         
         themes = {
@@ -417,7 +378,6 @@ class EnhancedIntelligentDocumentProcessor:
         return best_theme
 
     def _classify_content_type(self, text: str) -> str:
-        """Classify the type of content for appropriate keypoint extraction"""
         text_lower = text.lower()
         
         if any(word in text_lower for word in ['figure', 'table', 'graph', 'chart']):
@@ -432,12 +392,10 @@ class EnhancedIntelligentDocumentProcessor:
             return 'narrative'
 
     def extract_keypoints_from_chunk(self, chunk: Dict) -> Tuple[int, str, str, str]:
-        """Extract keypoints, numerical values, and takeaways from chunk - NOT summary"""
         theme = chunk['theme']
         content_type = chunk['context_type']
         location = chunk['page_line_location']
         
-        # Customize prompts for keypoint extraction based on content type
         if content_type == 'analytical':
             extraction_focus = "Extract key findings, all numerical values, percentages, statistics, data points, and quantitative results. Include specific numbers, measurements, and analytical conclusions."
         elif content_type == 'procedural':
@@ -469,7 +427,6 @@ Format as structured keypoint extraction, preserving original wording where impo
 
 KEYPOINT EXTRACTION:"""
         
-        # In extract_keypoints_from_chunk
         try:
             start_time = time.time()
 
@@ -478,22 +435,18 @@ KEYPOINT EXTRACTION:"""
                 model=self.model_name,
                 temperature=0.1,
                 top_p=0.95,
-                max_tokens=2048 # Generous limit for keypoints
+                max_tokens=2048
             )
 
             processing_time = time.time() - start_time
             keypoints = chat_completion.choices[0].message.content.strip()
 
-           # print(f"Chunk {chunk['id']} ({theme}) at {location}: {len(keypoints):,} chars extracted in {processing_time:.1f}s")
-
-            # You no longer need time.sleep(4) with Groq's high rate limits
             time.sleep(10)
             return chunk['id'], keypoints, theme, location
         except Exception as e:
             return chunk['id'], f"ERROR extracting keypoints from {theme}: {str(e)[:200]}", theme, location
 
     def generate_complete_pdf_summary(self, text: str, analysis: Dict) -> str:
-        """Generate complete PDF summary - stored in local variable only"""
         target_length = analysis['estimated_pdf_summary_length']
         
         prompt = f"""Create an EXTREMELY CONCISE and INTELLIGENT complete document summary. Target: {target_length} characters.
@@ -514,7 +467,6 @@ Create ultra-compressed intelligent summary covering entire document:
 
 COMPLETE DOCUMENT SUMMARY:"""
         
-       # In generate_complete_pdf_summary
         try:
             chat_completion = self.groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
@@ -536,27 +488,23 @@ COMPLETE DOCUMENT SUMMARY:"""
 
     def save_enhanced_json(self, chunk_keypoints: List[Dict], analysis: Dict, stats: Dict, 
                           original_pdf_name: str, output_path: str):
-        """Save JSON with keypoints (not summaries) and location tracking"""
         try:
-            # Prepare contextual keypoints with proper ordering and location info
             contextual_keypoints = []
             
-            # Sort by chunk ID to maintain document order
             ordered_keypoints = sorted([k for k in chunk_keypoints if not k['keypoints'].startswith('ERROR')], 
                                      key=lambda x: x['id'])
             
             for i, keypoint_data in enumerate(ordered_keypoints, 1):
                 contextual_keypoints.append({
                     "section_number": i,
-                    "title": keypoint_data['location'],  # Title is now page/line location
+                    "title": keypoint_data['location'],
                     "location": keypoint_data['location'],
                     "theme": keypoint_data['theme'],
-                    "keypoints": keypoint_data['keypoints'],  # Actual keypoints, not summary
+                    "keypoints": keypoint_data['keypoints'],
                     "original_chunk_id": keypoint_data['id'],
                     "keypoints_length": len(keypoint_data['keypoints'])
                 })
             
-            # Create JSON structure focused on keypoints for RAG
             json_data = {
                 "metadata": {
                     "source_pdf": original_pdf_name,
@@ -577,7 +525,7 @@ COMPLETE DOCUMENT SUMMARY:"""
                     "total_keypoints_length": sum(len(k['keypoints']) for k in contextual_keypoints),
                     "average_keypoint_section_length": sum(len(k['keypoints']) for k in contextual_keypoints) // len(contextual_keypoints) if contextual_keypoints else 0
                 },
-                "contextual_keypoints": contextual_keypoints,  # Changed from summaries to keypoints
+                "contextual_keypoints": contextual_keypoints,
                 "rag_ready": {
                     "total_sections": len(contextual_keypoints),
                     "sections_by_theme": {theme: len([k for k in contextual_keypoints if k['theme'] == theme]) 
@@ -586,7 +534,6 @@ COMPLETE DOCUMENT SUMMARY:"""
                 }
             }
             
-            # Save JSON with proper formatting
             with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(json_data, f, indent=2, ensure_ascii=False)
             
@@ -599,30 +546,23 @@ COMPLETE DOCUMENT SUMMARY:"""
 
     def process_document_for_rag(self, file_path: str, target_sections: int = 25, 
                                 generate_pdf_summary: bool = False) -> Tuple[List[Dict], Dict, Dict]:
-        """Main processing pipeline for RAG-ready keypoint extraction
-        Now supports: PDF, DOCX, TXT, MD files
-        """
         start_time = time.time()
         
         print("="*60)
         print(f"RAG-READY KEYPOINT EXTRACTION PROCESSOR ({self.get_file_extension(file_path)} FILE)")
         print("="*60)
         
-        # Step 1: Extract text with position tracking
         print(f"\n📄 Extracting text from {os.path.basename(file_path)} with location tracking...")
         text, page_map = self.extract_text_from_file(file_path)
         if not text:
             return [], {}, {}
         
-        # Step 2: Analyze document
         print("\n🧠 Analyzing document for keypoint extraction...")
         analysis = self.analyze_document_structure(text)
         
-        # Step 3: Create chunks for keypoint extraction
         print(f"\n🧩 Creating {target_sections} contextual chunks for keypoint extraction...")
         chunks = self.create_contextual_chunks_with_tracking(text, page_map, analysis, target_sections)
         
-        # Step 4: Extract keypoints (not summaries) in parallel
         print(f"\n🔍 Extracting keypoints from {len(chunks)} chunks with genai...")
         chunk_keypoints = []
         successful_keypoints = []
@@ -652,16 +592,13 @@ COMPLETE DOCUMENT SUMMARY:"""
                 except Exception as e:
                     print(f"⚠️ Keypoint extraction failed: {e}")
         
-        # Sort by chunk ID to maintain document order
         chunk_keypoints.sort(key=lambda x: x['id'])
         
-        # Step 5: Generate optional complete PDF summary (stored in local variable)
         if generate_pdf_summary:
             print("\n📋 Generating optional complete document summary...")
             self.complete_pdf_summary = self.generate_complete_pdf_summary(text, analysis)
             print(f"✅ Complete document summary stored in memory: {len(self.complete_pdf_summary):,} chars")
         
-        # Calculate final statistics
         total_time = time.time() - start_time
         total_keypoints_length = sum(len(k['keypoints']) for k in chunk_keypoints 
                                    if not k['keypoints'].startswith('ERROR'))
@@ -680,17 +617,14 @@ COMPLETE DOCUMENT SUMMARY:"""
         return chunk_keypoints, analysis, stats
 
     def get_complete_pdf_summary(self) -> str:
-        """Get the complete PDF summary from local variable"""
         return self.complete_pdf_summary if self.complete_pdf_summary else "No PDF summary generated"
 
     def clear_pdf_summary(self):
-        """Clear the stored PDF summary"""
         self.complete_pdf_summary = None
 
 def main(name="sample_document.pdf"):
     FILE_PATH = os.path.join("./database", name)
 
-    # Validate file extension
     valid_extensions = (".pdf", ".docx", ".txt", ".md")
     file_ext = os.path.splitext(FILE_PATH)[1].lower()
     if file_ext not in valid_extensions:
@@ -706,7 +640,6 @@ def main(name="sample_document.pdf"):
     print(f"• Sections: {TARGET_SECTIONS}")
     print(f"• Generate PDF Summary: {GENERATE_PDF_SUMMARY}")
 
-    # Process document for RAG
     processor = EnhancedIntelligentDocumentProcessor(model_name=MODEL_NAME)
     chunk_keypoints, analysis, stats = processor.process_document_for_rag(
         FILE_PATH, TARGET_SECTIONS, GENERATE_PDF_SUMMARY
@@ -714,7 +647,6 @@ def main(name="sample_document.pdf"):
 
     if chunk_keypoints and stats:
         base_name = os.path.splitext(os.path.basename(FILE_PATH))[0]
-       # timestamp = __import__('datetime').datetime.now().strftime('%Y%m%d_%H%M%S')
         json_path = "./database/sample_json.json"
 
         processor.save_enhanced_json(chunk_keypoints, analysis, stats, FILE_PATH, json_path)
@@ -730,7 +662,6 @@ def main(name="sample_document.pdf"):
         print(f"✅ Success rate: {stats['successful_chunks']}/{stats['total_chunks']}")
         print(f"📁 JSON Output: {json_path}")
 
-        # Save and print summary
         if GENERATE_PDF_SUMMARY:
             summary = processor.get_complete_pdf_summary()
             with open(f"./database/{base_name}_summary.txt", "w", encoding="utf-8") as f:
@@ -743,7 +674,6 @@ def main(name="sample_document.pdf"):
         print(f"   • Load JSON: json.load(open('{json_path}'))")
         print(f"   • Get summary: processor.get_complete_pdf_summary()")
 
-        # Print theme distribution
         themes = {}
         for chunk in chunk_keypoints:
             if not chunk['keypoints'].startswith('ERROR'):

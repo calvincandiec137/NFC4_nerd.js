@@ -1,55 +1,46 @@
 import numpy as np
-import faiss  # type: ignore
+import faiss
 import json
 import os
-from dotenv import load_dotenv # type: ignore 
-from groq import Groq  # type: ignore
-from sentence_transformers import SentenceTransformer  # type: ignore
+from dotenv import load_dotenv
+from groq import Groq
+from sentence_transformers import SentenceTransformer
 from collections import deque
 import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 load_dotenv()
-# --- CONFIGURATION ---
-# File paths
+
 VEC_PATH = "./embeddings/vectors.npy"
 INDEX_PATH = "./embeddings/index.faiss"
 META_PATH = "./embeddings/metadata.json"
 
-# Model names
-GEN_MODEL = "llama-3.1-8b-instant" # Groq model for generation
+GEN_MODEL = "llama-3.1-8b-instant"
 
-# --- 🧠 LOAD MODELS AND CLIENTS ONCE AT STARTUP ---
 try:
-    print("Loading embedding model (BAAI/bge-m3)...")
-    # This loads the model from Hugging Face and caches it locally.
-    st_model = SentenceTransformer("BAAI/bge-m3")
-    
+    print("Loading embedding model (all-MiniLM-L6-v2)...")
+    st_model = SentenceTransformer("all-MiniLM-L6-v2")
     print("Configuring Groq client...")
-    # This initializes the Groq client using your environment variable.
     groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-    
-    print("✅ Models and clients loaded successfully.")
+    print("Models and clients loaded.")
 except Exception as e:
-    print(f"❌ Failed to load models/clients. Ensure GROQ_API_KEY is set and libraries are installed. Error: {e}")
+    print(f"Failed to load models/clients. Error: {e}")
     exit()
 
-# --- Load FAISS index and metadata ---
 try:
     index = faiss.read_index(INDEX_PATH)
     with open(META_PATH, "r", encoding="utf-8") as f:
         metadata = json.load(f)
-    print(f"✅ Loaded FAISS index with {index.ntotal} vectors.")
+    print(f"Loaded FAISS index with {index.ntotal} vectors.")
 except Exception as e:
-    print(f"❌ Failed to load FAISS index or metadata from '{INDEX_PATH}' and '{META_PATH}'. Error: {e}")
+    print(f"Failed to load FAISS index or metadata. Error: {e}")
     exit()
 
-# --- CONVERSATION CONTEXT ---
 context_window = deque(maxlen=5)
 
 def get_embedding(text):
-    """Generates an embedding using the pre-loaded SentenceTransformer model."""
+    """Return embedding for `text`."""
     try:
         embedding = st_model.encode(text, normalize_embeddings=True)
         return embedding.astype(np.float32)
@@ -65,31 +56,26 @@ def retrieve_top_chunks(query, top_k=6):
         return []
 
     query_vec = query_vec.reshape(1, -1)
-    # The BGE model with normalize_embeddings=True already prepares for cosine similarity
-    
     distances, indices = index.search(query_vec, top_k)
     results = []
     for i, dist in zip(indices[0], distances[0]):
         match = metadata[i]
-        # Distance in FAISS IndexFlatL2 is squared L2, but after normalization, it's related to cosine similarity.
-        # A lower distance means higher similarity. 1 - (dist / 2) is a way to map it.
         match["similarity"] = (1 - (dist / 2)) * 100
         results.append(match)
 
     return results
 
 def context_add(message: str):
-    """Add a message to the context window."""
+    """Append a message to the context window."""
     context_window.append(message)
 
 def context_extract() -> str:
-    """Extract all messages as a single string context."""
+    """Return joined context as a single string."""
     return "\n".join(context_window)
 
 def generate_answer(query, context):
-    """Generate a streamed answer from Groq."""
+    """Stream an answer from Groq."""
     response_buffer = []
-    # context_history is handled by the context_window
     prompt = f"""You are a helpful assistant. Use the following context to answer the user's query.
         Your answer should be a concise summary of the information found in the context.
 
@@ -122,23 +108,21 @@ def generate_answer(query, context):
         context_add(f"Assistant: {full_response}")
         return full_response
     except Exception as e:
-        print(f"\n[❌] Error generating response: {e}")
+        print(f"\nFailed to generate response: {e}")
         return None
 
 def clean_keypoints(text):
-    # Removes the repetitive boilerplate from your JSON
     lines = text.split('\n')
-    # Filter out the headers and empty lines
     clean_lines = [line for line in lines if not line.strip().startswith(('**', 'KEYPOINT', '* ', '\t+')) and line.strip()]
     return '\n'.join(clean_lines)
 
 
 def res_main(query):
-    """Main function to handle a user query from retrieval to generation."""
+    """Retrieve chunks for `query` and generate an answer."""
     answer = ""
     try:
         if not query.strip():
-            print("⚠️ Please enter a valid question.")
+            print("Enter a question.")
             return
 
         top_chunks = retrieve_top_chunks(query, top_k=6)
@@ -149,13 +133,8 @@ def res_main(query):
 
         context = "\n\n---\n\n".join([clean_keypoints(chunk["text"]) for chunk in top_chunks])
 
-       # print(f"\n📄 Top {len(top_chunks)} Sections Retrieved:")
-        #for i, chunk in enumerate(top_chunks, start=1):
-         #   print(f"[{i}] Section: {chunk.get('doc_id', 'N/A')} | Sim: {chunk['similarity']:.2f}% | Loc: {chunk.get('location', 'N/A')}")
-
         answer = generate_answer(query, context)
 
-        # Prepare data for JSON output, ensuring numpy types are converted
         for chunk in top_chunks:
             if isinstance(chunk.get("similarity"), (np.floating, float)):
                 chunk["similarity"] = float(chunk["similarity"])
@@ -169,7 +148,6 @@ def res_main(query):
         with open("./modules/last_query_result.json", "w", encoding="utf-8") as f:
             json.dump(session_data, f, indent=2, ensure_ascii=False)
 
-       # print("📝 Saved last query result for PDF highlighting.")
         return answer
 
     except KeyboardInterrupt:
@@ -187,6 +165,5 @@ def main():
             print("\n👋 Interrupted by user.")
             break
 
-# --- Command Line Interaction Loop ---
 if __name__ == "__main__":
    main()

@@ -1,0 +1,72 @@
+{
+  "query": "what is the character arc of this man in the story",
+  "rag_response": "The character arc of the man in the story is one of disillusionment and spiritual seeking. Initially, he is a writer who serves in the Foreign Legion of France and struggles to find satisfaction in his writing due to the influence of earthly concerns. He eventually becomes successful but feels empty and rejects his work. He then embarks on a journey of spiritual exploration, delving into the \"Arcana of consciousness\" and seeking out deeper and more terrible men of fantastic erudition. He attempts to escape the mundane world by cultivating deliberate illusion and immersing himself in the bizarre and the eccentric. However, he comes to realize that even these attempts at escapism are ultimately unsatisfying, and he is left with a sense of disillusionment and a desire",
+  "chunks": [
+    {
+      "doc_id": 7,
+      "section_title": "Page 3, Line 22",
+      "location": "Page 3, Line 22",
+      "theme": "General Content",
+      "chunk_index": 0,
+      "text": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Travel was only a mockery\n2. He served in the Foreign Legion of France from the first\n3. He felt vaguely glad that all his relatives were distant and out of touch with him\n4. None of his relatives, except his grandfather and great-uncle Christopher, could have understood his mental life\n5. He began once more the writing of books, which he had left off when dreams first failed him\n6. The touch of earth was upon his mind, and he could not think of lovely things as he had done of yore\n7. Ironic humour dragged down all the twilight minarets he reared\n8. The earthy fear of improbability blasted all the delicate and amazing flowers in his faery gardens\n9. The convention of assumed pity spilt mawkishness on his characters\n10. The myth of an important reality and significant human events and emotions debased all his high fantasy into thin-veiled allegory and cheap social satire\n11. His new novels were successful as his old ones had never been\n12. He bur",
+      "original_chunk_id": 7,
+      "keypoints_length": 1797,
+      "similarity": 37.4439697265625
+    },
+    {
+      "doc_id": 7,
+      "section_title": "Page 3, Line 22",
+      "location": "Page 3, Line 22",
+      "theme": "General Content",
+      "chunk_index": 1,
+      "text": "ty and significant human events and emotions debased all his high fantasy into thin-veiled allegory and cheap social satire\n11. His new novels were successful as his old ones had never been\n12. He burned his new novels and ceased his writing\n\n**NUMERICAL VALUES:**\n None\n\n**KEY TAKEAWAYS:**\n1. The protagonist's experiences, including travel and war, did not stir him significantly\n2. He struggled to find satisfaction in his writing due to the influence of earthly concerns\n3. His writing was debased by the need to conform to conventional expectations\n4. He ultimately rejected his own work due to its emptiness\n\n**TECHNICAL DETAILS:**\n None\n\n**IMPORTANT FACTS:**\n1. The protagonist's grandfather and great-uncle Christopher were the only relatives who could have understood his mental life\n2. The protagonist served in the Foreign Legion of France\n3. He had previously stopped writing when his dreams failed him\n4. His new novels were successful, but he considered them empty and ceased writing\nTh",
+      "original_chunk_id": 7,
+      "keypoints_length": 1797,
+      "similarity": 36.90806198120117
+    },
+    {
+      "doc_id": 2,
+      "section_title": "Page 1, Line 17",
+      "location": "Page 1, Line 17",
+      "theme": "General Content",
+      "chunk_index": 0,
+      "text": "KEYPOINT EXTRACTION:\n\n**KEY POINTS:**\n1. Men told him his simple fancies were inane and childish, and he believed it because he could see that they might easily be so.\n2. The deeds of reality are just as inane and childish, and even more absurd because their actors persist in fancying them full of meaning and purpose.\n3. The blind cosmos grinds aimlessly on from nothing to something and from something back to nothing again, neither heeding nor knowing the wishes or existence of the minds that flicker for a second now and then in the darkness.\n4. They had chained him down to things that are, and had then explained the workings of those things till mystery had gone out of the world.\n5. He longed to escape into twilight realms where magic moulded all the little vivid fragments and prized associations of his mind into vistas of breathless expectancy and unquenchable delight.\n6. They told him he lacked imagination, and was immature because he preferred dream-illusions to the illusions of ou",
+      "original_chunk_id": 2,
+      "keypoints_length": 2219,
+      "similarity": 36.74665832519531
+    },
+    {
+      "doc_id": 8,
+      "section_title": "Page 3, Line 38",
+      "location": "Page 3, Line 38",
+      "theme": "Figures/Tables",
+      "chunk_index": 0,
+      "text": "KEYPOINT EXTRACTION:\n\n* KEY POINTS: \n  - He cultivated deliberate illusion, and dabbled in the notions of the bizarre and the eccentric as an antidote for the commonplace.\n  - The popular doctrines of occultism are as dry and inflexible as those of science, yet without even the slender palliative of truth to redeem them.\n  - He decided to live on a rarer plane, and furnished his Boston home to suit his changing moods.\n  - He visited a man in the South who was shunned and feared for the blasphemous things he read in prehistoric books and clay tablets smuggled from India and Arabia.\n* NUMERICAL VALUES: \n  - 7 years: the duration he lived with the man in the South and shared his studies\n* KEY TAKEAWAYS: \n  - Gross stupidity, falsehood, and muddled thinking are not dream; and form no escape from life to a mind trained above their level.\n* TECHNICAL DETAILS: \n  - Arcana of consciousness: a term used to describe the secret pits of life, legend, and immemorial antiquity that Carter delved int",
+      "original_chunk_id": 8,
+      "keypoints_length": 1460,
+      "similarity": 35.7039794921875
+    },
+    {
+      "doc_id": 7,
+      "section_title": "Page 3, Line 22",
+      "location": "Page 3, Line 22",
+      "theme": "General Content",
+      "chunk_index": 2,
+      "text": "protagonist served in the Foreign Legion of France\n3. He had previously stopped writing when his dreams failed him\n4. His new novels were successful, but he considered them empty and ceased writing\nTheme: General Content\nLocation: Page 3, Line 22",
+      "original_chunk_id": 7,
+      "keypoints_length": 1797,
+      "similarity": 34.21186065673828
+    },
+    {
+      "doc_id": 8,
+      "section_title": "Page 3, Line 38",
+      "location": "Page 3, Line 38",
+      "theme": "Figures/Tables",
+      "chunk_index": 1,
+      "text": "om life to a mind trained above their level.\n* TECHNICAL DETAILS: \n  - Arcana of consciousness: a term used to describe the secret pits of life, legend, and immemorial antiquity that Carter delved into.\n* IMPORTANT FACTS: \n  - He bought stranger books and sought out deeper and more terrible men of fantastic erudition.\n  - He furnished his Boston home with one room for each of his changing moods, hung in appropriate colours, furnished with befitting books and objects, and provided with sources of the proper sensations of light, heat, sound, taste, and odour.\n  - The man in the South read prehistoric books and clay tablets smuggled from India and Arabia.\nTheme: Figures/Tables\nLocation: Page 3, Line 38",
+      "original_chunk_id": 8,
+      "keypoints_length": 1460,
+      "similarity": 31.48464012145996
+    }
+  ]
+}
