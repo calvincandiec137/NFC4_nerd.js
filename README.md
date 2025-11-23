@@ -156,9 +156,8 @@ Notes:
 - FAISS errors: If `faiss` import fails, install `faiss-cpu` via pip or follow platform-specific instructions for `faiss`/GPU support.
 - Memory issues generating many embeddings: Reduce batch size or process documents in smaller batches.
 
-**License & Contact**
+**License**
 - **License**: MIT License — see the `LICENSE` file at the project root for the full text.
-- **Copyright**: Copyright (c) 2025 `calvincandiec137`.
 
 **Acknowledgements**
 - `sentence-transformers` — easy-to-use sentence embedding models
