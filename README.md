@@ -1,5 +1,9 @@
 # DoChat
 
+
+https://github.com/user-attachments/assets/4f7fa70f-5eac-4f30-a9fd-b7d5a77e0873
+
+
 **Demo Video:** https://youtu.be/smLLruXduPU
 
 **Short Description**: DoChat is a lightweight Retrieval-Augmented Generation (RAG) utility for building embeddings from structured JSON documents, indexing them with FAISS, and querying the result to power context-aware chat or retrieval workflows.
@@ -160,5 +164,3 @@ Notes:
 - `sentence-transformers` — easy-to-use sentence embedding models
 - `FAISS` — fast similarity search
 - `numpy`, `tqdm`, `requests`
-
----
