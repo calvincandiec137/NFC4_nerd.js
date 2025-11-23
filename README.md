@@ -153,8 +153,8 @@ Notes:
 - Memory issues generating many embeddings: Reduce batch size or process documents in smaller batches.
 
 **License & Contact**
-- License: Add your project license here (e.g., MIT). Create a `LICENSE` file at repo root.
-- Contact: Open an issue in this repository or email the maintainer (replace with your contact information).
+- **License**: MIT License — see the `LICENSE` file at the project root for the full text.
+- **Copyright**: Copyright (c) 2025 `calvincandiec137`.
 
 **Acknowledgements**
 - `sentence-transformers` — easy-to-use sentence embedding models
