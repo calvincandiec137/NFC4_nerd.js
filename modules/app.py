@@ -3,6 +3,8 @@ from pydantic import BaseModel
 import base64
 from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins (or specify your frontend URL)
@@ -11,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app = FastAPI()
+
 
 class UploadPDF(BaseModel):
     data: str
