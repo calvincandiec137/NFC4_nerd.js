@@ -9,3 +9,4 @@ voyageai
 requests
 python-multipart
 pinecone-client
+"fastapi[standard]"
