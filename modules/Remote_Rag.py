@@ -74,7 +74,7 @@ def sanitize_chunks(structured):
     return clean
 
 if __name__ == "__main__":
-    import extract_text
+    import modules.extract_text
     extract_text.main()
     chunks = sanitize_chunks(extract_text.structured)
     ingest_chunks(chunks)

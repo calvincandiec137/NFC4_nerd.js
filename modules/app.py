@@ -28,8 +28,8 @@ def upload(payload: UploadPDF):
 
 @app.get("/prepare")
 def prepare():
-    import extract_text
-    from Remote_Rag import ingest_chunks, sanitize_chunks
+    import modules.extract_text
+    from modules.Remote_Rag import ingest_chunks, sanitize_chunks
 
     extract_text.main()
     chunks = sanitize_chunks(extract_text.structured)
@@ -38,6 +38,6 @@ def prepare():
 
 @app.get("/ask")
 def ask_question(q: str):
-    from Groq_res import rag_answer
+    from modules.Groq_res import rag_answer
     answer = rag_answer(q)
     return {"question": q, "answer": answer}
