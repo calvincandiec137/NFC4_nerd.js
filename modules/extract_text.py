@@ -2,7 +2,7 @@ import pymupdf
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 
-PATH = "/home/faizmk/NFC4_nerd.js/database"
+PATH = "./database"
 
 structured = []
 
