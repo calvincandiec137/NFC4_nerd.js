@@ -39,7 +39,7 @@ def upload(payload: UploadPDF):
 
 @app.get("/prepare")
 def prepare():
-    import modules.extract_text
+    import modules.extract_text as extract_text
     from modules.Remote_Rag import ingest_chunks, sanitize_chunks
 
     extract_text.main()
