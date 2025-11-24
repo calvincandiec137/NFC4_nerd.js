@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import voyageai
-from modules.groq import Groq
+from groq import Groq
 from pinecone import Pinecone, ServerlessSpec
 
 load_dotenv()
