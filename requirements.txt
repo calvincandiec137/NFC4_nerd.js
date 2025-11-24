@@ -8,5 +8,5 @@ groq
 voyageai
 requests
 python-multipart
-pinecone-client
+pinecone
 fastapi[standard]
