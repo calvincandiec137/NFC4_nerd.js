@@ -30,7 +30,7 @@ def upload(payload: UploadPDF):
     if len(file) > 10 * 1024 * 1024:
         return {"status": "file too large"}
 
-    BASE_DIR = "/home/faizmk/NFC4_nerd.js/database"
+    BASE_DIR = "./database"
 
     with open(f"{BASE_DIR}/{payload.name}", "wb") as f:
         f.write(file)
