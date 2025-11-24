@@ -1,5 +1,13 @@
-sentence-transformers
-numpy
-tqdm
+fastapi
+uvicorn
+python-dotenv
+PyMuPDF
+langchain-text-splitters
+groq
+voyageai
 requests
-faiss-cpu
+python-multipart
+pinecone-client
+os
+pydantic
+pymupdf
