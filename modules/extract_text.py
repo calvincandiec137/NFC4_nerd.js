@@ -1,33 +1,33 @@
 import pymupdf
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+import os
 
-PATH = "./database/sample_document.pdf"
+PATH = "/home/faizmk/NFC4_nerd.js/database"
 
 structured = []
 
-
 def main():
+    for fname in os.listdir(PATH):
+        if not fname.endswith(".pdf"):
+            continue
 
-    doc = pymupdf.open(PATH)
+        full_path = os.path.join(PATH, fname)
+        doc = pymupdf.open(full_path)
 
-    text = ""
+        text = ""
+        for page in doc:
+            text += page.get_text()
 
-    for page in doc:
-        text+= page.get_text()
-    
-    # print(text)
+        splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=0)
+        texts = splitter.split_text(text)
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=0)
-    texts = text_splitter.split_text(text)
-    
-    #print(texts)
-    for i, chunk in enumerate(texts):
-        structured.append({
-            "id": i,
-            "text": chunk,
-            "source": PATH.split("/")[-1],
-            "chunk_index": i
-        })
+        for i, chunk in enumerate(texts):
+            structured.append({
+                "id": i,
+                "text": chunk,
+                "source": fname,
+                "chunk_index": i
+            })
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
