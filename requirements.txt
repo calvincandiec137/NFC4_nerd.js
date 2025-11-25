@@ -3,9 +3,7 @@ uvicorn
 python-dotenv
 PyMuPDF
 langchain-text-splitters
-qdrant-client
 groq
-voyageai
 requests
 python-multipart
 pinecone
