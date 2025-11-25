@@ -1,11 +1,11 @@
 fastapi
 uvicorn
 python-dotenv
-PyMuPDF
+pymupdf
 langchain-text-splitters
+sentence-transformers==2.5.1
+torch==2.3.0
+pinecone
 groq
 requests
 python-multipart
-pinecone
-fastapi[standard]
-sentence-transformers
