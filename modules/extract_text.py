@@ -7,6 +7,7 @@ PATH = "./database"
 structured = []
 
 def main():
+    os.makedirs(PATH, exist_ok=True)  
     for fname in os.listdir(PATH):
         if not fname.endswith(".pdf"):
             continue
