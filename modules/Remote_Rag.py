@@ -47,8 +47,21 @@ def embed_batch(texts):
     all_vecs = []
     for i in range(0, len(texts), BATCH):
         batch = texts[i:i + BATCH]
-        print(f"Embedding batch {i//BATCH + 1} with {len(batch)} items...")
-        vecs = jina_embed(batch, task="retrieval.passage")
+
+        # Debug batch before calling Jina
+        for idx, item in enumerate(batch):
+            if not isinstance(item, str):
+                print("INVALID ITEM TYPE:", type(item))
+            if not item.strip():
+                print("EMPTY ITEM:", repr(item))
+
+        try:
+            vecs = jina_embed(batch, task="retrieval.passage")
+        except Exception as e:
+            print("JINA ERROR ON BATCH:", i)
+            print(batch)
+            raise e
+
         all_vecs.extend(vecs)
         time.sleep(1)
     return all_vecs
@@ -81,21 +94,44 @@ def ingest_chunks(structured):
     upsert_pinecone(payloads)
 
 
+def safe_text(t: str):
+    if not isinstance(t, str):
+        return None
+    t = t.strip()
+    if len(t) < 20:
+        return None
+
+    # Remove invalid chars that break Jina
+    t = t.replace("\x00", "")
+    t = t.encode("utf-8", "ignore").decode("utf-8", "ignore")
+
+    # Extra safety: remove control characters
+    t = "".join(ch for ch in t if ch.isprintable() or ch.isspace())
+
+    if not t or len(t) < 20:
+        return None
+
+    return t
+
+
 def sanitize_chunks(structured):
     clean = []
     seen = set()
+
     for c in structured:
         t = c.get("text")
-        if not isinstance(t, str):
+        t2 = safe_text(t)
+        if not t2:
             continue
-        t2 = t.strip()
-        if len(t2) < 20:
-            continue
+
         if t2 in seen:
             continue
+
         seen.add(t2)
         clean.append({**c, "text": t2})
+
     return clean
+
 
 
 if __name__ == "__main__":
@@ -105,4 +141,3 @@ if __name__ == "__main__":
     ingest_chunks(chunks)
     print("Ingestion complete.")
     print(f"Total chunks ingested: {len(chunks)}")
-    
