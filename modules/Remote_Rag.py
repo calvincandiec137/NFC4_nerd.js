@@ -22,7 +22,7 @@ if index_name not in [i["name"] for i in pc.list_indexes()]:
 index = pc.Index(index_name)
 
 def embed_batch(texts):
-    BATCH = 800
+    BATCH = 20
     all_vecs = []
     for i in range(0, len(texts), BATCH):
         batch = texts[i:i + BATCH]
