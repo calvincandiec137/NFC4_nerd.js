@@ -1,30 +1,33 @@
 import os
 from dotenv import load_dotenv
-import voyageai
 from groq import Groq
 from pinecone import Pinecone, ServerlessSpec
+from sentence_transformers import SentenceTransformer
 
 load_dotenv()
 
-vo = voyageai.Client(api_key=os.environ["VOYAGE_API_KEY"])
-groq_client = Groq(api_key=os.environ["GROQ_API_KEY"])
+# Load local MiniLM model
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
+groq_client = Groq(api_key=os.environ["GROQ_API_KEY"])
 pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
 
 index_name = "dochat"
 if index_name not in [i["name"] for i in pc.list_indexes()]:
     pc.create_index(
         name=index_name,
-        dimension=1536,
+        dimension=384,
         metric="cosine",
         spec=ServerlessSpec(cloud="aws", region="us-east-1")
     )
 
 index = pc.Index(index_name)
 
-def embed_query(text):
-    r = vo.embed([text], model="voyage-3.5")
-    return r.embeddings[0]
+
+def embed_query(text: str):
+    vec = model.encode([text], convert_to_numpy=True)[0]
+    return vec.tolist()
+
 
 def search_pinecone(query_vec, top_k=5):
     res = index.query(
@@ -51,6 +54,7 @@ Answer:"""
     )
     return r.choices[0].message.content.strip()
 
+
 def rag_answer(question):
     q_vec = embed_query(question)
     hits = search_pinecone(q_vec, top_k=5)
@@ -58,6 +62,7 @@ def rag_answer(question):
     context = "\n\n".join([h.metadata["text"] for h in hits])
     answer = generate_answer(question, context)
     return answer
+
 
 if __name__ == "__main__":
     while True:
