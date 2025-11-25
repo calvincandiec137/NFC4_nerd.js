@@ -4,7 +4,7 @@ python-dotenv
 pymupdf
 langchain-text-splitters
 sentence-transformers==2.5.1
-torch==2.3.0
+torch==2.5.1
 pinecone
 groq
 requests
