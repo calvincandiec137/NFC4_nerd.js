@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import base64
 from fastapi.middleware.cors import CORSMiddleware
+import os
+import shutil
 
 app = FastAPI()
 
@@ -32,10 +34,18 @@ def upload(payload: UploadPDF):
 
     BASE_DIR = "./database"
 
+    for entry in os.listdir(BASE_DIR):
+        path = os.path.join(BASE_DIR, entry)
+        if os.path.isfile(path) or os.path.islink(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
     with open(f"{BASE_DIR}/{payload.name}", "wb") as f:
         f.write(file)
 
     return {"status": "file saved"}
+
 
 @app.get("/prepare")
 def prepare():
