@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: dochat
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn modules.app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        value: ":memory:"  # Change to your Qdrant Cloud URL for production
+      - key: QDRANT_API_KEY
+        value: ""  # Add your Qdrant Cloud API key if using cloud
+      - key: PYTHON_VERSION
+        value: "3.11"
+    # Optional: Add persistent disk for uploaded PDFs
+    # disk:
+    #   name: dochat-storage
+    #   mountPath: /opt/render/project/src/database
+    #   sizeGB: 1

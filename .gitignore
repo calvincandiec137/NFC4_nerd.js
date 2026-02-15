@@ -1,2 +1,29 @@
+# Environment variables
 .env
+.env.local
+
+# Generated embeddings and data
 embeddings/
+database/*.pdf
+*.faiss
+*.npy
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Qdrant storage (if using local storage)
+qdrant_storage/

@@ -1,38 +1,54 @@
 import os
 from dotenv import load_dotenv
-import voyageai
+import google.generativeai as genai
 from groq import Groq
-from pinecone import Pinecone, ServerlessSpec
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams
 
 load_dotenv()
 
-vo = voyageai.Client(api_key=os.environ["VOYAGE_API_KEY"])
+# Configure Google Gemini
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 groq_client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
-pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+# Initialize Qdrant client
+# Supports both local (in-memory) and Qdrant Cloud
+qdrant_url = os.environ.get("QDRANT_URL", ":memory:")
+qdrant_api_key = os.environ.get("QDRANT_API_KEY")
 
-index_name = "dochat"
-if index_name not in [i["name"] for i in pc.list_indexes()]:
-    pc.create_index(
-        name=index_name,
-        dimension=1536,
-        metric="cosine",
-        spec=ServerlessSpec(cloud="aws", region="us-east-1")
+if qdrant_url == ":memory:":
+    qdrant_client = QdrantClient(":memory:")
+else:
+    qdrant_client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+
+collection_name = "dochat"
+
+# Create collection if it doesn't exist
+try:
+    qdrant_client.get_collection(collection_name)
+except:
+    qdrant_client.create_collection(
+        collection_name=collection_name,
+        vectors_config=VectorParams(size=768, distance=Distance.COSINE)
     )
-
-index = pc.Index(index_name)
 
 def embed_query(text):
-    r = vo.embed([text], model="voyage-3.5")
-    return r.embeddings[0]
-
-def search_pinecone(query_vec, top_k=5):
-    res = index.query(
-        vector=query_vec,
-        top_k=top_k,
-        include_metadata=True
+    """Embed query using Google Gemini"""
+    result = genai.embed_content(
+        model="models/text-embedding-004",
+        content=text,
+        task_type="retrieval_query"
     )
-    return res.matches
+    return result['embedding']
+
+def search_qdrant(query_vec, top_k=5):
+    """Search Qdrant for similar vectors"""
+    results = qdrant_client.search(
+        collection_name=collection_name,
+        query_vector=query_vec,
+        limit=top_k
+    )
+    return results
 
 def generate_answer(query, context):
     prompt = f"""Use ONLY the context to answer.
@@ -52,10 +68,11 @@ Answer:"""
     return r.choices[0].message.content.strip()
 
 def rag_answer(question):
+    """Generate RAG answer using Qdrant search and Groq LLM"""
     q_vec = embed_query(question)
-    hits = search_pinecone(q_vec, top_k=5)
+    hits = search_qdrant(q_vec, top_k=5)
 
-    context = "\n\n".join([h.metadata["text"] for h in hits])
+    context = "\n\n".join([h.payload["text"] for h in hits])
     answer = generate_answer(question, context)
     return answer
 

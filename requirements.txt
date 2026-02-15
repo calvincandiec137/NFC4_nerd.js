@@ -1,12 +1,10 @@
 fastapi
-uvicorn
+uvicorn[standard]
 python-dotenv
 PyMuPDF
 langchain-text-splitters
 qdrant-client
 groq
-voyageai
+google-generativeai
 requests
 python-multipart
-pinecone
-fastapi[standard]
