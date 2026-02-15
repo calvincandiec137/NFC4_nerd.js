@@ -2,134 +2,81 @@ import os
 import json
 import numpy as np
 import faiss
-import requests
+import torch
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 
 DOCS_JSON_PATH = "./database/sample_json.json"
 OUTPUT_DIR = "./embeddings"
-EMBED_FILE = os.path.join(OUTPUT_DIR, "vectors.npy")
 INDEX_FILE = os.path.join(OUTPUT_DIR, "index.faiss")
-METADATA_FILE = os.path.join(OUTPUT_DIR, "metadata.json")
+META_FILE = os.path.join(OUTPUT_DIR, "metadata.json")
 
-CHUNK_SIZE = 1000
-CHUNK_OVERLAP = 200
-EMBED_MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+CHUNK_SIZE = 900
+CHUNK_OVERLAP = 150
+BATCH_SIZE = 64
+
+EMBED_MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+embed_model = SentenceTransformer(EMBED_MODEL_NAME, device=DEVICE)
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def fetch_embedding(text: str, model: SentenceTransformer):
-    """Generates an embedding for a single text string using the loaded model."""
-    if not text.strip():
-        print("Warning: Empty text passed to embedding function")
-        return None
-    try:
-        embedding = model.encode(text, normalize_embeddings=True)
-        return embedding.astype(np.float32)
-    except Exception as e:
-        print(f"Error generating embedding: {e}")
-        return None
-
-def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
-    if not text:
-        return []
+def chunk_text(text):
     chunks = []
     start = 0
     while start < len(text):
-        end = min(start + chunk_size, len(text))
+        end = start + CHUNK_SIZE
         chunks.append(text[start:end])
-        start += chunk_size - overlap
+        start += CHUNK_SIZE - CHUNK_OVERLAP
     return chunks
 
-def build_index_from_json(json_path):
-    try:
-        with open(json_path, "r", encoding="utf-8") as f:
-            json_data = json.load(f)
-    except Exception as e:
-        print(f"[❌] Failed to load JSON file: {e}")
-        return
+def main():
+    with open(DOCS_JSON_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
 
-    if not json_data:
-        print("JSON file is empty")
-        return
+    docs = data.get("contextual_keypoints", [])
+    texts, metadata = [], []
 
-    documents = json_data.get("contextual_keypoints", [])
-    if not documents:
-        print("No documents found in contextual_keypoints array")
-        return
-
-    print(f"Found {len(documents)} documents to process")
-    all_chunks = []
-    metadata = []
-
-    for doc in tqdm(documents, desc="Preparing Chunks"):
-        if not isinstance(doc, dict):
-            print("Skipping non-dictionary document")
+    for doc in tqdm(docs, desc="Chunking"):
+        content = doc.get("keypoints", "").strip()
+        if not content:
             continue
 
-        doc_id = doc.get("section_number", "unknown")
-        section_title = doc.get("title", "Untitled Section")
-        content = doc.get("keypoints", "")
-
-        if not content.strip():
-            continue
-
-        if "theme" in doc:
+        if doc.get("theme"):
             content += f"\nTheme: {doc['theme']}"
-        if "location" in doc:
+        if doc.get("location"):
             content += f"\nLocation: {doc['location']}"
 
-        chunks = chunk_text(content)
-        if not chunks:
-            continue
-
-        for i, chunk in enumerate(chunks):
-            all_chunks.append(chunk)
+        for i, chunk in enumerate(chunk_text(content)):
+            texts.append(chunk)
             metadata.append({
-                "doc_id": doc_id,
-                "section_title": section_title,
-                "location": doc.get("location", ""),
-                "theme": doc.get("theme", ""),
-                "chunk_index": i,
-                "text": chunk,
-                "original_chunk_id": doc.get("original_chunk_id", ""),
-                "keypoints_length": doc.get("keypoints_length", 0)
+                "doc_id": doc.get("section_number"),
+                "title": doc.get("title"),
+                "chunk_id": i,
+                "text": chunk
             })
 
-    if not all_chunks:
-        print("No valid text chunks to embed.")
-        return
+    embeddings = embed_model.encode(
+        texts,
+        batch_size=BATCH_SIZE,
+        normalize_embeddings=True,
+        show_progress_bar=True
+    ).astype(np.float32)
 
-    print(f"Generating embeddings for {len(all_chunks)} chunks in one batch...")
-    vectors = EMBED_MODEL.encode(all_chunks, batch_size=32, show_progress_bar=True, normalize_embeddings=True)
+    dim = embeddings.shape[1]
 
-    if vectors.size == 0:
-        print("No embeddings were created.")
-        return
+    index = faiss.IndexFlatIP(dim)
+    index.add(embeddings)
 
-    print(f"Created {len(vectors)} embeddings from {len(documents)} documents")
-
-    vectors = np.array(vectors, dtype=np.float32)
-    np.save(EMBED_FILE, vectors)
-
-    dims = vectors.shape[1]
-    index = faiss.IndexFlatL2(dims)
-    faiss.normalize_L2(vectors)
-    index.add(vectors)
     faiss.write_index(index, INDEX_FILE)
 
-    with open(METADATA_FILE, "w", encoding="utf-8") as f:
+    with open(META_FILE, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
 
-    print(f"Saved embeddings to {EMBED_FILE}")
-    print(f"Saved index to {INDEX_FILE}")
-    print(f"Saved metadata to {METADATA_FILE}")
-
-def rag_main():
-    print("🚀 Starting RAG index building process")
-    print(f"📂 Loading documents from {DOCS_JSON_PATH}")
-    build_index_from_json(DOCS_JSON_PATH)
-
+    print(f"Device used for embeddings: {DEVICE}")
+    print("FAISS CPU index created")
+    print(f"Indexed {index.ntotal} chunks")
 
 if __name__ == "__main__":
-    rag_main()
+    main()

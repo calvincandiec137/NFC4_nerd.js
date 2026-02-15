@@ -3,25 +3,21 @@ import json
 import faiss
 import torch
 import numpy as np
-import requests
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from dotenv import load_dotenv
+from groq import Groq
 
 load_dotenv()
+
 
 INDEX_PATH = "./embeddings/index.faiss"
 META_PATH = "./embeddings/metadata.json"
 
+
 EMBED_MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
-OLLAMA_MODEL = "qwen2.5:7b"
-
-OLLAMA_URL = os.environ.get(
-    "OLLAMA_URL",
-    "http://localhost:11434/api/generate"
-)
-
+GROQ_MODEL = "llama-3.1-8b-instant" 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -34,24 +30,8 @@ with open(META_PATH, "r", encoding="utf-8") as f:
     metadata = json.load(f)
 
 
-def ollama_generate(prompt: str) -> str:
-    payload = {
-        "model": OLLAMA_MODEL,
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "temperature": 0.2,
-            "num_predict": 200
-        }
-    }
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-    r = requests.post(
-        OLLAMA_URL,
-        json=payload,
-        timeout=120
-    )
-    r.raise_for_status()
-    return r.json().get("response", "").strip()
 
 def embed_query(query: str):
     return embed_model.encode(
@@ -70,6 +50,7 @@ def rerank(query: str, docs, top_n: int = 5):
     ranked = sorted(zip(docs, scores), key=lambda x: x[1], reverse=True)
     return [d for d, _ in ranked[:top_n]]
 
+
 def generate_answer(query: str, context: str) -> str:
     prompt = f"""
 Answer the question using ONLY the context below.
@@ -82,7 +63,16 @@ Question:
 {query}
 """
 
-    return ollama_generate(prompt)
+    response = groq_client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.2,
+        max_tokens=200
+    )
+
+    return response.choices[0].message.content.strip()
 
 
 def ask(query: str):
@@ -95,7 +85,7 @@ def ask(query: str):
 
 
 def interactive():
-    print("RAG system ready (Qwen2.5:7B via Ollama).")
+    print("RAG system ready (Groq backend).")
     print("Type a question and press Enter.")
     print("Type 'exit' or 'quit' to stop.")
 
