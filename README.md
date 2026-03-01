@@ -1,9 +1,5 @@
 # DoChat
 
-
-https://github.com/user-attachments/assets/4f7fa70f-5eac-4f30-a9fd-b7d5a77e0873
-
-
 **Demo Video:** https://youtu.be/smLLruXduPU
 
 ## Impact & Performance
