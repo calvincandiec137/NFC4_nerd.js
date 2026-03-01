@@ -1,5 +1,22 @@
+# FastAPI Backend
+fastapi
+uvicorn[standard]
+python-dotenv
+python-multipart
+
+# PDF Processing
+PyMuPDF
+
+# RAG & Embeddings
 sentence-transformers
+faiss-cpu
+torch
 numpy
+
+# LLM
+groq
+
+# Utilities
 tqdm
 requests
-faiss-cpu
+

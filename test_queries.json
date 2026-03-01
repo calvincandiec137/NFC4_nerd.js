@@ -1,0 +1,51 @@
+{
+  "description": "Test queries for DoChat RAG benchmarking",
+  "note": "Format: query, expected_keyword (optional), expected_doc_id (optional)",
+  "queries": [
+    {
+      "query": "What is the main topic of this document?",
+      "expected_keyword": null,
+      "expected_doc_id": null,
+      "note": "Generic query for latency testing only"
+    },
+    {
+      "query": "Explain the key concepts",
+      "expected_keyword": null,
+      "expected_doc_id": null,
+      "note": "Generic query for latency testing only"
+    },
+    {
+      "query": "What are the important points?",
+      "expected_keyword": null,
+      "expected_doc_id": null,
+      "note": "Generic query for latency testing only"
+    },
+    {
+      "query": "Summarize the content",
+      "expected_keyword": null,
+      "expected_doc_id": null,
+      "note": "Generic query for latency testing only"
+    },
+    {
+      "query": "What does this document discuss?",
+      "expected_keyword": null,
+      "expected_doc_id": null,
+      "note": "Generic query for latency testing only"
+    }
+  ],
+  "instructions": {
+    "how_to_add_labeled_queries": [
+      "1. Review your documents in database/sample_json.json",
+      "2. Write realistic questions users might ask",
+      "3. Add expected_keyword: a phrase that should appear in correct chunks",
+      "4. Add expected_doc_id: the section_number from your JSON",
+      "5. Aim for 50-100 queries for robust accuracy benchmarks"
+    ],
+    "example": {
+      "query": "Who is the author of this document?",
+      "expected_keyword": "John Smith",
+      "expected_doc_id": "section_1",
+      "note": "This will check if top-5 results contain 'John Smith' or come from section_1"
+    }
+  }
+}

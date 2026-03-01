@@ -84,6 +84,16 @@ def ask(query: str):
     print("\nAnswer:\n", answer)
 
 
+def rag_query(query: str) -> str:
+    """Query the RAG system and return the answer (for API use)"""
+    retrieved = retrieve(query)
+    reranked = rerank(query, retrieved)
+    context = "\n\n---\n\n".join(d["text"] for d in reranked)
+    
+    answer = generate_answer(query, context)
+    return answer
+
+
 def interactive():
     print("RAG system ready (Groq backend).")
     print("Type a question and press Enter.")
